@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="TopologyProviderTest">
+    <property environment="env"/>
+    <property name="junit.output.dir" value="junit"/>
+    <property name="TopologyElements.location" value="../TopologyElements"/>
+    <property name="TopologyProvider.location" value="../TopologyProvider"/>
+    <property name="PersistentTopologyProvider.location" value="../PersistentTopologyProvider"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.7"/>
+    <property name="source" value="1.7"/>
+    <path id="TopologyElements.classpath">
+        <pathelement location="${TopologyElements.location}/bin"/>
+    </path>
+    <path id="TopologyProvider.classpath">
+        <pathelement location="${TopologyProvider.location}/bin"/>
+    </path>
+    <path id="PersistentTopologyProvider.classpath">
+        <pathelement location="${PersistentTopologyProvider.location}/bin"/>
+    </path>
+    <path id="JUnit 4.libraryclasspath">
+        <pathelement location="./jars/test/junit-4.11.jar"/>
+        <pathelement location="./jars/test/hamcrest-core-1.3.jar"/>
+    </path>
+    <path id="slf4j.libraryclasspath">
+        <pathelement location="jars/logging/slf4j-api-1.7.7.jar"/>
+        <pathelement location="jars/logging/slf4j-simple-1.7.7.jar"/>
+    </path>
+    <path id="TopologyProviderTest.classpath">
+        <pathelement location="bin"/>
+        <path refid="TopologyElements.classpath"/>
+        <path refid="TopologyProvider.classpath"/>
+        <path refid="PersistentTopologyProvider.classpath"/>
+        <path refid="JUnit 4.libraryclasspath"/>
+        <path refid="slf4j.libraryclasspath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="test">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall">
+        <ant antfile="build.xml" dir="${TopologyElements.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${TopologyProvider.location}" inheritAll="false" target="clean"/>
+      <!--  <ant antfile="build.xml" dir="${PersistentTopologyProvider.location}" inheritAll="false" target="clean"/> -->
+    </target>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects">
+        <ant antfile="build.xml" dir="${TopologyElements.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="build.xml" dir="${TopologyProvider.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+<!--        <ant antfile="build.xml" dir="${PersistentTopologyProvider.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant> -->
+    </target>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <src path="test"/>
+            <classpath refid="TopologyProviderTest.classpath"/>
+        </javac>
+    </target>
+    <target name="NetworkElementTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.test.topology.primitives.networkelement.NetworkElementTest" todir="${junit.output.dir}"/>
+            <classpath refid="TopologyProvider.classpath"/>
+        </junit>
+    </target>
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
+    </target>
+</project>
