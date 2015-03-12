@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.helpers.notification.annotation.PropChange;
 import com.topology.primitives.TopologyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,7 @@ public abstract class TopologyElementImpl implements TopologyElement {
 		return label;
 	}
 
+  @PropChange
 	public void setLabel(String label) {
 		this.label = label;
 	}
@@ -84,7 +86,8 @@ public abstract class TopologyElementImpl implements TopologyElement {
 	}
 
 	@Override
-	public void addProperty(TEPropertyKey key, Object value)
+  @PropChange
+  public void addProperty(TEPropertyKey key, Object value)
 			throws PropertyException {
 		if (key == null) 
 			throw new PropertyException("Key cannot be null");
@@ -100,7 +103,8 @@ public abstract class TopologyElementImpl implements TopologyElement {
 	}
 
 	@Override
-	public void removeProperty(TEPropertyKey key)
+  @PropChange
+  public void removeProperty(TEPropertyKey key)
 			throws PropertyException {
 		if (key == null) 
 			throw new PropertyException("Key cannot be null");

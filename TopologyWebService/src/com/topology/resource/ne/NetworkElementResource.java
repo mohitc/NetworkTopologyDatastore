@@ -1,11 +1,11 @@
 package com.topology.resource.ne;
 
+import com.topology.dto.*;
 import com.topology.primitives.*;
 import com.topology.primitives.exception.TopologyException;
 import com.topology.primitives.properties.keys.TEPropertyKey;
 import com.topology.resource.ResourceNaming;
 import com.topology.resource.manager.TopologyManagerFactoryHelper;
-import com.topology.transfer.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,4 +1,4 @@
-package com.topology.transfer;
+package com.topology.dto;
 
 import com.topology.primitives.Connection;
 import com.topology.primitives.Path;

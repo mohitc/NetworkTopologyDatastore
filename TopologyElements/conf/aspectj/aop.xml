@@ -2,5 +2,6 @@
 <aspectj>
     <aspects>
         <aspect name="com.helpers.benchmark.aspect.BenchmarkAspect" />
+        <aspect name="com.helpers.notification.aspect.PropChangeAspect"/>
     </aspects>
 </aspectj>

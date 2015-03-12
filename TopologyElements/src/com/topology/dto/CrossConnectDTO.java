@@ -1,4 +1,4 @@
-package com.topology.transfer;
+package com.topology.dto;
 
 import com.topology.primitives.CrossConnect;
 import com.topology.primitives.exception.properties.PropertyException;

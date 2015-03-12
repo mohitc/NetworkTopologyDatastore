@@ -1,4 +1,4 @@
-package com.topology.transfer;
+package com.topology.dto;
 
 import com.topology.primitives.ConnectionPoint;
 import com.topology.primitives.Port;

@@ -27,6 +27,7 @@ public class NetworkElementTest {
 		NetworkElement ne=null;
 		try {
 			ne = manager.createNetworkElement();
+      ne.setLabel("Test NE");
 		} catch (TopologyException e) {
 			log.error("Error in creatng a network element", e);
 		}
