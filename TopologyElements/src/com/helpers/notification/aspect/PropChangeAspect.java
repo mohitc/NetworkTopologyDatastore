@@ -17,19 +17,21 @@ public class PropChangeAspect {
 
   @Around("execution(* *(..)) && @annotation(annotation)")
   public Object persistenceContext(ProceedingJoinPoint call, PropChange annotation) throws Throwable {
+    boolean catchException = false;
     if (TopologyElement.class.isAssignableFrom(call.getThis().getClass())) {
+      TopologyDTO beforeChange = TopologyDTO.generateDTO((TopologyElement) call.getThis());
       try {
-        TopologyDTO beforeChange = TopologyDTO.generateDTO((TopologyElement) call.getThis());
-        try {
-          return call.proceed();
-        } finally {
-          TopologyDTO afterChange = TopologyDTO.generateDTO((TopologyElement) call.getThis());
-          System.out.println("Property Change: before [" + beforeChange + "] after [" + afterChange + "]");
-        }
+        return call.proceed();
       } catch (Exception e) {
         //potential problems in generating notification, likely that property change failed
         log.error("Error while changing property", e);
+        catchException = true;
         throw e;
+      } finally {
+        if (!catchException) {
+          TopologyDTO afterChange = TopologyDTO.generateDTO((TopologyElement) call.getThis());
+          System.out.println("Property Change: before [" + beforeChange + "] after [" + afterChange + "]");
+        }
       }
     } else {
       throw new TopologyException("PropChange annotation was used in a location not suited for generating notifications");

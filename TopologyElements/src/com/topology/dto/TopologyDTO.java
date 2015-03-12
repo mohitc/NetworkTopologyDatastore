@@ -75,7 +75,7 @@ public abstract class TopologyDTO {
       return null;
     }
 
-    TopologyDTO dto = null;
+    TopologyDTO dto;
     if (NetworkElement.class.isAssignableFrom(te.getClass())) {
       dto = new NetworkElementDTO();
     } else if (ConnectionPoint.class.isAssignableFrom(te.getClass())) {
@@ -97,5 +97,9 @@ public abstract class TopologyDTO {
     }
     dto.populateDTO(te);
     return dto;
+  }
+
+  public String toString() {
+    return "Topology Element: " + this.getClass().getSimpleName() + ", ID: " + this.getId() + ", label: " + this.getLabel();
   }
 }
