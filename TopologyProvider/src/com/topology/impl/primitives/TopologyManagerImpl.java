@@ -3,6 +3,7 @@ package com.topology.impl.primitives;
 import java.util.*;
 
 import com.helpers.benchmark.annotation.Benchmark;
+import com.helpers.notification.annotation.EntityCreation;
 import com.topology.primitives.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -151,6 +152,7 @@ public class TopologyManagerImpl implements TopologyManager {
 
 	@Override
   @Benchmark
+  @EntityCreation
 	public NetworkElement createNetworkElement() throws TopologyException {
 		synchronized(this) {
 			NetworkElement ne = new NetworkElementImpl(this, generateRandomID());
