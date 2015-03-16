@@ -1,5 +1,6 @@
 package com.helpers.notification.messages;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,6 +45,10 @@ public enum NotificationType {
     return this.toString() + allParents.get(this).toString();
   }
 
+  public Set<NotificationType> getAllParents() {
+    return allParents.get(this);
+  }
+
 
 
   private static HashMap<NotificationType, Set<NotificationType>> allParents;
@@ -56,7 +61,7 @@ public enum NotificationType {
         parents.add(parent);
         parents.addAll(allParents.get(parent));
       }
-      allParents.put(currentChild, parents);
+      allParents.put(currentChild, Collections.unmodifiableSet(parents));
     }
   }
 

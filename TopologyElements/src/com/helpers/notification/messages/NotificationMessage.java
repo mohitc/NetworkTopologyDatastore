@@ -28,6 +28,7 @@ public class NotificationMessage {
     this.entityID = entityID;
     this.oldState = oldState;
     this.newState = newState;
+    this.timestamp = System.currentTimeMillis();
   }
 
   public NotificationType getNotificationType() {
@@ -48,5 +49,16 @@ public class NotificationMessage {
 
   public TopologyDTO getNewState() {
     return newState;
+  }
+
+  public String toString() {
+    String out = "Type: " + notificationType + ", ID: " + entityID + ", Timestamp: " + timestamp;
+    if (oldState!=null) {
+      out = out + ", Old State: [" + oldState + "]";
+    }
+    if (newState!=null) {
+      out = out + ", New State: [" + newState + "]";
+    }
+    return out;
   }
 }

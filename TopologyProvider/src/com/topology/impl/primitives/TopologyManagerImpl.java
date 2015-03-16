@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.helpers.benchmark.annotation.Benchmark;
 import com.helpers.notification.annotation.EntityCreation;
+import com.helpers.notification.annotation.EntityDeletion;
 import com.topology.primitives.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,6 +167,7 @@ public class TopologyManagerImpl implements TopologyManager {
 
 
 	@Override
+  @EntityCreation
 	public ConnectionPoint createConnectionPoint(TopologyElement parent)
 			throws TopologyException {
         ConnectionPoint cp = new ConnectionPointImpl(this, generateRandomID(), parent);
@@ -176,6 +178,7 @@ public class TopologyManagerImpl implements TopologyManager {
 
 
 	@Override
+  @EntityCreation
 	public Port createPort(TopologyElement parent) throws TopologyException {
 		Port cp = new PortImpl(this, generateRandomID(), parent);
         populateConnectionPointAssociations(cp, parent);
@@ -214,6 +217,7 @@ public class TopologyManagerImpl implements TopologyManager {
 
 
 	@Override
+  @EntityCreation
 	public Link createLink(int startCpID, int endCpID) throws TopologyException {
 		//Check if start and end connection points are in the test.topology manager
 		ConnectionPoint localStartCP = this.getElementByID(startCpID, ConnectionPoint.class);
@@ -245,6 +249,7 @@ public class TopologyManagerImpl implements TopologyManager {
 	}
 
 	@Override
+  @EntityCreation
 	public CrossConnect createCrossConnect(int startCpID, int endCpID) throws TopologyException {
 		//Check if start and end connection points are in the test.topology manager
 		ConnectionPoint localStartCP = this.getElementByID(startCpID, ConnectionPoint.class);
@@ -281,6 +286,7 @@ public class TopologyManagerImpl implements TopologyManager {
 	}
 
 	@Override
+  @EntityDeletion
 	public void removeTopologyElement(int id) throws TopologyException {
     TopologyElement te = getElementByID(id);
     if (te!=null) {
@@ -299,6 +305,7 @@ public class TopologyManagerImpl implements TopologyManager {
 
 
 	@Override
+  @EntityDeletion
 	public void removeNetworkElement(int id) throws TopologyException {
 		NetworkElement ne = this.getElementByID(id, NetworkElement.class);
 		//check if there are no connection points in the network element
@@ -316,6 +323,7 @@ public class TopologyManagerImpl implements TopologyManager {
 
 
 	@Override
+  @EntityDeletion
 	public void removeConnectionPoint(int id) throws TopologyException {
 		ConnectionPoint cp = this.getElementByID(id, ConnectionPoint.class);
 		//Connection point exists
@@ -403,6 +411,7 @@ public class TopologyManagerImpl implements TopologyManager {
 	}
 
 	@Override
+  @EntityDeletion
 	public void removeLink(int id) throws TopologyException {
 		Link link = this.getElementByID(id, Link.class);
 		//Check if link has any reservations
@@ -414,6 +423,7 @@ public class TopologyManagerImpl implements TopologyManager {
 
 
 	@Override
+  @EntityDeletion
 	public void removeCrossConnect(int id) throws TopologyException {
 		Link link = this.getElementByID(id, Link.class);
 		//Check if link has any reservations

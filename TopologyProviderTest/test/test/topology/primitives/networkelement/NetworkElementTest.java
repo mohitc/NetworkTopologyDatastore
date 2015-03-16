@@ -5,6 +5,7 @@ import com.topology.primitives.exception.TopologyException;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import test.topology.helpers.InitNotificationManager;
 import test.topology.primitives.manager.TopoManagerHelper;
 
 import static org.junit.Assert.*;
@@ -300,6 +301,7 @@ public class NetworkElementTest {
 
     @Test
     public void testHierarchicalPort(){
+      InitNotificationManager.init();
         testHierarchicalPortStructure(Port.class);
         testHierarchicalPortStructure(ConnectionPoint.class);
     }

@@ -4,5 +4,6 @@
         <aspect name="com.helpers.benchmark.aspect.BenchmarkAspect" />
         <aspect name="com.helpers.notification.aspect.PropChangeAspect"/>
         <aspect name="com.helpers.notification.aspect.EntityCreationAspect"/>
+        <aspect name="com.helpers.notification.aspect.EntityDeletionAspect"/>
     </aspects>
 </aspectj>

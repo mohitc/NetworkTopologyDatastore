@@ -87,7 +87,7 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="test.test.topology.primitives.networkelement.NetworkElementTest" todir="${junit.output.dir}"/>
-            <classpath refid="TopologyProvider.classpath"/>
+            <classpath refid="TopologyProviderTest.classpath"/>
         </junit>
     </target>
     <target name="junitreport">
