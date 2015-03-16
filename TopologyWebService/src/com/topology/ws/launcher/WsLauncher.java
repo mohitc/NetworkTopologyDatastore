@@ -3,6 +3,12 @@ package com.topology.ws.launcher;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import com.topology.impl.importers.sndlib.SNDLibImportTopology;
+import com.topology.importers.ImportTopology;
+import com.topology.primitives.TopologyManager;
+import com.topology.primitives.exception.FileFormatException;
+import com.topology.primitives.exception.TopologyException;
+import com.topology.resource.manager.TopologyManagerFactoryHelper;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -44,7 +50,7 @@ public class WsLauncher {
 		ServletHolder h = new ServletHolder(new ServletContainer());
 		h.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
 		h.setInitParameter("com.sun.jersey.config.property.packages",
-				"com.test.topology.resource");
+				"com.topology.resource");
 		h.setInitOrder(1);
 		context.addServlet(h, "/rest/*");
 		return context;
@@ -89,7 +95,19 @@ public class WsLauncher {
 					getStaticContext(), new DefaultHandler() });
 
 			server.setHandler(handlers);
-			server.start();
+      TopologyManagerFactoryHelper.getInstance().createTopologyManager("test");
+      ImportTopology importer = new SNDLibImportTopology();
+      TopologyManager manager = TopologyManagerFactoryHelper.getInstance().getTopologyManager("test");
+      try {
+        importer.importFromFile(".//resources//import//sndlib//abilene.xml", manager);
+      } catch (TopologyException e) {
+        log.error("Topology Exception while parsing test.topology file", e);
+      } catch (FileFormatException e) {
+        log.error("FileFormat Exception while parsing test.topology file", e);
+      } catch (IOException e) {
+        log.error("IO Exception while parsing test.topology file", e);
+      }
+      server.start();
 			server.join();
 			log.info("Jetty Server Started Successfully");
 		} catch (Exception e) {

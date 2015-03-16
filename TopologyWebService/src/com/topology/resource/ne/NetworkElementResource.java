@@ -112,6 +112,7 @@ public class NetworkElementResource {
     return linkDTOs;
   }
 
+/*
   @GET
   @Produces({MediaType.APPLICATION_JSON})
   @Path("{neID}/" + ResourceNaming.NetworkElement.LINKS)
@@ -125,5 +126,6 @@ public class NetworkElementResource {
     }
     return trailDTOs;
   }
+*/
 
 }
