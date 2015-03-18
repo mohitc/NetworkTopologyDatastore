@@ -77,25 +77,25 @@ public abstract class TopologyDTO {
 
     TopologyDTO dto;
     if (NetworkElement.class.isAssignableFrom(te.getClass())) {
-      dto = new NetworkElementDTO();
+      dto = new NetworkElementDTO((NetworkElement)te);
     } else if (ConnectionPoint.class.isAssignableFrom(te.getClass())) {
       if (Port.class.isAssignableFrom(te.getClass())) {
-        dto = new PortDTO();
+        dto = new PortDTO((Port)te);
       } else {
-        dto = new ConnectionPointDTO();
+        dto = new ConnectionPointDTO((ConnectionPoint)te);
       }
     } else if (Connection.class.isAssignableFrom(te.getClass())) {
       if (Link.class.isAssignableFrom(te.getClass())) {
-        dto = new LinkDTO();
+        dto = new LinkDTO((Link)te);
       } else if (CrossConnect.class.isAssignableFrom(te.getClass())){
-        dto = new TrailDTO();
+        dto = new CrossConnectDTO((CrossConnect)te);
       } else {
         throw new PropertyException("DTO generation not defined for Connection Class: " + te.getClass().getSimpleName());
       }
     } else {
       throw new PropertyException("DTO generation not defined for Topology Element Class: " + te.getClass().getSimpleName());
     }
-    dto.populateDTO(te);
+//    dto.populateDTO(te);
     return dto;
   }
 

@@ -91,5 +91,30 @@ public class ConnectionTest {
             assertTrue(classConnections.size() > 0);
             assertTrue(classConnections.contains(conn));
         }
+
+      if (conn.getLayer()!=null){
+        log.info("Checking list of all connections in Topology Manager, filtered by Layer");
+        try {
+          connections = manager.getAllConnections(conn.getLayer());
+          assertNotNull(connections);
+          assertTrue(connections.size() > 0);
+          assertTrue(connections.contains(conn));
+        } catch (TopologyException e) {
+          fail (e.getMessage());
+        }
+      }
+
+      log.info("Checking list of all connections in Topology Manager, filtered by Layer and class type");
+      if (conn.getLayer()!=null){
+        try {
+          classConnections = manager.getAllConnections(instance, conn.getLayer());
+          assertNotNull(classConnections);
+          assertTrue(classConnections.size() > 0);
+          assertTrue(classConnections.contains(conn));
+        } catch (TopologyException e) {
+          fail (e.getMessage());
+        }
+      }
+
     }
 }

@@ -5,6 +5,7 @@ import com.topology.primitives.Port;
 import com.topology.primitives.exception.properties.PropertyException;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
@@ -24,6 +25,8 @@ public class PortDTO extends ConnectionPointDTO {
       if (port.getContainedConnectionPoints()!=null) {
         Set<ConnectionPoint> cps = port.getContainedConnectionPoints();
         this.setContainedCPs(generateSet(cps));
+      } else {
+        this.setContainedCPs(new HashSet<Integer>());
       }
       super.populateDTO(port);
     }

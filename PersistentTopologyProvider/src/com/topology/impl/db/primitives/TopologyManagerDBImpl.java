@@ -179,6 +179,16 @@ public class TopologyManagerDBImpl implements TopologyManager {
   }
 
   @Override
+  public Set<Connection> getAllConnections(NetworkLayer layer) throws TopologyException {
+    return null;
+  }
+
+  @Override
+  public <T extends Connection> Set<T> getAllConnections(Class<T> instance, NetworkLayer layer) throws TopologyException {
+    return null;
+  }
+
+  @Override
   public Set<Connection> getConnections(int startNeID, int endNeID) throws TopologyException {
     return null;
   }

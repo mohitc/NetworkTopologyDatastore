@@ -51,7 +51,8 @@
   <script>
     $(function(){ // on dom ready
       var graphElements = {};
-      graphElements.nodes = getNetworkElements();
+      graphElements.nodes = getGraphNodes();
+      graphElements.edges = getGraphConnections();
       var cy = cytoscape({
         container: document.getElementById('cy'),
         style: [
@@ -100,7 +101,7 @@
       });
 
     }); // on dom ready
-</script
+</script>
 
 </div>
 

@@ -30,6 +30,8 @@ public class ConnectionPointDTO extends TopologyDTO {
     if (cp!=null) {
       if (cp.getParent()!=null)
         this.parentID = cp.getParent().getID();
+      else
+        this.parentID = -1;
       super.populateDTO(cp);
     }
   }

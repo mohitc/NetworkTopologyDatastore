@@ -4,8 +4,8 @@ import com.topology.dto.*;
 import com.topology.primitives.*;
 import com.topology.primitives.exception.TopologyException;
 import com.topology.primitives.properties.keys.TEPropertyKey;
+import com.topology.resource.AbstractResource;
 import com.topology.resource.ResourceNaming;
-import com.topology.resource.manager.TopologyManagerFactoryHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,13 +18,9 @@ import java.util.Map;
 import java.util.Set;
 
 @Path(ResourceNaming.NetworkElement.PATH)
-public class NetworkElementResource {
+public class NetworkElementResource extends AbstractResource {
 
   private static final Logger log = LoggerFactory.getLogger(NetworkElementResource.class);
-
-  private TopologyManager getTopologyManager(String instanceID) throws TopologyException {
-    return TopologyManagerFactoryHelper.getInstance().getTopologyManager(instanceID);
-  }
 
   @GET
   @Produces({MediaType.APPLICATION_JSON})

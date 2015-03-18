@@ -12,6 +12,13 @@ public interface ResourceNaming {
     public static final String TRAILS = "trails";
   }
 
+  public static interface TE {
+    public static final String PATH = "{" + INSTANCE_REF +"}";
+  }
+
+  public static interface Connection {
+    public static final String PATH = "{" + INSTANCE_REF +"}/connections";
+  }
   public static interface ConnectionPoint {
     public static final String PATH = "connectionpoints";
   }

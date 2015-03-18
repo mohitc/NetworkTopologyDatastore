@@ -44,7 +44,7 @@ public interface TopologyManager {
 
   public void removeTrail(int id) throws TopologyException;
 
-  //Function to get test.topology elements
+  //Function to get topology elements
 	public TopologyElement getElementByID(int id) throws TopologyException;
 
 	public <T extends TopologyElement> T getElementByID(int id, Class<T> instance) throws TopologyException;
@@ -52,6 +52,11 @@ public interface TopologyManager {
   public <T extends TopologyElement> Set<T> getElementsByLabel(String label, Class<T> instance);
 
   public <T extends TopologyElement> T getSingleElementByLabel(String label, Class<T> instance) throws TopologyException;
+
+  //Helper function to get all connections by layer
+  public Set<Connection> getAllConnections (NetworkLayer layer) throws TopologyException;
+
+  public <T extends Connection> Set<T> getAllConnections (Class<T> instance, NetworkLayer layer) throws TopologyException;
 
   //Helper functions to get connections between network elements
     public Set<Connection> getConnections (int startNeID, int endNeID) throws TopologyException;
