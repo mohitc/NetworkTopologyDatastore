@@ -2,6 +2,7 @@ package test.topology.primitives.algorithm;
 
 import com.topology.algorithm.PathComputationAlgorithm;
 import com.topology.algorithm.constraint.PathConstraint;
+import com.topology.dto.PathDTO;
 import com.topology.primitives.*;
 import com.topology.primitives.exception.TopologyException;
 import org.junit.Test;
@@ -51,7 +52,7 @@ public class PathAlgorithmTest {
 
 
     PathComputationAlgorithm algorithm = new PathComputationAlgorithm();
-      Path path = null;
+      PathDTO path = null;
 
     try {
       path = algorithm.computePath(manager, aEnd, zEnd, new PathConstraint(false, true));

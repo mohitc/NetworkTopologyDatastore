@@ -1,3 +1,5 @@
+var scaleFactor = 30;
+
 function getLocalURL() {
   var http = location.protocol;
   var slashes = http.concat("//");
@@ -57,6 +59,14 @@ function getGraphNodesFromCP(parentID, cp) {
   data.parent = parentID.toString();
   graphNodes[0] = {};
   graphNodes[0].data = data;
+  if (cp.properties!=null) {
+    if ((cp.properties.XCOORD !=null) && (cp.properties.YCOORD!=null)) {
+      var position = {};
+      position.x = cp.properties.XCOORD * scaleFactor;
+      position.y = cp.properties.YCOORD * scaleFactor;
+      graphNodes[0].position = position;
+    }
+  }
   //Check for children
   if (cp.containedCPs != null) {
     for (var i = 0; i < cp.containedCPs.length; i++) {
@@ -77,6 +87,14 @@ function getGraphNodesFromNE(ne) {
   data.label = ne.label;
   graphNodes[0] = {};
   graphNodes[0].data = data;
+  if (ne.properties!=null) {
+    if ((ne.properties.XCOORD !=null) && (ne.properties.YCOORD!=null)) {
+      var position = {};
+      position.x = ne.properties.XCOORD * scaleFactor;
+      position.y = ne.properties.YCOORD * scaleFactor;
+      graphNodes[0].position = position;
+    }
+  }
   //populate connection points
   if (ne.connectionPoints != null) {
     for (var i = 0; i < ne.connectionPoints.length; i++) {

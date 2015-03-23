@@ -1,15 +1,14 @@
 package com.topology.impl.db.primitives;
 
+import com.topology.dto.PathDTO;
 import com.topology.impl.db.persistencehelper.EntityManagerFactoryHelper;
 import com.topology.primitives.*;
 import com.topology.primitives.exception.TopologyException;
+import com.topology.primitives.resource.ConnectionResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class TopologyManagerDBImpl implements TopologyManager {
@@ -42,7 +41,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
 
   private <T extends TopologyElementDBImpl, Q extends TopologyElement> Class<T> getComparableDbClass(Class<Q> instance) {
     if (instance==null) {
-      log.error("Class instance for conversin cannot be null, defaulting to topology element base class");
+      log.error("Class instance for conversion cannot be null, defaulting to topology element base class");
     } else {
       if (NetworkElement.class.isAssignableFrom(instance)) {
         return (Class<T>) NetworkElementDBImpl.class;
@@ -114,7 +113,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
   }
 
   @Override
-  public Trail createTrail(int startCpID, int endCpID) throws TopologyException {
+  public Trail createTrail(int startCpID, int endCpID, PathDTO pathDTO, boolean directed, ConnectionResource resource, NetworkLayer layer) throws TopologyException {
     return null;
   }
 
@@ -228,8 +227,4 @@ public class TopologyManagerDBImpl implements TopologyManager {
     return null;
   }
 
-  @Override
-  public Path generatePathDef(ConnectionPoint aEnd, ConnectionPoint zEnd, List<Connection> forwardSequence, List<Connection> backwardSequence, boolean directed, boolean isStrict) {
-    return null;
-  }
 }

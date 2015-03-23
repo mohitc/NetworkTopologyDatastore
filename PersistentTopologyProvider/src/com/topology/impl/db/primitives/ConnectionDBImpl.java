@@ -71,11 +71,6 @@ abstract public class ConnectionDBImpl extends TopologyElementDBImpl implements 
   }
 
   @Override
-  public ConnectionResourceType getType() {
-    return null;
-  }
-
-  @Override
   public ConnectionResource getTotalResources() throws ResourceException {
     return null;
   }
@@ -106,12 +101,12 @@ abstract public class ConnectionDBImpl extends TopologyElementDBImpl implements 
   }
 
   @Override
-  public void reserveConnection(int connID, ConnectionResource resource) throws ResourceException, UnsupportedOperationException {
+  public void reserveService(int connID, ConnectionResource resource) throws ResourceException, UnsupportedOperationException {
 
   }
 
   @Override
-  public void releaseConnection(int connID) throws ResourceException, UnsupportedOperationException {
+  public void releaseService(int connID) throws ResourceException, UnsupportedOperationException {
 
   }
 }

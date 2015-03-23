@@ -1,9 +1,10 @@
 package com.topology.primitives;
 
-import java.util.List;
 import java.util.Set;
 
+import com.topology.dto.PathDTO;
 import com.topology.primitives.exception.TopologyException;
+import com.topology.primitives.resource.ConnectionResource;
 
 public interface TopologyManager {
 
@@ -25,7 +26,7 @@ public interface TopologyManager {
 
 	public CrossConnect createCrossConnect (int startCpID, int endCpID) throws TopologyException;
 
-	public Trail createTrail (int startCpID, int endCpID) throws TopologyException;
+	public Trail createTrail (int startCpID, int endCpID, PathDTO pathDTO, boolean directed, ConnectionResource resource, NetworkLayer layer) throws TopologyException;
 
 	//Functions to remove test.topology elements
 	public void removeTopologyElement (int id) throws TopologyException;
@@ -74,8 +75,6 @@ public interface TopologyManager {
 	public Set<Connection> getConnections (int startNeID, int endNeID, boolean isDirected, NetworkLayer layer) throws TopologyException;
 
 	public <T extends Connection> Set<T> getConnections (int startNeID, int endNeID, boolean isDirected, NetworkLayer layer, Class<T> instance) throws TopologyException;
-
-  public Path generatePathDef(ConnectionPoint aEnd, ConnectionPoint zEnd, List<Connection> forwardSequence, List<Connection> backwardSequence, boolean directed, boolean isStrict);
 
 }
 

@@ -1,6 +1,7 @@
 package com.topology.algorithm;
 
 import com.topology.algorithm.constraint.PathConstraint;
+import com.topology.dto.PathDTO;
 import com.topology.primitives.*;
 import com.topology.primitives.exception.TopologyException;
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class PathComputationAlgorithm {
     return usableConnections;
   }
 
-  public Path computePath(TopologyManager manager, ConnectionPoint aEnd, ConnectionPoint zEnd, PathConstraint constraint) throws TopologyException {
+  public PathDTO computePath(TopologyManager manager, ConnectionPoint aEnd, ConnectionPoint zEnd, PathConstraint constraint) throws TopologyException {
     List<Connection> forwardPath = computeDirectedPath(manager, aEnd, zEnd, constraint);
     if (constraint.isDirected()) {
       //no need to compute reverse path
@@ -75,8 +76,27 @@ public class PathComputationAlgorithm {
     }
   }
 
-  protected Path generatePath(TopologyManager manager, ConnectionPoint aEnd, ConnectionPoint zEnd, List<Connection> forwardSequence, List<Connection> reverseSequence, PathConstraint constraint) {
-    return manager.generatePathDef(aEnd, zEnd, forwardSequence, reverseSequence, constraint.isDirected(), true);
+  protected PathDTO generatePath(TopologyManager manager, ConnectionPoint aEnd, ConnectionPoint zEnd, List<Connection> forwardSequence, List<Connection> reverseSequence, PathConstraint constraint) {
+    PathDTO dto = new PathDTO();
+    dto.setaEndId(aEnd.getID());
+    dto.setzEndId(zEnd.getID());
+    dto.setForwardConnectionSequence(getIdSeq(forwardSequence));
+    dto.setBackwardConnectionSequence(getIdSeq(reverseSequence));
+    dto.setDirected(constraint.isDirected());
+    dto.setStrict(true);
+    return dto;
+  }
+
+  private List<Integer> getIdSeq (List<Connection> connSeq) {
+    List<Integer> idList = new ArrayList<>();
+    if (connSeq==null)
+      return idList;
+    else {
+      for (Connection conn: connSeq) {
+        idList.add(conn.getID());
+      }
+    }
+    return idList;
   }
 
 

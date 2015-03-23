@@ -5,7 +5,10 @@ import java.util.*;
 import com.helpers.benchmark.annotation.Benchmark;
 import com.helpers.notification.annotation.EntityCreation;
 import com.helpers.notification.annotation.EntityDeletion;
+import com.topology.dto.PathDTO;
 import com.topology.primitives.*;
+import com.topology.primitives.exception.resource.ResourceException;
+import com.topology.primitives.resource.ConnectionResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +27,8 @@ public class TopologyManagerImpl implements TopologyManager {
   private Map<Integer, ConnectionPoint> connectionPoints;
 
   private Map<Integer, Connection> connections;
+
+  private Map<Integer, Service> services;
 
   private Map<NEPair, Set<Connection>> neConnections;
 
@@ -68,6 +73,7 @@ public class TopologyManagerImpl implements TopologyManager {
     networkElements = new HashMap<>();
     connectionPoints = new HashMap<>();
     connections = new HashMap<>();
+    services = new HashMap<>();
     neConnections = new HashMap<>();
     generator = new Random();
     this.identifier = identifier;
@@ -297,9 +303,47 @@ public class TopologyManagerImpl implements TopologyManager {
   }
 
   @Override
-  public Trail createTrail(int startCpID, int endCpID) throws TopologyException {
-    // TODO Auto-generated method stub
-    return null;
+  @EntityCreation
+  public Trail createTrail(int startCpID, int endCpID, PathDTO pathDTO, boolean directed, ConnectionResource resource, NetworkLayer layer) throws TopologyException {
+    ConnectionPoint aEnd = this.getElementByID(startCpID, ConnectionPoint.class);
+    ConnectionPoint zEnd = this.getElementByID(endCpID, ConnectionPoint.class);
+    if (aEnd==zEnd) {
+      throw new TopologyException("Start and terminating connection points for a trail cannot be equal");
+    }
+    //Check if path can be generated successfully
+    PathImpl path = generatePathDef(pathDTO);
+    synchronized (this) {
+      //create new Trail
+      Trail trail = new TrailImpl(this, generateRandomID(), aEnd, zEnd, directed, layer, path, resource);
+
+      //reserve resources on all the links in the trail for the trail resource.
+
+      try {
+        for (Connection conn: path.getForwardConnectionSequence()) {
+          conn.reserveService(trail.getID(), resource);
+        }
+        for (Connection conn: path.getBackwardConnectionSequence()) {
+          conn.reserveService(trail.getID(), resource);
+        }
+      } catch (ResourceException e) {
+        //Likely caused by unsupported resource types of unavailability of capacity
+        //revert changes
+        for (Connection conn: path.getForwardConnectionSequence()) {
+          if (conn.getReservations().containsKey(trail.getID()))
+            conn.releaseService(trail.getID());
+        }
+        for (Connection conn: path.getBackwardConnectionSequence()) {
+          if (conn.getReservations().containsKey(trail.getID()))
+            conn.releaseService(trail.getID());
+        }
+        throw new TopologyException("Trail could not be created because of incompatible resource type or unavailable capacity on the path");
+      }
+      //Add IDs for search
+      idSet.add(trail.getID());
+      topoElements.put(trail.getID(), trail);
+      services.put(trail.getID(), trail);
+      return trail;
+    }
   }
 
   @Override
@@ -637,17 +681,27 @@ public class TopologyManagerImpl implements TopologyManager {
     return filterConnByInstance(getConnections(startNeID, endNeID, isDirected, layer), instance);
   }
 
-  @Override
-  public Path generatePathDef(ConnectionPoint aEnd, ConnectionPoint zEnd, List<Connection> forwardSequence, List<Connection> backwardSequence, boolean directed, boolean strict) {
-    Path path = new PathImpl();
+  private PathImpl generatePathDef(PathDTO dto) throws TopologyException {
+    PathImpl path = new PathImpl();
+    path.setaEnd(this.getElementByID(dto.getaEndId(), ConnectionPoint.class));
+    path.setzEnd(this.getElementByID(dto.getzEndId(), ConnectionPoint.class));
+    path.setStrict(dto.isStrict());
+    path.setDirected(dto.isDirected());
+    List<Connection> connSeq = new ArrayList<>();
+    path.setForwardConnectionSequence(generateConnectionSeq(dto.getForwardConnectionSequence()));
+    path.setBackwardConnectionSequence(generateConnectionSeq(dto.getBackwardConnectionSequence()));
     //TODO include validation methods for path components
-    path.setaEnd(aEnd);
-    path.setzEnd(zEnd);
-    path.setStrict(strict);
-    path.setDirected(directed);
-    path.setForwardConnectionSequence(forwardSequence);
-    path.setBackwardConnectionSequence(backwardSequence);
     return path;
+  }
+
+  private List<Connection> generateConnectionSeq (List<Integer> idList) throws TopologyException {
+    List<Connection> connList = new ArrayList<>();
+    if (idList==null)
+      return connList;
+    for (int id: idList) {
+      connList.add(this.getElementByID(id, Connection.class));
+    }
+    return connList;
   }
 
 

@@ -92,4 +92,8 @@ public class PathDTO {
   public void setBackwardConnectionSequence(List<Integer> backwardConnectionSequence) {
     this.backwardConnectionSequence = backwardConnectionSequence;
   }
+
+  public String toString() {
+    return "aEnd: " + aEndId + ", zEnd: " + zEndId + "Strict: " + (strict?"true":"false") + ", Directed: " + directed + ", forwardConn: " + forwardConnectionSequence + ", backwardConn: " + backwardConnectionSequence;
+  }
 }

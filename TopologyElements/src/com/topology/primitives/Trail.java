@@ -1,10 +1,18 @@
 package com.topology.primitives;
 
 import com.topology.primitives.exception.TopologyException;
+import com.topology.primitives.resource.ConnectionResource;
 
-public interface Trail extends Connection {
+public interface Trail extends PtpService {
 
-	/**Function to set the path for the trail
+  /** Get the connection resource that has been reserved on all links on the trail
+   *
+   * @return resource
+   */
+  public ConnectionResource getReservedResource();
+
+
+  /**Function to set the path for the trail
 	 * 
 	 * @param path
 	 * @throws TopologyException

@@ -9,7 +9,6 @@ import com.topology.primitives.exception.TopologyException;
 import com.topology.primitives.exception.resource.ResourceException;
 import com.topology.primitives.exception.UnsupportedOperationException;
 import com.topology.primitives.resource.ConnectionResource;
-import com.topology.primitives.resource.ConnectionResourceType;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -65,11 +64,6 @@ public abstract class ConnectionImpl extends TopologyElementImpl implements Conn
 	public void setLayer(NetworkLayer layer) {
 		this.layer = layer;
 	}
-	@Override
-	public ConnectionResourceType getType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public ConnectionResource getTotalResources() throws ResourceException {
@@ -96,8 +90,7 @@ public abstract class ConnectionImpl extends TopologyElementImpl implements Conn
 	}
 
 	@Override
-	public ConnectionResource getAvailableResources() throws ResourceException,
-			UnsupportedOperationException {
+	public ConnectionResource getAvailableResources() throws ResourceException{
     if (reservations==null) {
       return this.totalResource;
     } else{
@@ -108,8 +101,7 @@ public abstract class ConnectionImpl extends TopologyElementImpl implements Conn
 	}
 
 	@Override
-	public ConnectionResource getReservedResources() throws ResourceException,
-			UnsupportedOperationException {
+	public ConnectionResource getReservedResources() throws ResourceException{
     ConnectionResource reservedResource = null;
     for(Map.Entry<Integer, ConnectionResource> entry: reservations.entrySet()) {
       if (reservedResource == null)
@@ -122,13 +114,13 @@ public abstract class ConnectionImpl extends TopologyElementImpl implements Conn
 
 	@Override
 	public Map<Integer, ConnectionResource> getReservations()
-			throws ResourceException, UnsupportedOperationException {
+			throws ResourceException {
 		return Collections.unmodifiableMap(reservations);
 	}
 
 	@Override
 	public boolean canReserve(ConnectionResource resource)
-			throws ResourceException, UnsupportedOperationException {
+			throws ResourceException {
     if (resource==null) {
       throw new ResourceException("Check for reservation against a resource cannot be null");
     }
@@ -146,8 +138,8 @@ public abstract class ConnectionImpl extends TopologyElementImpl implements Conn
 	}
 
 	@Override
-	public void reserveConnection(int connID, ConnectionResource resource)
-			throws ResourceException, UnsupportedOperationException {
+	public void reserveService(int connID, ConnectionResource resource)
+			throws ResourceException {
     if (canReserve(resource)) {
       //check if a reservation with this id already exists
       if (reservations.containsKey(connID)) {
@@ -158,12 +150,11 @@ public abstract class ConnectionImpl extends TopologyElementImpl implements Conn
 	}
 
 	@Override
-	public void releaseConnection(int connID) throws ResourceException,
-			UnsupportedOperationException {
+	public void releaseService(int connID) throws ResourceException {
     if (reservations.containsKey(connID)) {
       reservations.remove(connID);
     } else {
-      throw new ResourceException("No reservation found for conection with ID: " + connID);
+      throw new ResourceException("No reservation found for connection with ID: " + connID);
     }
 	}
 }
