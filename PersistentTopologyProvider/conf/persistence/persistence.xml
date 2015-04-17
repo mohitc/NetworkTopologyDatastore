@@ -22,12 +22,17 @@
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
             <property name="javax.persistence.jdbc.user" value="mohit" />
             <property name="javax.persistence.jdbc.password" value="necromancer" />
-            <property name="eclipselink.logging.level" value="INFO" />
+            <property name="eclipselink.target-database" value="POSTGRESQL"/>
 
 
             <!-- EclipseLink should create the database schema automatically -->
-            <property name="eclipselink.ddl-generation" value="create-tables" />
-            <property name="eclipselink.ddl-generation.output-mode" value="sql-script" />
+            <property name="eclipselink.ddl-generation" value="create-or-extend-tables" />
+            <property name="eclipselink.ddl-generation.output-mode" value="database" />;
+            <property name="eclipselink.create-ddl-jdbc-file-name" value="createDDL_ddlGeneration.jdbc" />
+            <property name="eclipselink.drop-ddl-jdbc-file-name" value="dropDDL_ddlGeneration.jdbc" />
+            <property name="eclipselink.ddl-generation.index-foreign-keys" value="true"/>;
+            <property name="eclipselink.logging.logger" value="com.topology.db.utils.logging.SLF4jCustomLog"/>
+            <property name="eclipselink.logging.level" value="INFO" />
         </properties>
     </persistence-unit>
 </persistence>

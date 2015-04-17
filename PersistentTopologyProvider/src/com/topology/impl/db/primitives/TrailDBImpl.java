@@ -2,8 +2,10 @@ package com.topology.impl.db.primitives;
 
 import com.topology.impl.db.persistencehelper.EntityManagerFactoryHelper;
 import com.topology.primitives.Path;
+import com.topology.primitives.PtpService;
 import com.topology.primitives.Trail;
 import com.topology.primitives.exception.TopologyException;
+import com.topology.primitives.resource.ConnectionResource;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -11,11 +13,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 @Entity
-public class TrailDBImpl extends ConnectionDBImpl implements Trail{
+public class TrailDBImpl extends PtpServiceDBImpl implements Trail{
 
   @OneToOne
   @JoinColumn(name="path_id", referencedColumnName = "id")
   private PathDBImpl path;
+
+  @Override
+  public ConnectionResource getReservedResource() {
+    return null;
+  }
 
   @Override
   public void setPath(Path path) throws TopologyException {
