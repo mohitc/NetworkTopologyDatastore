@@ -36,6 +36,15 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
   @JoinColumn(name="te_id")
   private Set<TEPropertyDBImpl> teProperties;
 
+  //Default constructor
+  public TopologyElementDBImpl() {
+  }
+
+  //constructor with the topology manager instance assigned
+  public TopologyElementDBImpl(TopologyManager manager) {
+    this.topoManagerInstance = manager.getIdentifier();
+  }
+
   @Override
   public TopologyManager getTopologyManager() {
     return new TopologyManagerDBImpl(topoManagerInstance);
@@ -147,6 +156,25 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
       keys.add(propDB.getKey());
     }
     return keys;
+  }
+
+  public boolean equals(Object o) {
+    if (o!=null) {
+      if (this.getClass().isAssignableFrom(o.getClass())) {
+        if (((TopologyElement)o).getID()==this.id) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public int hashCode() {
+    return new Integer(this.getID()).hashCode();
+  }
+
+  public String toString() {
+    return "(ID: " + String.valueOf(this.getID()) + ")";
   }
 
 }

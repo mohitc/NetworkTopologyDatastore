@@ -34,6 +34,13 @@ public class NetworkElementDBImpl extends TopologyElementDBImpl implements Netwo
 
   public static final String GET_CROSSCONNECTS_FOR_NETWORK_ELEMENT_BY_LAYER = "GET_CROSSCONNECTS_FOR_NETWORK_ELEMENT_BY_LAYER";
 
+  //default constructor
+  public NetworkElementDBImpl(){
+  }
+
+  public NetworkElementDBImpl(TopologyManager manager) {
+    super(manager);
+  }
 
   private Set<ConnectionPoint> containedConnectionPoints (ConnectionPoint cp) {
     Set<ConnectionPoint> cps = new HashSet<>();

@@ -1,6 +1,6 @@
 package test.topology.primitives.manager;
 
-import com.topology.impl.primitives.TopologyManagerFactoryImpl;
+import com.topology.impl.db.primitives.TopologyManagerFactoryDBImpl;
 import com.topology.primitives.TopologyManager;
 import com.topology.primitives.TopologyManagerFactory;
 import com.topology.primitives.exception.TopologyException;
@@ -11,7 +11,8 @@ public class TopoManagerHelper {
 
   private static final Logger log = LoggerFactory.getLogger(TopoManagerHelper.class);
 
-  private static TopologyManagerFactory factory = new TopologyManagerFactoryImpl();
+//  private static TopologyManagerFactory factory = new TopologyManagerFactoryImpl();
+  private static TopologyManagerFactory factory = new TopologyManagerFactoryDBImpl();
 
   private static final String defaultTopoManagerId = "123";
 

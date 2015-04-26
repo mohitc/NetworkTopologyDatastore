@@ -33,6 +33,13 @@ public class ConnectionPointDBImpl extends TopologyElementDBImpl implements Conn
 
   public static final String GET_CROSSCONNECTS_FOR_CONNECTION_POINT_BY_LAYER = "GET_CROSSCONNECTS_FOR_CONNECTION_POINT_BY_LAYER";
 
+  public ConnectionPointDBImpl() {
+  }
+
+  public ConnectionPointDBImpl(TopologyManager manager, TopologyElementDBImpl parent) {
+    super(manager);
+    this.parent = parent;
+  }
 
   @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
   @JoinColumn(name="parent", referencedColumnName = "id")
