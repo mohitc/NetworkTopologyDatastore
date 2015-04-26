@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<entity-mappings xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm" version="2.1">
+    <!-- Converters for enums and other parameters in the database -->
+    <converter class="com.topology.impl.db.primitives.converters.NetworkLayerConverter" auto-apply="true"/>
+    <converter class="com.topology.impl.db.primitives.converters.TEPropertyConverter" auto-apply="true"/>
+</entity-mappings>

@@ -13,9 +13,6 @@
 <!--        <class>com.topology.impl.db.primitives.TrailDBImpl</class> -->
         <class>com.topology.impl.db.primitives.CrossConnectDBImpl</class>
 
-        <!-- Converters for enums and other parameters in the database -->
-        <class>com.topology.impl.db.primitives.converters.NetworkLayerConverter</class>
-        <class>com.topology.impl.db.primitives.converters.TEPropertyConverter</class>
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/topology_provider" />

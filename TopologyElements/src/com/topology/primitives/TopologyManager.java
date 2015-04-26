@@ -28,7 +28,9 @@ public interface TopologyManager {
 
 	public Trail createTrail (int startCpID, int endCpID, PathDTO pathDTO, boolean directed, ConnectionResource resource, NetworkLayer layer) throws TopologyException;
 
-	//Functions to remove test.topology elements
+  public NetworkElement getNetworkElementFromCp(ConnectionPoint cp);
+
+    //Functions to remove test.topology elements
 	public void removeTopologyElement (int id) throws TopologyException;
 	
 	public void removeNetworkElement(int id) throws TopologyException;

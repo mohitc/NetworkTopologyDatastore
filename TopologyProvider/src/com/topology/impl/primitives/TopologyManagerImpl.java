@@ -108,7 +108,7 @@ public class TopologyManagerImpl implements TopologyManager {
   }
 
 
-  private NetworkElement getNetworkElementFromCp(ConnectionPoint cp) {
+  public NetworkElement getNetworkElementFromCp(ConnectionPoint cp) {
     while ((cp != null) && (cp.getParent() != null)) {
       if (NetworkElement.class.isAssignableFrom(cp.getParent().getClass())) {
         return (NetworkElement) cp.getParent();
@@ -433,8 +433,6 @@ public class TopologyManagerImpl implements TopologyManager {
     if (te != null) {
       if (Link.class.isAssignableFrom(te.getClass())) {
         removeLink(id);
-      } else if (Trail.class.isAssignableFrom(te.getClass())) {
-        removeTrail(id);
       } else if (CrossConnect.class.isAssignableFrom(te.getClass())) {
         removeCrossConnect(id);
       }
