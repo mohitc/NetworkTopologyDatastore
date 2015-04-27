@@ -63,8 +63,6 @@ public class TopologyManagerDBImpl implements TopologyManager {
           return (Class<T>) LinkDBImpl.class;
         } else if (CrossConnect.class.isAssignableFrom(instance)) {
           return (Class<T>) CrossConnectDBImpl.class;
-        } else if (Trail.class.isAssignableFrom(instance)) {
-          return (Class<T>) TrailDBImpl.class;
         } else {
           return (Class<T>) ConnectionDBImpl.class;
         }
@@ -100,6 +98,20 @@ public class TopologyManagerDBImpl implements TopologyManager {
       log.error("Could not find entities in the database", e);
     }
     return resultSet;
+  }
+
+  public NetworkElement getNetworkElementFromCp(ConnectionPoint cp) {
+    while ((cp != null) && (cp.getParent() != null)) {
+      if (NetworkElement.class.isAssignableFrom(cp.getParent().getClass())) {
+        return (NetworkElement) cp.getParent();
+      } else if (ConnectionPoint.class.isAssignableFrom(cp.getParent().getClass())) {
+        cp = (ConnectionPoint) cp.getParent();
+      } else {
+        log.error("Parent of connection point is not a connection point or a Network Element");
+        return null;
+      }
+    }
+    return null;
   }
 
   @Override
@@ -143,70 +155,60 @@ public class TopologyManagerDBImpl implements TopologyManager {
 
   @Override
   public Link createLink(int startCpID, int endCpID) throws TopologyException {
-    //Check if start and end connection points are in the topology manager
-    //Endpoints of a link should have different network elements
+    //Check if start and end connection points are in the test.topology manager
     EntityManager em = getEntityManager();
     try {
-      ConnectionPointDBImpl startCp = em.find(ConnectionPointDBImpl.class, startCpID);
-      ConnectionPointDBImpl endCp = em.find(ConnectionPointDBImpl.class, endCpID);
-      NetworkElement startNe = getNetworkElementFromCp(startCp);
-      NetworkElement endNe = getNetworkElementFromCp(endCp);
+
+      ConnectionPointDBImpl startCP = em.find(ConnectionPointDBImpl.class, startCpID);
+      ConnectionPointDBImpl endCP = em.find(ConnectionPointDBImpl.class, endCpID);
+
+      //Endpoints of a link should have different endpoints
+      NetworkElement startNe = getNetworkElementFromCp(startCP);
+      NetworkElement endNe = getNetworkElementFromCp(endCP);
       if ((startNe != null) && (endNe != null) && (startNe == endNe)) {
         throw new TopologyException("Endpoints of a link must belong to different network elements");
       }
       em.getTransaction().begin();
-      Link link = new LinkDBImpl(this, startCp, endCp);
+      Link link = new LinkDBImpl(this, startCP, endCP);
       em.persist(link);
       em.getTransaction().commit();
+      em.close();
       return link;
-    } catch (EntityNotFoundException e){
-      throw new TopologyException("Start or end connection point not found");
+    } catch (EntityNotFoundException e) {
+        throw new TopologyException("Start or End connection point not found");
     }
   }
 
   @Override
   public CrossConnect createCrossConnect(int startCpID, int endCpID) throws TopologyException {
-    //Check if start and end connection points are in the topology manager
-    //Endpoints of a cross connect should have the same network element
+    //Check if start and end connection points are in the test.topology manager
     EntityManager em = getEntityManager();
     try {
-      ConnectionPointDBImpl startCp = em.find(ConnectionPointDBImpl.class, startCpID);
-      ConnectionPointDBImpl endCp = em.find(ConnectionPointDBImpl.class, endCpID);
-      NetworkElement startNe = getNetworkElementFromCp(startCp);
-      NetworkElement endNe = getNetworkElementFromCp(endCp);
+
+      ConnectionPointDBImpl startCP = em.find(ConnectionPointDBImpl.class, startCpID);
+      ConnectionPointDBImpl endCP = em.find(ConnectionPointDBImpl.class, endCpID);
+
+      //Endpoints of a link should have different endpoints
+      NetworkElement startNe = getNetworkElementFromCp(startCP);
+      NetworkElement endNe = getNetworkElementFromCp(endCP);
       if ((startNe == null) || (endNe == null)) {
-        throw new TopologyException("Endpoints of a cross connect must belong to a network element");
+        throw new TopologyException("Endpoints of a crossconnect must belong to network elements");
       }
-      if (startNe!=endNe) {
-        throw new TopologyException("Endpoints of a cross connect must belong to a network element");
+      if (startNe !=endNe) {
+        throw new TopologyException("Endpoints of a crossconnect must belong to the same network element");
       }
       em.getTransaction().begin();
-      CrossConnect cc = new CrossConnectDBImpl(this, startCp, endCp);
+      CrossConnect cc = new CrossConnectDBImpl(this, startCP, endCP);
       em.persist(cc);
       em.getTransaction().commit();
+      em.close();
       return cc;
-    } catch (EntityNotFoundException e){
-      throw new TopologyException("Start or end connection point not found");
-    }
-  }
+    } catch (EntityNotFoundException e) {
+      throw new TopologyException("Start or End connection point not found");
+    }  }
 
   @Override
   public Trail createTrail(int startCpID, int endCpID, PathDTO pathDTO, boolean directed, ConnectionResource resource, NetworkLayer layer) throws TopologyException {
-    return null;
-  }
-
-  @Override
-  public NetworkElement getNetworkElementFromCp(ConnectionPoint cp) {
-    while ((cp != null) && (cp.getParent() != null)) {
-      if (NetworkElement.class.isAssignableFrom(cp.getParent().getClass())) {
-        return (NetworkElement) cp.getParent();
-      } else if (ConnectionPoint.class.isAssignableFrom(cp.getParent().getClass())) {
-        cp = (ConnectionPoint) cp.getParent();
-      } else {
-        log.error("Parent of connection point is not a connection point or a Network Element");
-        return null;
-      }
-    }
     return null;
   }
 
@@ -297,14 +299,14 @@ public class TopologyManagerDBImpl implements TopologyManager {
 
   @Override
   public void removeLink(int id) throws TopologyException {
-    //TODO check for layer associations before deleting
+    //TODO include code for reservtions
     EntityManager em = getEntityManager();
     try {
-      Link link = em.find(LinkDBImpl.class, id);
+      LinkDBImpl link = em.find(LinkDBImpl.class, id);
       em.getTransaction().begin();
       em.remove(link);
       em.getTransaction().commit();
-        log.info("Link removed successfully");
+      log.info("Link removed successfully");
     } catch (EntityNotFoundException e) {
       throw new TopologyException("Element with ID: " + id + " does not exist or is not an instance of Link");
     }
@@ -312,10 +314,10 @@ public class TopologyManagerDBImpl implements TopologyManager {
 
   @Override
   public void removeCrossConnect(int id) throws TopologyException {
-    //TODO check for layer associations before deleting
+    //TODO include code for reservtions
     EntityManager em = getEntityManager();
     try {
-      CrossConnect cc = em.find(CrossConnectDBImpl.class, id);
+      CrossConnectDBImpl cc = em.find(CrossConnectDBImpl.class, id);
       em.getTransaction().begin();
       em.remove(cc);
       em.getTransaction().commit();
@@ -323,7 +325,6 @@ public class TopologyManagerDBImpl implements TopologyManager {
     } catch (EntityNotFoundException e) {
       throw new TopologyException("Element with ID: " + id + " does not exist or is not an instance of CrossConnect");
     }
-
   }
 
   @Override
@@ -352,39 +353,68 @@ public class TopologyManagerDBImpl implements TopologyManager {
 
   @Override
   public <T extends TopologyElement> Set<T> getElementsByLabel(String label, Class<T> instance) {
-    return null;
+    Set<T> resultSet = new HashSet<>();
+    String q = TopologyElementDBImpl.GET_TE_BY_LABEL;
+
+    if (instance==null) {
+      log.error("Instance cannot be null. Defaulting to TopologyElement");
+    } else {
+      if (NetworkElement.class.isAssignableFrom(instance)) {
+        q = TopologyElementDBImpl.GET_NETWORK_ELEMENT_BY_LABEL;
+      } else if (Connection.class.isAssignableFrom(instance)) {
+        if (Link.class.isAssignableFrom(instance)) {
+          q = TopologyElementDBImpl.GET_LINK_BY_LABEL;
+        } else if (CrossConnect.class.isAssignableFrom(instance)) {
+          q = TopologyElementDBImpl.GET_CROSS_CONNECT_BY_LABEL;
+        } else {
+          q = TopologyElementDBImpl.GET_CONNECTION_BY_LABEL;
+        }
+      } else if (ConnectionPoint.class.isAssignableFrom(instance)) {
+        q = TopologyElementDBImpl.GET_CP_BY_LABEL;
+        if (Port.class.isAssignableFrom(instance)) {
+          q = TopologyElementDBImpl.GET_PORT_BY_LABEL;
+        }
+      }
+    }
+    EntityManager em = getEntityManager();
+    Query query = em.createNamedQuery(q);
+    query.setParameter("label", label);
+    resultSet.addAll(query.getResultList());
+    return resultSet;
   }
 
   @Override
   public <T extends TopologyElement> T getSingleElementByLabel(String label, Class<T> instance) throws TopologyException {
-    return null;
+    if (label == null) {
+      throw new TopologyException("Label cannot be null");
+    }
+    Set<T> resultSet = getElementsByLabel(label, instance);
+    if ((resultSet==null)||(resultSet.size()==0)) {
+      throw new TopologyException("No element with label: " + label + " and class : " + instance + " found in the test.topology");
+    }
+    return resultSet.iterator().next();
   }
 
   @Override
   public Set<Connection> getAllConnections(NetworkLayer layer) throws TopologyException {
-    EntityManager em = getEntityManager();
-    Query query = em.createNamedQuery(ConnectionDBImpl.GET_CONNECTIONS_BY_LAYER);
-    query.setParameter("layer", layer);
-    Set<Connection> connSet = new HashSet<>();
-    connSet.addAll(query.getResultList());
-    return connSet;
+    return getAllConnections(Connection.class, layer);
   }
 
   @Override
   public <T extends Connection> Set<T> getAllConnections(Class<T> instance, NetworkLayer layer) throws TopologyException {
     if (instance==null) {
-      throw new TopologyException("Class instance cannot be null");
+      throw new TopologyException("Instance cannot be null");
     }
-    String namedQuery;
+    String q;
     if (Link.class.isAssignableFrom(instance)) {
-      namedQuery = ConnectionDBImpl.GET_LINKS_BY_LAYER;
+      q = ConnectionDBImpl.GET_LINKS_BY_LAYER;
     } else if (CrossConnect.class.isAssignableFrom(instance)) {
-      namedQuery = ConnectionDBImpl.GET_CROSS_CONNECTS_BY_LAYER;
+      q = ConnectionDBImpl.GET_CROSS_CONNECTS_BY_LAYER;
     } else {
-      namedQuery = ConnectionDBImpl.GET_CONNECTIONS_BY_LAYER;
+      q = ConnectionDBImpl.GET_CONNECTIONS_BY_LAYER;
     }
     EntityManager em = getEntityManager();
-    Query query = em.createNamedQuery(namedQuery);
+    Query query = em.createNamedQuery(q);
     query.setParameter("layer", layer);
     Set<T> connSet = new HashSet<>();
     connSet.addAll(query.getResultList());

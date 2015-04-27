@@ -8,6 +8,7 @@ import com.topology.primitives.NetworkLayer;
 import com.topology.primitives.TopologyManager;
 import com.topology.primitives.exception.resource.ResourceException;
 import com.topology.primitives.resource.ConnectionResource;
+import com.topology.primitives.resource.ConnectionResourceType;
 
 import javax.persistence.*;
 import java.util.Map;
@@ -16,9 +17,9 @@ import java.util.Map;
 @Table(name = "connection")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQueries({
-    @NamedQuery(name=ConnectionDBImpl.GET_CONNECTIONS_BY_LAYER, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.layer = :layer)"),
-    @NamedQuery(name=ConnectionDBImpl.GET_LINKS_BY_LAYER, query = "SELECT p FROM LinkDBImpl p WHERE (p.layer = :layer)"),
-    @NamedQuery(name=ConnectionDBImpl.GET_CROSS_CONNECTS_BY_LAYER, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.layer = :layer)"),
+  @NamedQuery(name=ConnectionDBImpl.GET_CONNECTIONS_BY_LAYER, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.layer = :layer)"),
+  @NamedQuery(name=ConnectionDBImpl.GET_LINKS_BY_LAYER, query = "SELECT p FROM LinkDBImpl p WHERE (p.layer = :layer)"),
+  @NamedQuery(name=ConnectionDBImpl.GET_CROSS_CONNECTS_BY_LAYER, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.layer = :layer)")
 })
 abstract public class ConnectionDBImpl extends TopologyElementDBImpl implements Connection {
 
@@ -43,7 +44,7 @@ abstract public class ConnectionDBImpl extends TopologyElementDBImpl implements 
   @Convert(converter= NetworkLayerConverter.class)
   private NetworkLayer layer;
 
-  public ConnectionDBImpl(){
+  public ConnectionDBImpl() {
   }
 
   public ConnectionDBImpl(TopologyManager manager, ConnectionPointDBImpl aEnd, ConnectionPointDBImpl zEnd) {
@@ -71,8 +72,9 @@ abstract public class ConnectionDBImpl extends TopologyElementDBImpl implements 
   public void setDirected(boolean directed) {
     EntityManager em = EntityManagerFactoryHelper.getEntityManager();
     em.getTransaction().begin();
-    ConnectionDBImpl conn = em.find(ConnectionDBImpl.class, this.getID());
-    conn.setIsDirected(directed);
+    ConnectionDBImpl cn = em.find(ConnectionDBImpl.class, this.getID());
+    cn.setIsDirected(directed);
+    this.directed = directed;
     em.getTransaction().commit();
     em.close();
   }
@@ -90,14 +92,14 @@ abstract public class ConnectionDBImpl extends TopologyElementDBImpl implements 
   public void setLayer(NetworkLayer layer) {
     EntityManager em = EntityManagerFactoryHelper.getEntityManager();
     em.getTransaction().begin();
-    ConnectionDBImpl conn = em.find(ConnectionDBImpl.class, this.getID());
-    conn.setNetworkLayer(layer);
+    ConnectionDBImpl cn = em.find(ConnectionDBImpl.class, this.getID());
+    cn.setNetworkLayer(layer);
+    this.layer = layer;
     em.getTransaction().commit();
-    this.setNetworkLayer(layer);
     em.close();
   }
 
-  private void setNetworkLayer(NetworkLayer layer) {
+  private void setNetworkLayer (NetworkLayer layer) {
     this.layer = layer;
   }
 

@@ -15,11 +15,26 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name="jdoclass")
 @NamedQueries({
-    @NamedQuery(name=TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY, query = "Select t from TopologyElementDBImpl t JOIN t.teProperties q WHERE (t.id = :id AND q.key = :key)")
+  @NamedQuery(name=TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY, query = "Select t from TopologyElementDBImpl t JOIN t.teProperties q WHERE (t.id = :id AND q.key = :key)"),
+  @NamedQuery(name=TopologyElementDBImpl.GET_TE_BY_LABEL, query = "Select t from TopologyElementDBImpl t WHERE (t.label = :label)"),
+  @NamedQuery(name=TopologyElementDBImpl.GET_NETWORK_ELEMENT_BY_LABEL, query = "Select t from NetworkElementDBImpl t WHERE (t.label = :label)"),
+  @NamedQuery(name=TopologyElementDBImpl.GET_CP_BY_LABEL, query = "Select t from ConnectionPointDBImpl t WHERE (t.label = :label)"),
+  @NamedQuery(name=TopologyElementDBImpl.GET_PORT_BY_LABEL, query = "Select t from PortDBImpl t WHERE (t.label = :label)"),
+  @NamedQuery(name=TopologyElementDBImpl.GET_CONNECTION_BY_LABEL, query = "Select t from ConnectionDBImpl t WHERE (t.label = :label)"),
+  @NamedQuery(name=TopologyElementDBImpl.GET_LINK_BY_LABEL, query = "Select t from LinkDBImpl t WHERE (t.label = :label)"),
+  @NamedQuery(name=TopologyElementDBImpl.GET_CROSS_CONNECT_BY_LABEL, query = "Select t from CrossConnectDBImpl t WHERE (t.label = :label)")
 })
 abstract public class TopologyElementDBImpl implements TopologyElement {
 
   public static final String GET_TE_PROPERTY_BY_KEY = "GET_TE_PROPERTY_BY_KEY";
+
+  public static final String GET_TE_BY_LABEL = "GET_TE_BY_LABEL";
+  public static final String GET_NETWORK_ELEMENT_BY_LABEL = "GET_NETWORK_ELEMENT_BY_LABEL";
+  public static final String GET_CP_BY_LABEL = "GET_CP_BY_LABEL";
+  public static final String GET_PORT_BY_LABEL = "GET_PORT_BY_LABEL";
+  public static final String GET_CONNECTION_BY_LABEL = "GET_CONNECTION_BY_LABEL";
+  public static final String GET_LINK_BY_LABEL = "GET_LINK_BY_LABEL";
+  public static final String GET_CROSS_CONNECT_BY_LABEL = "GET_CROSS_CONNECT_BY_LABEL";
 
   @Id
   @Column(name = "id")
@@ -64,9 +79,15 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
   public void setLabel(String label) {
     EntityManager em = EntityManagerFactoryHelper.getEntityManager();
     em.getTransaction().begin();
+    TopologyElementDBImpl te = em.find(TopologyElementDBImpl.class, this.getID());
+    te.setLabelString(label);
     this.label = label;
     em.getTransaction().commit();
     em.close();
+  }
+
+  private void setLabelString (String label) {
+    this.label = label;
   }
 
   @Override
@@ -74,15 +95,17 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
     if (key==null)
       throw new PropertyException("Property key cannot be null");
     EntityManager em = EntityManagerFactoryHelper.getEntityManager();
-    Query query = em.createQuery(TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY);
-    query.setParameter("id", id);
-    query.setParameter("key", key);
+    //Query query = em.createQuery(TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY);
+    //query.setParameter("id", id);
+    //query.setParameter("key", key);
 
-    TEPropertyDBImpl prop = (TEPropertyDBImpl)query.getSingleResult();
-    if (prop!=null)
-      return TEPropertyKey.getObjectForKey(key, prop.getValue());
-    else
-      throw new PropertyException("Key not found in topology element");
+    //TEPropertyDBImpl prop = (TEPropertyDBImpl)query.getSingleResult();
+    if (teProperties!=null)
+      for (TEPropertyDBImpl prop: teProperties) {
+        if (prop.getKey().equals(key))
+          return prop;
+      }
+    throw new PropertyException("Key not found in topology element");
   }
 
   @Override
@@ -113,39 +136,70 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
       throw new PropertyException("Value cannot be null");
     EntityManager em = EntityManagerFactoryHelper.getEntityManager();
     em.getTransaction().begin();
+    TopologyElementDBImpl te = em.find(TopologyElementDBImpl.class, this.getID());
 
-    Query query = em.createQuery(TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY);
-    query.setParameter("id", id);
-    query.setParameter("key", key);
+    //Query query = em.createQuery(TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY);
+    //query.setParameter("id", id);
+    //query.setParameter("key", key);
 
-    TEPropertyDBImpl prop = (TEPropertyDBImpl)query.getSingleResult();
+//    TEPropertyDBImpl prop = (TEPropertyDBImpl)query.getSingleResult();
+    TEPropertyDBImpl prop = null;
+    if (te.teProperties!=null)
+      for (TEPropertyDBImpl temp: te.teProperties) {
+        if (temp.getKey().equals(key)) {
+          prop = temp;
+          break;
+        }
+      }
+
     if (prop==null) {
       prop = new TEPropertyDBImpl();
       prop.setKey(key);
+      prop.setValue(value.toString());
+      te.teProperties.add(prop);
+      this.teProperties.add(prop);
+      em.persist(prop);
+    } else {
+      prop.setValue(value.toString());
     }
-    prop.setValue(value.toString());
     em.getTransaction().commit();
-
   }
 
   @Override
   public void removeProperty(TEPropertyKey key) throws PropertyException {
     if (key==null)
       throw new PropertyException("Property key cannot be null");
+
+//    Query query = em.createQuery(TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY);
+//    query.setParameter("id", id);
+//    query.setParameter("key", key);
+
+//    TEPropertyDBImpl prop = (TEPropertyDBImpl)query.getSingleResult();
+
     EntityManager em = EntityManagerFactoryHelper.getEntityManager();
+    em.getTransaction().begin();
+    TopologyElementDBImpl te = em.find(TopologyElementDBImpl.class, this.getID());
 
-    Query query = em.createQuery(TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY);
-    query.setParameter("id", id);
-    query.setParameter("key", key);
+    //Query query = em.createQuery(TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY);
+    //query.setParameter("id", id);
+    //query.setParameter("key", key);
 
-    TEPropertyDBImpl prop = (TEPropertyDBImpl)query.getSingleResult();
+//    TEPropertyDBImpl prop = (TEPropertyDBImpl)query.getSingleResult();
+    TEPropertyDBImpl prop = null;
+    if (te.teProperties!=null)
+      for (TEPropertyDBImpl temp: te.teProperties) {
+        if (temp.getKey().equals(key)) {
+          prop = temp;
+          break;
+        }
+      }
+
     if (prop==null) {
       throw new PropertyException("Cannot remove a property that does not exist");
     }
-
-    em.getTransaction().begin();
-    this.teProperties.remove(prop);
+    em.remove(prop);
     em.getTransaction().commit();
+    em.close();
   }
 
   @Override

@@ -12,6 +12,6 @@ public class LinkDBImpl extends ConnectionDBImpl implements Link {
   }
 
   public LinkDBImpl(TopologyManager manager, ConnectionPointDBImpl aEnd, ConnectionPointDBImpl zEnd) {
-    super (manager, aEnd, zEnd);
+    super(manager, aEnd, zEnd);
   }
 }

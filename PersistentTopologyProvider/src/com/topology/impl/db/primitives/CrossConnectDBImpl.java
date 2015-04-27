@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 @Entity
 public class CrossConnectDBImpl extends ConnectionDBImpl implements CrossConnect {
 
-  public CrossConnectDBImpl(){
+  public CrossConnectDBImpl() {
   }
 
   public CrossConnectDBImpl(TopologyManager manager, ConnectionPointDBImpl aEnd, ConnectionPointDBImpl zEnd) {
