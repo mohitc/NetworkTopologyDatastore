@@ -175,7 +175,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
       em.close();
       return link;
     } catch (EntityNotFoundException e) {
-        throw new TopologyException("Start or End connection point not found");
+      throw new TopologyException("Start or End connection point not found");
     }
   }
 
@@ -233,12 +233,12 @@ public class TopologyManagerDBImpl implements TopologyManager {
   public void removeNetworkElement(int id) throws TopologyException {
     EntityManager em = getEntityManager();
     try {
-      em.getTransaction().begin();
       NetworkElementDBImpl ne = em.find(NetworkElementDBImpl.class, id);
       Set<ConnectionPoint> neCps = ne.getConnectionPoints(false);
       if ((neCps != null) && (neCps.size() > 0)) {
         throw new TopologyException("Network element cannot be deleted while it contains connection points");
       }
+      em.getTransaction().begin();
       em.remove(ne);
       em.getTransaction().commit();
       log.info("Network Element removed successfully");
@@ -330,6 +330,28 @@ public class TopologyManagerDBImpl implements TopologyManager {
   @Override
   public void removeTrail(int id) throws TopologyException {
 
+  }
+
+  @Override
+  public void removeAllElements() {
+    //For the time being, remove entities individually, start with connections, then with connection points, ports and network elements
+    try {
+      Set<Connection> connections = getAllElements(Connection.class);
+      for (Connection conn: connections){
+        removeConnection(conn.getID());
+      }
+      Set<ConnectionPoint> cps = getAllElements(ConnectionPoint.class);
+      for (ConnectionPoint cp: cps) {
+        //TODO Include check to remove child connection points before removing parents
+        removeConnectionPoint(cp.getID());
+      }
+      Set<NetworkElement> nes = getAllElements(NetworkElement.class);
+      for (NetworkElement ne: nes) {
+        removeNetworkElement(ne.getID());
+      }
+    } catch (TopologyException e) {
+      log.error("Error in removing entities", e);
+    }
   }
 
   @Override

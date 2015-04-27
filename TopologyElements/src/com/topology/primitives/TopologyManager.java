@@ -47,6 +47,8 @@ public interface TopologyManager {
 
   public void removeTrail(int id) throws TopologyException;
 
+  public void removeAllElements();
+
   //Function to get topology elements
 	public TopologyElement getElementByID(int id) throws TopologyException;
 

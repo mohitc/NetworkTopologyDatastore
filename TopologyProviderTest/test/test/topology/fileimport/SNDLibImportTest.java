@@ -41,5 +41,6 @@ public class SNDLibImportTest {
 
     log.info("Testing bidirectional path computation");
 
+    manager.removeAllElements();
   }
 }

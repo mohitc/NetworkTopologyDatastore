@@ -47,7 +47,7 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
   @Column(name = "label")
   private String label;
 
-  @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
   @JoinColumn(name="te_id")
   private Set<TEPropertyDBImpl> teProperties;
 

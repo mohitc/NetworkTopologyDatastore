@@ -497,6 +497,20 @@ public class TopologyManagerImpl implements TopologyManager {
     //TODO implement this
   }
 
+  @Override
+  public void removeAllElements() {
+    log.info("Removing all entities from the topology manager: " + this.getIdentifier());
+    idSet.clear();
+    //Initialize HashMaps
+    topoElements.clear();
+    networkElements.clear();
+    connectionPoints.clear();
+    connections.clear();
+    services.clear();
+    neConnections.clear();
+    log.info("All entities from the topology manager: " + this.getIdentifier() + " removed successfully");
+  }
+
 
   @Override
   public TopologyElement getElementByID(int id) throws TopologyException {
