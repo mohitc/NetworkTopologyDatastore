@@ -353,12 +353,46 @@ public class TopologyManagerDBImpl implements TopologyManager {
 
   @Override
   public <T extends TopologyElement> Set<T> getElementsByLabel(String label, Class<T> instance) {
-    return null;
+    Set<T> resultSet = new HashSet<>();
+    String q = TopologyElementDBImpl.GET_TE_BY_LABEL;
+
+    if (instance==null) {
+      log.error("Instance cannot be null. Defaulting to TopologyElement");
+    } else {
+      if (NetworkElement.class.isAssignableFrom(instance)) {
+        q = TopologyElementDBImpl.GET_NETWORK_ELEMENT_BY_LABEL;
+      } else if (Connection.class.isAssignableFrom(instance)) {
+        if (Link.class.isAssignableFrom(instance)) {
+          q = TopologyElementDBImpl.GET_LINK_BY_LABEL;
+        } else if (CrossConnect.class.isAssignableFrom(instance)) {
+          q = TopologyElementDBImpl.GET_CROSS_CONNECT_BY_LABEL;
+        } else {
+          q = TopologyElementDBImpl.GET_CONNECTION_BY_LABEL;
+        }
+      } else if (ConnectionPoint.class.isAssignableFrom(instance)) {
+        q = TopologyElementDBImpl.GET_CP_BY_LABEL;
+        if (Port.class.isAssignableFrom(instance)) {
+          q = TopologyElementDBImpl.GET_PORT_BY_LABEL;
+        }
+      }
+    }
+    EntityManager em = getEntityManager();
+    Query query = em.createNamedQuery(q);
+    query.setParameter("label", label);
+    resultSet.addAll(query.getResultList());
+    return resultSet;
   }
 
   @Override
   public <T extends TopologyElement> T getSingleElementByLabel(String label, Class<T> instance) throws TopologyException {
-    return null;
+    if (label == null) {
+      throw new TopologyException("Label cannot be null");
+    }
+    Set<T> resultSet = getElementsByLabel(label, instance);
+    if ((resultSet==null)||(resultSet.size()==0)) {
+      throw new TopologyException("No element with label: " + label + " and class : " + instance + " found in the test.topology");
+    }
+    return resultSet.iterator().next();
   }
 
   @Override

@@ -11,6 +11,7 @@ public class TEPropertyDBImpl {
 
   @Id
   @Column(name="id")
+  @GeneratedValue(strategy=GenerationType.AUTO)
   private int id;
 
   @Column(name="key")
