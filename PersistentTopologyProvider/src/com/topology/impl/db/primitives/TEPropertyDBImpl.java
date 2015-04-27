@@ -35,4 +35,16 @@ public class TEPropertyDBImpl {
   public void setKey(TEPropertyKey key) {
     this.key = key;
   }
+
+  public boolean equals(Object o) {
+    if ((o==null) || (!o.getClass().isAssignableFrom(TEPropertyDBImpl.class)))
+      return false;
+    if (((TEPropertyDBImpl)o).id == this.id)
+      return true;
+    return false;
+  }
+
+  public int hashCode() {
+    return new Integer(this.id).hashCode();
+  }
 }

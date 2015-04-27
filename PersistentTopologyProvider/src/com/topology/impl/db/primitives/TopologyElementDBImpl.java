@@ -64,9 +64,15 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
   public void setLabel(String label) {
     EntityManager em = EntityManagerFactoryHelper.getEntityManager();
     em.getTransaction().begin();
+    TopologyElementDBImpl te = em.find(TopologyElementDBImpl.class, this.getID());
+    te.setLabelString(label);
     this.label = label;
     em.getTransaction().commit();
     em.close();
+  }
+
+  private void setLabelString (String label) {
+    this.label = label;
   }
 
   @Override
@@ -120,10 +126,15 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
 
     TEPropertyDBImpl prop = (TEPropertyDBImpl)query.getSingleResult();
     if (prop==null) {
+      TopologyElementDBImpl te = em.find(TopologyElementDBImpl.class, this.getID());
       prop = new TEPropertyDBImpl();
       prop.setKey(key);
+      prop.setValue(value.toString());
+      te.teProperties.add(prop);
+      this.teProperties.add(prop);
+    } else {
+      prop.setValue(value.toString());
     }
-    prop.setValue(value.toString());
     em.getTransaction().commit();
 
   }
@@ -144,7 +155,7 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
     }
 
     em.getTransaction().begin();
-    this.teProperties.remove(prop);
+    em.remove(prop);
     em.getTransaction().commit();
   }
 

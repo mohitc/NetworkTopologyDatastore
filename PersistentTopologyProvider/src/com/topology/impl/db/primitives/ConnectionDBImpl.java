@@ -5,6 +5,7 @@ import com.topology.impl.db.primitives.converters.NetworkLayerConverter;
 import com.topology.primitives.Connection;
 import com.topology.primitives.ConnectionPoint;
 import com.topology.primitives.NetworkLayer;
+import com.topology.primitives.TopologyManager;
 import com.topology.primitives.exception.resource.ResourceException;
 import com.topology.primitives.resource.ConnectionResource;
 import com.topology.primitives.resource.ConnectionResourceType;
@@ -15,7 +16,18 @@ import java.util.Map;
 @Entity
 @Table(name = "connection")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@NamedQueries({
+  @NamedQuery(name=ConnectionDBImpl.GET_CONNECTIONS_BY_LAYER, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.layer = :layer)"),
+  @NamedQuery(name=ConnectionDBImpl.GET_LINKS_BY_LAYER, query = "SELECT p FROM LinkDBImpl p WHERE (p.layer = :layer)"),
+  @NamedQuery(name=ConnectionDBImpl.GET_CROSS_CONNECTS_BY_LAYER, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.layer = :layer)")
+})
 abstract public class ConnectionDBImpl extends TopologyElementDBImpl implements Connection {
+
+  public static final String GET_CONNECTIONS_BY_LAYER = "GET_CONNECTIONS_BY_LAYER";
+
+  public static final String GET_LINKS_BY_LAYER = "GET_LINKS_BY_LAYER";
+
+  public static final String GET_CROSS_CONNECTS_BY_LAYER = "GET_CROSS_CONNECTS_BY_LAYER";
 
   @OneToOne
   @JoinColumn(name="a_end_id", referencedColumnName = "id")
@@ -31,6 +43,15 @@ abstract public class ConnectionDBImpl extends TopologyElementDBImpl implements 
   @Column(name="layer")
   @Convert(converter= NetworkLayerConverter.class)
   private NetworkLayer layer;
+
+  public ConnectionDBImpl() {
+  }
+
+  public ConnectionDBImpl(TopologyManager manager, ConnectionPointDBImpl aEnd, ConnectionPointDBImpl zEnd) {
+    super(manager);
+    this.aEnd = aEnd;
+    this.zEnd = zEnd;
+  }
 
   @Override
   public ConnectionPoint getaEnd() {
@@ -51,9 +72,15 @@ abstract public class ConnectionDBImpl extends TopologyElementDBImpl implements 
   public void setDirected(boolean directed) {
     EntityManager em = EntityManagerFactoryHelper.getEntityManager();
     em.getTransaction().begin();
-    this.directed=directed;
+    ConnectionDBImpl cn = em.find(ConnectionDBImpl.class, this.getID());
+    cn.setIsDirected(directed);
+    this.directed = directed;
     em.getTransaction().commit();
     em.close();
+  }
+
+  private void setIsDirected(boolean directed) {
+    this.directed = directed;
   }
 
   @Override
@@ -65,9 +92,15 @@ abstract public class ConnectionDBImpl extends TopologyElementDBImpl implements 
   public void setLayer(NetworkLayer layer) {
     EntityManager em = EntityManagerFactoryHelper.getEntityManager();
     em.getTransaction().begin();
+    ConnectionDBImpl cn = em.find(ConnectionDBImpl.class, this.getID());
+    cn.setNetworkLayer(layer);
     this.layer = layer;
     em.getTransaction().commit();
     em.close();
+  }
+
+  private void setNetworkLayer (NetworkLayer layer) {
+    this.layer = layer;
   }
 
   @Override
