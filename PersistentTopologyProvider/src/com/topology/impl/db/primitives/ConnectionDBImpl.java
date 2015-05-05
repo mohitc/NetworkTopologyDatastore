@@ -17,9 +17,9 @@ import java.util.Map;
 @Table(name = "connection")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQueries({
-  @NamedQuery(name=ConnectionDBImpl.GET_CONNECTIONS_BY_LAYER, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.layer = :layer)"),
-  @NamedQuery(name=ConnectionDBImpl.GET_LINKS_BY_LAYER, query = "SELECT p FROM LinkDBImpl p WHERE (p.layer = :layer)"),
-  @NamedQuery(name=ConnectionDBImpl.GET_CROSS_CONNECTS_BY_LAYER, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.layer = :layer)")
+  @NamedQuery(name=ConnectionDBImpl.GET_CONNECTIONS_BY_LAYER, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.layer = :layer) AND p.topoManagerInstance = :instance"),
+  @NamedQuery(name=ConnectionDBImpl.GET_LINKS_BY_LAYER, query = "SELECT p FROM LinkDBImpl p WHERE (p.layer = :layer) AND p.topoManagerInstance = :instance"),
+  @NamedQuery(name=ConnectionDBImpl.GET_CROSS_CONNECTS_BY_LAYER, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.layer = :layer) AND p.topoManagerInstance = :instance")
 })
 abstract public class ConnectionDBImpl extends TopologyElementDBImpl implements Connection {
 

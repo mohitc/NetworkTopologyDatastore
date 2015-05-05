@@ -3,24 +3,29 @@ package com.topology.impl.db.primitives;
 import com.topology.impl.db.persistencehelper.EntityManagerFactoryHelper;
 import com.topology.primitives.*;
 
+import javax.management.*;
 import javax.persistence.*;
+import javax.persistence.Query;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name="network_element")
 @NamedQueries({
-    @NamedQuery(name=NetworkElementDBImpl.GET_CONTAINED_CONNECTION_POINTS_FOR_NETWORK_ELEMENT, query = "SELECT p FROM ConnectionPointDBImpl p WHERE p.parent = :parent"),
-    @NamedQuery(name=NetworkElementDBImpl.GET_CONNECTIONS_FOR_NETWORK_ELEMENT, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.aEnd IN :cpList OR p.zEnd IN :cpList)"),
-    @NamedQuery(name=NetworkElementDBImpl.GET_LINKS_FOR_NETWORK_ELEMENT, query = "SELECT p FROM LinkDBImpl p WHERE (p.aEnd IN :cpList OR p.zEnd IN :cpList)"),
-    @NamedQuery(name=NetworkElementDBImpl.GET_CROSSCONNECTS_FOR_NETWORK_ELEMENT, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.aEnd IN :cpList OR p.zEnd IN :cpList)"),
-    @NamedQuery(name=NetworkElementDBImpl.GET_CONNECTIONS_FOR_NETWORK_ELEMENT_BY_LAYER, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.aEnd IN :cpList OR p.zEnd IN :cpList) AND (p.layer = :layer)"),
-    @NamedQuery(name=NetworkElementDBImpl.GET_LINKS_FOR_NETWORK_ELEMENT_BY_LAYER, query = "SELECT p FROM LinkDBImpl p WHERE (p.aEnd IN :cpList OR p.zEnd IN :cpList) AND (p.layer = :layer)"),
-    @NamedQuery(name=NetworkElementDBImpl.GET_CROSSCONNECTS_FOR_NETWORK_ELEMENT_BY_LAYER, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.aEnd IN :cpList OR p.zEnd IN :cpList) AND (p.layer = :layer)"),
+    @NamedQuery(name=NetworkElementDBImpl.GET_CONTAINED_CONNECTION_POINTS_FOR_NETWORK_ELEMENT, query = "SELECT p FROM ConnectionPointDBImpl p WHERE p.parent = :parent AND p.topoManagerInstance = :instance"),
+    @NamedQuery(name=NetworkElementDBImpl.GET_ALL_CONTAINED_CONNECTION_POINTS_FOR_NETWORK_ELEMENT, query = "SELECT p FROM ConnectionPointDBImpl p WHERE p.parentNe = :parent AND p.topoManagerInstance = :instance"),
+    @NamedQuery(name=NetworkElementDBImpl.GET_CONNECTIONS_FOR_NETWORK_ELEMENT, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.aEnd.parentNe = :ne OR p.zEnd.parentNe = :ne) AND p.topoManagerInstance = :instance"),
+    @NamedQuery(name=NetworkElementDBImpl.GET_LINKS_FOR_NETWORK_ELEMENT, query = "SELECT p FROM LinkDBImpl p WHERE (p.aEnd.parentNe = :ne OR p.zEnd.parentNe = :ne) AND p.topoManagerInstance = :instance"),
+    @NamedQuery(name=NetworkElementDBImpl.GET_CROSSCONNECTS_FOR_NETWORK_ELEMENT, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.aEnd.parentNe = :ne OR p.zEnd.parentNe = :ne) AND p.topoManagerInstance = :instance"),
+    @NamedQuery(name=NetworkElementDBImpl.GET_CONNECTIONS_FOR_NETWORK_ELEMENT_BY_LAYER, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.aEnd.parentNe = :ne OR p.zEnd.parentNe = :ne) AND (p.layer = :layer) AND p.topoManagerInstance = :instance"),
+    @NamedQuery(name=NetworkElementDBImpl.GET_LINKS_FOR_NETWORK_ELEMENT_BY_LAYER, query = "SELECT p FROM LinkDBImpl p WHERE (p.aEnd.parentNe = :ne OR p.zEnd.parentNe = :ne) AND (p.layer = :layer) AND p.topoManagerInstance = :instance"),
+    @NamedQuery(name=NetworkElementDBImpl.GET_CROSSCONNECTS_FOR_NETWORK_ELEMENT_BY_LAYER, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.aEnd.parentNe = :ne OR p.zEnd.parentNe = :ne) AND (p.layer = :layer) AND p.topoManagerInstance = :instance"),
 })
 public class NetworkElementDBImpl extends TopologyElementDBImpl implements NetworkElement {
 
   public static final String GET_CONTAINED_CONNECTION_POINTS_FOR_NETWORK_ELEMENT = "GET_CONTAINED_CONNECTION_POINTS_FOR_NETWORK_ELEMENT";
+
+  public static final String GET_ALL_CONTAINED_CONNECTION_POINTS_FOR_NETWORK_ELEMENT = "GET_ALL_CONTAINED_CONNECTION_POINTS_FOR_NETWORK_ELEMENT";
 
   public static final String GET_CONNECTIONS_FOR_NETWORK_ELEMENT = "GET_CONNECTIONS_FOR_NETWORK_ELEMENT";
 
@@ -56,27 +61,24 @@ public class NetworkElementDBImpl extends TopologyElementDBImpl implements Netwo
   @Override
   public Set<ConnectionPoint> getConnectionPoints(boolean iterate) {
     EntityManager manager = EntityManagerFactoryHelper.getEntityManager();
-    Query query = manager.createNamedQuery(NetworkElementDBImpl.GET_CONTAINED_CONNECTION_POINTS_FOR_NETWORK_ELEMENT);
+    Query query;
+    if (iterate)
+      query = manager.createNamedQuery(NetworkElementDBImpl.GET_ALL_CONTAINED_CONNECTION_POINTS_FOR_NETWORK_ELEMENT);
+    else
+      query = manager.createNamedQuery(NetworkElementDBImpl.GET_CONTAINED_CONNECTION_POINTS_FOR_NETWORK_ELEMENT);
     query.setParameter("parent", this);
+    query.setParameter("instance", this.topoManagerInstance);
     Set<ConnectionPoint> cpSet = new HashSet<>();
-    cpSet .addAll(query.getResultList());
-    if (!iterate)
-      return cpSet;
-    else {
-      Set<ConnectionPoint> allCps = new HashSet<>();
-      for (ConnectionPoint cp: cpSet) {
-        allCps.addAll(containedConnectionPoints(cp));
-      }
-      return allCps;
-    }
+    cpSet.addAll(query.getResultList());
+    return cpSet;
   }
 
   @Override
   public Set<Connection> getAllConnections() {
-    Set<ConnectionPoint> cpSet = getConnectionPoints(true);
     EntityManager manager = EntityManagerFactoryHelper.getEntityManager();
     Query query = manager.createNamedQuery(NetworkElementDBImpl.GET_CONNECTIONS_FOR_NETWORK_ELEMENT);
-    query.setParameter("cpList", cpSet);
+    query.setParameter("ne", this);
+    query.setParameter("instance", this.topoManagerInstance);
     Set<Connection> connSet = new HashSet<>();
     connSet.addAll(query.getResultList());
     return connSet;
@@ -84,11 +86,11 @@ public class NetworkElementDBImpl extends TopologyElementDBImpl implements Netwo
 
   @Override
   public Set<Connection> getAllConnections(NetworkLayer layer) {
-    Set<ConnectionPoint> cpSet = getConnectionPoints(true);
     EntityManager manager = EntityManagerFactoryHelper.getEntityManager();
     Query query = manager.createNamedQuery(NetworkElementDBImpl.GET_CONNECTIONS_FOR_NETWORK_ELEMENT_BY_LAYER);
-    query.setParameter("cpList", cpSet);
+    query.setParameter("ne", this);
     query.setParameter("layer", layer);
+    query.setParameter("instance", this.topoManagerInstance);
     Set<Connection> connSet = new HashSet<>();
     connSet.addAll(query.getResultList());
     return connSet;
@@ -99,7 +101,6 @@ public class NetworkElementDBImpl extends TopologyElementDBImpl implements Netwo
     Set<T> connSet = new HashSet<>();
     if (instance==null)
       return connSet;
-    Set<ConnectionPoint> cpSet = getConnectionPoints(true);
     EntityManager manager = EntityManagerFactoryHelper.getEntityManager();
     Query query;
     if (Link.class.isAssignableFrom(instance))
@@ -108,7 +109,8 @@ public class NetworkElementDBImpl extends TopologyElementDBImpl implements Netwo
       query = manager.createNamedQuery(NetworkElementDBImpl.GET_CROSSCONNECTS_FOR_NETWORK_ELEMENT);
     else
       query = manager.createNamedQuery(NetworkElementDBImpl.GET_CONNECTIONS_FOR_NETWORK_ELEMENT);
-    query.setParameter("cpList", cpSet);
+    query.setParameter("ne", this);
+    query.setParameter("instance", this.topoManagerInstance);
     connSet.addAll(query.getResultList());
     return connSet;
   }
@@ -120,7 +122,6 @@ public class NetworkElementDBImpl extends TopologyElementDBImpl implements Netwo
       return connSet;
     if (layer==null)
       return connSet;
-    Set<ConnectionPoint> cpSet = getConnectionPoints(true);
     EntityManager manager = EntityManagerFactoryHelper.getEntityManager();
     Query query;
     if (Link.class.isAssignableFrom(instance))
@@ -129,8 +130,9 @@ public class NetworkElementDBImpl extends TopologyElementDBImpl implements Netwo
       query = manager.createNamedQuery(NetworkElementDBImpl.GET_CROSSCONNECTS_FOR_NETWORK_ELEMENT_BY_LAYER);
     else
       query = manager.createNamedQuery(NetworkElementDBImpl.GET_CONNECTIONS_FOR_NETWORK_ELEMENT_BY_LAYER);
-    query.setParameter("cpList", cpSet);
+    query.setParameter("ne", this);
     query.setParameter("layer", layer);
+    query.setParameter("instance", this.topoManagerInstance);
     connSet.addAll(query.getResultList());
     return connSet;
   }

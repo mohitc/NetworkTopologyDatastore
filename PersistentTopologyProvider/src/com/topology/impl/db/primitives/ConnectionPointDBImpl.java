@@ -12,12 +12,12 @@ import java.util.Set;
 @Table(name="connection_point")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQueries({
-    @NamedQuery(name=ConnectionPointDBImpl.GET_CONNECTIONS_FOR_CONNECTION_POINT, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.aEnd = :cp OR p.zEnd = :cp)"),
-    @NamedQuery(name=ConnectionPointDBImpl.GET_LINKS_FOR_CONNECTION_POINT, query = "SELECT p FROM LinkDBImpl p WHERE (p.aEnd = :cp OR p.zEnd = :cp)"),
-    @NamedQuery(name=ConnectionPointDBImpl.GET_CROSSCONNECTS_FOR_CONNECTION_POINT, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.aEnd = :cp OR p.zEnd = :cp)"),
-    @NamedQuery(name=ConnectionPointDBImpl.GET_CONNECTIONS_FOR_CONNECTION_POINT_BY_LAYER, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.aEnd = :cp OR p.zEnd = :cp) AND p.layer = :layer"),
-    @NamedQuery(name=ConnectionPointDBImpl.GET_LINKS_FOR_CONNECTION_POINT_BY_LAYER, query = "SELECT p FROM LinkDBImpl p WHERE (p.aEnd = :cp OR p.zEnd = :cp) AND p.layer = :layer"),
-    @NamedQuery(name=ConnectionPointDBImpl.GET_CROSSCONNECTS_FOR_CONNECTION_POINT_BY_LAYER, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.aEnd = :cp OR p.zEnd = :cp) AND p.layer = :layer")
+    @NamedQuery(name=ConnectionPointDBImpl.GET_CONNECTIONS_FOR_CONNECTION_POINT, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.aEnd = :cp OR p.zEnd = :cp) AND p.topoManagerInstance = :instance"),
+    @NamedQuery(name=ConnectionPointDBImpl.GET_LINKS_FOR_CONNECTION_POINT, query = "SELECT p FROM LinkDBImpl p WHERE (p.aEnd = :cp OR p.zEnd = :cp) AND p.topoManagerInstance = :instance"),
+    @NamedQuery(name=ConnectionPointDBImpl.GET_CROSSCONNECTS_FOR_CONNECTION_POINT, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.aEnd = :cp OR p.zEnd = :cp) AND p.topoManagerInstance = :instance"),
+    @NamedQuery(name=ConnectionPointDBImpl.GET_CONNECTIONS_FOR_CONNECTION_POINT_BY_LAYER, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.aEnd = :cp OR p.zEnd = :cp) AND p.layer = :layer AND p.topoManagerInstance = :instance"),
+    @NamedQuery(name=ConnectionPointDBImpl.GET_LINKS_FOR_CONNECTION_POINT_BY_LAYER, query = "SELECT p FROM LinkDBImpl p WHERE (p.aEnd = :cp OR p.zEnd = :cp) AND p.layer = :layer AND p.topoManagerInstance = :instance"),
+    @NamedQuery(name=ConnectionPointDBImpl.GET_CROSSCONNECTS_FOR_CONNECTION_POINT_BY_LAYER, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.aEnd = :cp OR p.zEnd = :cp) AND p.layer = :layer AND p.topoManagerInstance = :instance")
 })
 public class ConnectionPointDBImpl extends TopologyElementDBImpl implements ConnectionPoint {
 
@@ -33,12 +33,23 @@ public class ConnectionPointDBImpl extends TopologyElementDBImpl implements Conn
 
   public static final String GET_CROSSCONNECTS_FOR_CONNECTION_POINT_BY_LAYER = "GET_CROSSCONNECTS_FOR_CONNECTION_POINT_BY_LAYER";
 
+  @OneToOne
+  @JoinColumn(name="parent_ne_id", referencedColumnName = "id")
+  private NetworkElementDBImpl parentNe;
+
   public ConnectionPointDBImpl() {
   }
 
   public ConnectionPointDBImpl(TopologyManager manager, TopologyElementDBImpl parent) {
     super(manager);
     this.parent = parent;
+    if (parent !=null) {
+      if (PortDBImpl.class.isAssignableFrom(parent.getClass())) {
+        parentNe = ((ConnectionPointDBImpl)parent).parentNe;
+      } else if (NetworkElementDBImpl.class.isAssignableFrom(parent.getClass())){
+        parentNe = (NetworkElementDBImpl)parent;
+      }
+    }
   }
 
   @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
@@ -50,6 +61,7 @@ public class ConnectionPointDBImpl extends TopologyElementDBImpl implements Conn
     EntityManager manager = EntityManagerFactoryHelper.getEntityManager();
     Query query = manager.createNamedQuery(ConnectionPointDBImpl.GET_CONNECTIONS_FOR_CONNECTION_POINT);
     query.setParameter("cp", this);
+    query.setParameter("instance", this.topoManagerInstance);
     Set<Connection> connSet = new HashSet<>();
     connSet.addAll(query.getResultList());
     return connSet;
@@ -69,6 +81,7 @@ public class ConnectionPointDBImpl extends TopologyElementDBImpl implements Conn
     else
       query = manager.createNamedQuery(ConnectionPointDBImpl.GET_CONNECTIONS_FOR_CONNECTION_POINT);
     query.setParameter("cp", this);
+    query.setParameter("instance", this.topoManagerInstance);
     connSet.addAll(query.getResultList());
     return connSet;
   }
@@ -82,6 +95,7 @@ public class ConnectionPointDBImpl extends TopologyElementDBImpl implements Conn
     Query query = manager.createNamedQuery(ConnectionPointDBImpl.GET_CONNECTIONS_FOR_CONNECTION_POINT_BY_LAYER);
     query.setParameter("cp", this);
     query.setParameter("layer", layer);
+    query.setParameter("instance", this.topoManagerInstance);
     connSet.addAll(query.getResultList());
     return connSet;
   }
@@ -103,6 +117,7 @@ public class ConnectionPointDBImpl extends TopologyElementDBImpl implements Conn
       query = manager.createNamedQuery(ConnectionPointDBImpl.GET_CONNECTIONS_FOR_CONNECTION_POINT_BY_LAYER);
     query.setParameter("cp", this);
     query.setParameter("layer", layer);
+    query.setParameter("instance", this.topoManagerInstance);
     connSet.addAll(query.getResultList());
     return connSet;
   }

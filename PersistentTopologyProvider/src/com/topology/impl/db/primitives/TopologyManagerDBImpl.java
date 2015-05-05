@@ -401,6 +401,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
     EntityManager em = getEntityManager();
     Query query = em.createNamedQuery(q);
     query.setParameter("label", label);
+    query.setParameter("instance", this.getIdentifier());
     resultSet.addAll(query.getResultList());
     return resultSet;
   }
@@ -438,6 +439,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
     EntityManager em = getEntityManager();
     Query query = em.createNamedQuery(q);
     query.setParameter("layer", layer);
+    query.setParameter("instance", this.getIdentifier());
     Set<T> connSet = new HashSet<>();
     connSet.addAll(query.getResultList());
     return connSet;

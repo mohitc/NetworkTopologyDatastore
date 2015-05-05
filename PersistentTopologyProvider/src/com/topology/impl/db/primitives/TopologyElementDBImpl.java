@@ -15,14 +15,14 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name="jdoclass")
 @NamedQueries({
-  @NamedQuery(name=TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY, query = "Select t from TopologyElementDBImpl t JOIN t.teProperties q WHERE (t.id = :id AND q.key = :key)"),
-  @NamedQuery(name=TopologyElementDBImpl.GET_TE_BY_LABEL, query = "Select t from TopologyElementDBImpl t WHERE (t.label = :label)"),
-  @NamedQuery(name=TopologyElementDBImpl.GET_NETWORK_ELEMENT_BY_LABEL, query = "Select t from NetworkElementDBImpl t WHERE (t.label = :label)"),
-  @NamedQuery(name=TopologyElementDBImpl.GET_CP_BY_LABEL, query = "Select t from ConnectionPointDBImpl t WHERE (t.label = :label)"),
-  @NamedQuery(name=TopologyElementDBImpl.GET_PORT_BY_LABEL, query = "Select t from PortDBImpl t WHERE (t.label = :label)"),
-  @NamedQuery(name=TopologyElementDBImpl.GET_CONNECTION_BY_LABEL, query = "Select t from ConnectionDBImpl t WHERE (t.label = :label)"),
-  @NamedQuery(name=TopologyElementDBImpl.GET_LINK_BY_LABEL, query = "Select t from LinkDBImpl t WHERE (t.label = :label)"),
-  @NamedQuery(name=TopologyElementDBImpl.GET_CROSS_CONNECT_BY_LABEL, query = "Select t from CrossConnectDBImpl t WHERE (t.label = :label)")
+  @NamedQuery(name=TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY, query = "Select t from TopologyElementDBImpl t JOIN t.teProperties q WHERE (t.id = :id AND q.key = :key and t.topoManagerInstance = :instance) "),
+  @NamedQuery(name=TopologyElementDBImpl.GET_TE_BY_LABEL, query = "Select t from TopologyElementDBImpl t WHERE (t.label = :label AND t.topoManagerInstance = :instance)"),
+  @NamedQuery(name=TopologyElementDBImpl.GET_NETWORK_ELEMENT_BY_LABEL, query = "Select t from NetworkElementDBImpl t WHERE (t.label = :label AND t.topoManagerInstance = :instance)"),
+  @NamedQuery(name=TopologyElementDBImpl.GET_CP_BY_LABEL, query = "Select t from ConnectionPointDBImpl t WHERE (t.label = :label AND t.topoManagerInstance = :instance)"),
+  @NamedQuery(name=TopologyElementDBImpl.GET_PORT_BY_LABEL, query = "Select t from PortDBImpl t WHERE (t.label = :label AND t.topoManagerInstance = :instance)"),
+  @NamedQuery(name=TopologyElementDBImpl.GET_CONNECTION_BY_LABEL, query = "Select t from ConnectionDBImpl t WHERE (t.label = :label AND t.topoManagerInstance = :instance)"),
+  @NamedQuery(name=TopologyElementDBImpl.GET_LINK_BY_LABEL, query = "Select t from LinkDBImpl t WHERE (t.label = :label AND t.topoManagerInstance = :instance)"),
+  @NamedQuery(name=TopologyElementDBImpl.GET_CROSS_CONNECT_BY_LABEL, query = "Select t from CrossConnectDBImpl t WHERE (t.label = :label AND t.topoManagerInstance = :instance)")
 })
 abstract public class TopologyElementDBImpl implements TopologyElement {
 
@@ -42,7 +42,7 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
   private int id;
 
   @Column(name = "manager", nullable = false)
-  private String topoManagerInstance;
+  protected String topoManagerInstance;
 
   @Column(name = "label")
   private String label;
