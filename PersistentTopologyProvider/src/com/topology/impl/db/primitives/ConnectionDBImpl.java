@@ -8,7 +8,6 @@ import com.topology.primitives.NetworkLayer;
 import com.topology.primitives.TopologyManager;
 import com.topology.primitives.exception.resource.ResourceException;
 import com.topology.primitives.resource.ConnectionResource;
-import com.topology.primitives.resource.ConnectionResourceType;
 
 import javax.persistence.*;
 import java.util.Map;
@@ -19,7 +18,19 @@ import java.util.Map;
 @NamedQueries({
   @NamedQuery(name=ConnectionDBImpl.GET_CONNECTIONS_BY_LAYER, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.layer = :layer) AND p.topoManagerInstance = :instance"),
   @NamedQuery(name=ConnectionDBImpl.GET_LINKS_BY_LAYER, query = "SELECT p FROM LinkDBImpl p WHERE (p.layer = :layer) AND p.topoManagerInstance = :instance"),
-  @NamedQuery(name=ConnectionDBImpl.GET_CROSS_CONNECTS_BY_LAYER, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.layer = :layer) AND p.topoManagerInstance = :instance")
+  @NamedQuery(name=ConnectionDBImpl.GET_CROSS_CONNECTS_BY_LAYER, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.layer = :layer) AND p.topoManagerInstance = :instance"),
+  @NamedQuery(name=ConnectionDBImpl.GET_CONNECTIONS_BY_NES, query = "SELECT p FROM ConnectionDBImpl p WHERE ((p.aEnd.parentNe = :ne1 AND p.zEnd.parentNe = :ne2) OR (p.aEnd.parentNe = :ne2 AND p.zEnd.parentNe = :ne1)) AND p.topoManagerInstance = :instance"),
+  @NamedQuery(name=ConnectionDBImpl.GET_LINKS_BY_NES, query = "SELECT p FROM LinkDBImpl p WHERE ((p.aEnd.parentNe = :ne1 AND p.zEnd.parentNe = :ne2) OR (p.aEnd.parentNe = :ne2 AND p.zEnd.parentNe = :ne1)) AND p.topoManagerInstance = :instance"),
+  @NamedQuery(name=ConnectionDBImpl.GET_CROSS_CONNECTS_BY_NES, query = "SELECT p FROM CrossConnectDBImpl p WHERE ((p.aEnd.parentNe = :ne1 AND p.zEnd.parentNe = :ne2) OR (p.aEnd.parentNe = :ne2 AND p.zEnd.parentNe = :ne1)) AND p.topoManagerInstance = :instance"),
+  @NamedQuery(name=ConnectionDBImpl.GET_CONNECTIONS_BY_NES_AND_LAYER, query = "SELECT p FROM ConnectionDBImpl p WHERE ((p.aEnd.parentNe = :ne1 AND p.zEnd.parentNe = :ne2) OR (p.aEnd.parentNe = :ne2 AND p.zEnd.parentNe = :ne1)) AND p.layer = :layer AND p.topoManagerInstance = :instance"),
+  @NamedQuery(name=ConnectionDBImpl.GET_LINKS_BY_NES_AND_LAYER, query = "SELECT p FROM LinkDBImpl p WHERE ((p.aEnd.parentNe = :ne1 AND p.zEnd.parentNe = :ne2) OR (p.aEnd.parentNe = :ne2 AND p.zEnd.parentNe = :ne1)) AND p.layer = :layer AND p.topoManagerInstance = :instance"),
+  @NamedQuery(name=ConnectionDBImpl.GET_CROSS_CONNECTS_BY_NES_AND_LAYER, query = "SELECT p FROM CrossConnectDBImpl p WHERE ((p.aEnd.parentNe = :ne1 AND p.zEnd.parentNe = :ne2) OR (p.aEnd.parentNe = :ne2 AND p.zEnd.parentNe = :ne1)) AND p.layer = :layer AND p.topoManagerInstance = :instance"),
+  @NamedQuery(name=ConnectionDBImpl.GET_DIRECTED_CONNECTIONS_BY_NES, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.aEnd.parentNe = :ne1 AND p.zEnd.parentNe = :ne2) AND p.directed = true AND p.topoManagerInstance = :instance"),
+  @NamedQuery(name=ConnectionDBImpl.GET_DIRECTED_LINKS_BY_NES, query = "SELECT p FROM LinkDBImpl p WHERE (p.aEnd.parentNe = :ne1 AND p.zEnd.parentNe = :ne2) AND p.directed = true AND p.topoManagerInstance = :instance"),
+  @NamedQuery(name=ConnectionDBImpl.GET_DIRECTED_CROSS_CONNECTS_BY_NES, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.aEnd.parentNe = :ne1 AND p.zEnd.parentNe = :ne2) AND p.directed = true AND p.topoManagerInstance = :instance"),
+  @NamedQuery(name=ConnectionDBImpl.GET_DIRECTED_CONNECTIONS_BY_NES_AND_LAYER, query = "SELECT p FROM ConnectionDBImpl p WHERE (p.aEnd.parentNe = :ne1 AND p.zEnd.parentNe = :ne2) AND p.directed = true AND p.layer = :layer AND p.topoManagerInstance = :instance"),
+  @NamedQuery(name=ConnectionDBImpl.GET_DIRECTED_LINKS_BY_NES_AND_LAYER, query = "SELECT p FROM LinkDBImpl p WHERE (p.aEnd.parentNe = :ne1 AND p.zEnd.parentNe = :ne2) AND p.directed = true  AND p.layer = :layer AND p.topoManagerInstance = :instance"),
+  @NamedQuery(name=ConnectionDBImpl.GET_DIRECTED_CROSS_CONNECTS_BY_NES_AND_LAYER, query = "SELECT p FROM CrossConnectDBImpl p WHERE (p.aEnd.parentNe = :ne1 AND p.zEnd.parentNe = :ne2) AND p.directed = true AND p.layer = :layer AND p.topoManagerInstance = :instance")
 })
 abstract public class ConnectionDBImpl extends TopologyElementDBImpl implements Connection {
 
@@ -28,6 +39,31 @@ abstract public class ConnectionDBImpl extends TopologyElementDBImpl implements 
   public static final String GET_LINKS_BY_LAYER = "GET_LINKS_BY_LAYER";
 
   public static final String GET_CROSS_CONNECTS_BY_LAYER = "GET_CROSS_CONNECTS_BY_LAYER";
+
+  public static final String GET_CONNECTIONS_BY_NES = "GET_CONNECTIONS_BY_NES";
+
+  public static final String GET_LINKS_BY_NES = "GET_LINKS_BY_NES";
+
+  public static final String GET_CROSS_CONNECTS_BY_NES = "GET_CROSS_CONNECTS_BY_NES";
+
+  public static final String GET_CONNECTIONS_BY_NES_AND_LAYER = "GET_CONNECTIONS_BY_NES_AND_LAYER";
+
+  public static final String GET_LINKS_BY_NES_AND_LAYER = "GET_LINKS_BY_NES_AND_LAYER";
+
+  public static final String GET_CROSS_CONNECTS_BY_NES_AND_LAYER = "GET_CROSS_CONNECTS_BY_NES_AND_LAYER";
+
+  public static final String GET_DIRECTED_CONNECTIONS_BY_NES = "GET_DIRECTED_CONNECTIONS_BY_NES";
+
+  public static final String GET_DIRECTED_LINKS_BY_NES = "GET_DIRECTED_LINKS_BY_NES";
+
+  public static final String GET_DIRECTED_CROSS_CONNECTS_BY_NES = "GET_DIRECTED_CROSS_CONNECTS_BY_NES";
+
+  public static final String GET_DIRECTED_CONNECTIONS_BY_NES_AND_LAYER = "GET_DIRECTED_CONNECTIONS_BY_NES_AND_LAYER";
+
+  public static final String GET_DIRECTED_LINKS_BY_NES_AND_LAYER = "GET_DIRECTED_LINKS_BY_NES_AND_LAYER";
+
+  public static final String GET_DIRECTED_CROSS_CONNECTS_BY_NES_AND_LAYER = "GET_DIRECTED_CROSS_CONNECTS_BY_NES_AND_LAYER";
+
 
   @OneToOne
   @JoinColumn(name="a_end_id", referencedColumnName = "id")

@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Entity
 @NamedQueries({
-    @NamedQuery(name=PortDBImpl.GET_CONTAINED_CONNECTION_POINTS_FOR_PORT, query = "SELECT p FROM ConnectionPointDBImpl p WHERE p.parent = :parent")
+    @NamedQuery(name=PortDBImpl.GET_CONTAINED_CONNECTION_POINTS_FOR_PORT, query = "SELECT p FROM ConnectionPointDBImpl p WHERE p.parent = :parent AND p.topoManagerInstance = :instance")
 })
 public class PortDBImpl extends ConnectionPointDBImpl implements Port{
 
@@ -29,6 +29,7 @@ public class PortDBImpl extends ConnectionPointDBImpl implements Port{
     EntityManager manager = EntityManagerFactoryHelper.getEntityManager();
     Query query = manager.createNamedQuery(PortDBImpl.GET_CONTAINED_CONNECTION_POINTS_FOR_PORT);
     query.setParameter("parent", this);
+    query.setParameter("instance", this.topoManagerInstance);
     Set<ConnectionPoint> resultSet = new HashSet<>();
     resultSet.addAll(query.getResultList());
     return resultSet;

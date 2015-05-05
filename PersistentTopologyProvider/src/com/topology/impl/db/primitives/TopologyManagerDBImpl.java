@@ -428,6 +428,9 @@ public class TopologyManagerDBImpl implements TopologyManager {
     if (instance==null) {
       throw new TopologyException("Instance cannot be null");
     }
+    if (layer==null) {
+      throw new TopologyException("Layer cannot be null");
+    }
     String q;
     if (Link.class.isAssignableFrom(instance)) {
       q = ConnectionDBImpl.GET_LINKS_BY_LAYER;
@@ -447,42 +450,168 @@ public class TopologyManagerDBImpl implements TopologyManager {
 
   @Override
   public Set<Connection> getConnections(int startNeID, int endNeID) throws TopologyException {
-    return null;
+    EntityManager em = getEntityManager();
+    Set<Connection> resultSet = new HashSet<>();
+    Query query = em.createNamedQuery(ConnectionDBImpl.GET_CONNECTIONS_BY_NES);
+    query.setParameter("ne1", this.getElementByID(startNeID));
+    query.setParameter("ne2", this.getElementByID(endNeID));
+    query.setParameter("instance", this.getIdentifier());
+    resultSet.addAll(query.getResultList());
+    return resultSet;
   }
 
   @Override
   public <T extends Connection> Set<T> getConnections(int startNeID, int endNeID, Class<T> instance) throws TopologyException {
-    return null;
+    if (instance==null) {
+      throw new TopologyException("Instance cannot be null");
+    }
+    String q;
+    if (Link.class.isAssignableFrom(instance)) {
+      q = ConnectionDBImpl.GET_LINKS_BY_NES;
+    } else if (CrossConnect.class.isAssignableFrom(instance)) {
+      q = ConnectionDBImpl.GET_CROSS_CONNECTS_BY_NES;
+    } else {
+      q = ConnectionDBImpl.GET_CONNECTIONS_BY_NES;
+    }
+    EntityManager em = getEntityManager();
+    Set<T> resultSet = new HashSet<>();
+    Query query = em.createNamedQuery(q);
+    query.setParameter("ne1", this.getElementByID(startNeID));
+    query.setParameter("ne2", this.getElementByID(endNeID));
+    query.setParameter("instance", this.getIdentifier());
+    resultSet.addAll(query.getResultList());
+    return resultSet;
   }
 
   @Override
   public Set<Connection> getConnections(int startNeID, int endNeID, NetworkLayer layer) throws TopologyException {
-    return null;
+    if (layer==null) {
+      throw new TopologyException("Layer cannot be null");
+    }
+    EntityManager em = getEntityManager();
+    Set<Connection> resultSet = new HashSet<>();
+    Query query = em.createNamedQuery(ConnectionDBImpl.GET_CONNECTIONS_BY_NES_AND_LAYER);
+    query.setParameter("ne1", this.getElementByID(startNeID));
+    query.setParameter("ne2", this.getElementByID(endNeID));
+    query.setParameter("layer", layer);
+    query.setParameter("instance", this.getIdentifier());
+    resultSet.addAll(query.getResultList());
+    return resultSet;
   }
 
   @Override
   public <T extends Connection> Set<T> getConnections(int startNeID, int endNeID, NetworkLayer layer, Class<T> instance) throws TopologyException {
-    return null;
+    if (layer==null) {
+      throw new TopologyException("Layer cannot be null");
+    }
+    if (instance==null) {
+      throw new TopologyException("Instance cannot be null");
+    }
+    String q;
+    if (Link.class.isAssignableFrom(instance)) {
+      q = ConnectionDBImpl.GET_LINKS_BY_NES_AND_LAYER;
+    } else if (CrossConnect.class.isAssignableFrom(instance)) {
+      q = ConnectionDBImpl.GET_CROSS_CONNECTS_BY_NES_AND_LAYER;
+    } else {
+      q = ConnectionDBImpl.GET_CONNECTIONS_BY_NES_AND_LAYER;
+    }
+    EntityManager em = getEntityManager();
+    Set<T> resultSet = new HashSet<>();
+    Query query = em.createNamedQuery(q);
+    query.setParameter("ne1", this.getElementByID(startNeID));
+    query.setParameter("ne2", this.getElementByID(endNeID));
+    query.setParameter("layer", layer);
+    query.setParameter("instance", this.getIdentifier());
+    resultSet.addAll(query.getResultList());
+    return resultSet;
   }
 
   @Override
   public Set<Connection> getConnections(int startNeID, int endNeID, boolean isDirected) throws TopologyException {
-    return null;
+    if (!isDirected)
+      return getConnections(startNeID, endNeID);
+    EntityManager em = getEntityManager();
+    Set<Connection> resultSet = new HashSet<>();
+    Query query = em.createNamedQuery(ConnectionDBImpl.GET_DIRECTED_CONNECTIONS_BY_NES);
+    query.setParameter("ne1", this.getElementByID(startNeID));
+    query.setParameter("ne2", this.getElementByID(endNeID));
+    query.setParameter("instance", this.getIdentifier());
+    resultSet.addAll(query.getResultList());
+    return resultSet;
   }
 
   @Override
   public <T extends Connection> Set<T> getConnections(int startNeID, int endNeID, boolean isDirected, Class<T> instance) throws TopologyException {
-    return null;
+    if (instance==null) {
+      throw new TopologyException("Instance cannot be null");
+    }
+    if (!isDirected)
+      return getConnections(startNeID, endNeID, instance);
+    String q;
+    if (Link.class.isAssignableFrom(instance)) {
+      q = ConnectionDBImpl.GET_DIRECTED_LINKS_BY_NES;
+    } else if (CrossConnect.class.isAssignableFrom(instance)) {
+      q = ConnectionDBImpl.GET_DIRECTED_CROSS_CONNECTS_BY_NES;
+    } else {
+      q = ConnectionDBImpl.GET_DIRECTED_CONNECTIONS_BY_NES;
+    }
+    EntityManager em = getEntityManager();
+    Set<T> resultSet = new HashSet<>();
+    Query query = em.createNamedQuery(q);
+    query.setParameter("ne1", this.getElementByID(startNeID));
+    query.setParameter("ne2", this.getElementByID(endNeID));
+    query.setParameter("instance", this.getIdentifier());
+    resultSet.addAll(query.getResultList());
+    return resultSet;
   }
 
   @Override
   public Set<Connection> getConnections(int startNeID, int endNeID, boolean isDirected, NetworkLayer layer) throws TopologyException {
-    return null;
+    if (!isDirected)
+      return getConnections(startNeID, endNeID, layer);
+    if (layer==null) {
+      throw new TopologyException("Layer cannot be null");
+    }
+    EntityManager em = getEntityManager();
+    Set<Connection> resultSet = new HashSet<>();
+    Query query = em.createNamedQuery(ConnectionDBImpl.GET_DIRECTED_CONNECTIONS_BY_NES_AND_LAYER);
+    query.setParameter("ne1", this.getElementByID(startNeID));
+    query.setParameter("ne2", this.getElementByID(endNeID));
+    query.setParameter("layer", layer);
+    query.setParameter("instance", this.getIdentifier());
+    resultSet.addAll(query.getResultList());
+    return resultSet;
   }
 
   @Override
   public <T extends Connection> Set<T> getConnections(int startNeID, int endNeID, boolean isDirected, NetworkLayer layer, Class<T> instance) throws TopologyException {
-    return null;
+
+    if (layer==null) {
+      throw new TopologyException("Layer cannot be null");
+    }
+    if (instance==null) {
+      throw new TopologyException("Instance cannot be null");
+    }
+    if (!isDirected)
+      return getConnections(startNeID, endNeID, layer, instance);
+
+    String q;
+    if (Link.class.isAssignableFrom(instance)) {
+      q = ConnectionDBImpl.GET_DIRECTED_LINKS_BY_NES_AND_LAYER;
+    } else if (CrossConnect.class.isAssignableFrom(instance)) {
+      q = ConnectionDBImpl.GET_DIRECTED_CROSS_CONNECTS_BY_NES_AND_LAYER;
+    } else {
+      q = ConnectionDBImpl.GET_DIRECTED_CONNECTIONS_BY_NES_AND_LAYER;
+    }
+    EntityManager em = getEntityManager();
+    Set<T> resultSet = new HashSet<>();
+    Query query = em.createNamedQuery(q);
+    query.setParameter("ne1", this.getElementByID(startNeID));
+    query.setParameter("ne2", this.getElementByID(endNeID));
+    query.setParameter("layer", layer);
+    query.setParameter("instance", this.getIdentifier());
+    resultSet.addAll(query.getResultList());
+    return resultSet;
   }
 
 }
