@@ -1,5 +1,7 @@
 package com.topology.impl.db.primitives;
 
+import com.helpers.notification.annotation.EntityCreation;
+import com.helpers.notification.annotation.EntityDeletion;
 import com.topology.dto.PathDTO;
 import com.topology.impl.db.persistencehelper.EntityManagerFactoryHelper;
 import com.topology.primitives.*;
@@ -115,6 +117,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
   }
 
   @Override
+  @EntityCreation
   public NetworkElement createNetworkElement() throws TopologyException {
     EntityManager em = getEntityManager();
     em.getTransaction().begin();
@@ -126,6 +129,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
   }
 
   @Override
+  @EntityCreation
   public ConnectionPoint createConnectionPoint(TopologyElement parent) throws TopologyException {
     EntityManager em = getEntityManager();
     em.getTransaction().begin();
@@ -140,6 +144,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
   }
 
   @Override
+  @EntityCreation
   public Port createPort(TopologyElement parent) throws TopologyException {
     EntityManager em = getEntityManager();
     em.getTransaction().begin();
@@ -154,6 +159,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
   }
 
   @Override
+  @EntityCreation
   public Link createLink(int startCpID, int endCpID) throws TopologyException {
     //Check if start and end connection points are in the test.topology manager
     EntityManager em = getEntityManager();
@@ -180,6 +186,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
   }
 
   @Override
+  @EntityCreation
   public CrossConnect createCrossConnect(int startCpID, int endCpID) throws TopologyException {
     //Check if start and end connection points are in the test.topology manager
     EntityManager em = getEntityManager();
@@ -208,11 +215,13 @@ public class TopologyManagerDBImpl implements TopologyManager {
     }  }
 
   @Override
+  @EntityCreation
   public Trail createTrail(int startCpID, int endCpID, PathDTO pathDTO, boolean directed, ConnectionResource resource, NetworkLayer layer) throws TopologyException {
     return null;
   }
 
   @Override
+  @EntityDeletion
   public void removeTopologyElement(int id) throws TopologyException {
     TopologyElement te = getElementByID(id);
     if (te != null) {
@@ -230,6 +239,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
   }
 
   @Override
+  @EntityDeletion
   public void removeNetworkElement(int id) throws TopologyException {
     EntityManager em = getEntityManager();
     try {
@@ -248,6 +258,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
   }
 
   @Override
+  @EntityDeletion
   public void removeConnectionPoint(int id) throws TopologyException {
     EntityManager em = getEntityManager();
     try {
@@ -277,11 +288,13 @@ public class TopologyManagerDBImpl implements TopologyManager {
   }
 
   @Override
+  @EntityDeletion
   public void removePort(int id) throws TopologyException {
     removeConnectionPoint(id);
   }
 
   @Override
+  @EntityDeletion
   public void removeConnection(int id) throws TopologyException {
     Connection te = getElementByID(id, Connection.class);
     if (te != null) {
@@ -298,6 +311,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
   }
 
   @Override
+  @EntityDeletion
   public void removeLink(int id) throws TopologyException {
     //TODO include code for reservtions
     EntityManager em = getEntityManager();
@@ -313,6 +327,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
   }
 
   @Override
+  @EntityDeletion
   public void removeCrossConnect(int id) throws TopologyException {
     //TODO include code for reservtions
     EntityManager em = getEntityManager();
@@ -328,6 +343,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
   }
 
   @Override
+  @EntityDeletion
   public void removeTrail(int id) throws TopologyException {
 
   }

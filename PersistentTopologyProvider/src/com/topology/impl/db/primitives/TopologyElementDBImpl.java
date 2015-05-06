@@ -1,17 +1,34 @@
 package com.topology.impl.db.primitives;
 
+import com.helpers.notification.annotation.PropChange;
 import com.topology.impl.db.persistencehelper.EntityManagerFactoryHelper;
 import com.topology.primitives.TopologyElement;
 import com.topology.primitives.TopologyManager;
 import com.topology.primitives.exception.properties.PropertyException;
 import com.topology.primitives.properties.keys.TEPropertyKey;
 
-import javax.persistence.*;
+import javax.persistence.Index;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.Table;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Column;
+import javax.persistence.OneToMany;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.EntityManager;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import javax.persistence.InheritanceType;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table (name="topology_elements")
+@Table(name="topology_elements")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name="jdoclass")
 @NamedQueries({
@@ -76,6 +93,7 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
   }
 
   @Override
+  @PropChange
   public void setLabel(String label) {
     EntityManager em = EntityManagerFactoryHelper.getEntityManager();
     em.getTransaction().begin();
@@ -129,6 +147,7 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
   }
 
   @Override
+  @PropChange
   public void addProperty(TEPropertyKey key, Object value) throws PropertyException {
     if (key==null)
       throw new PropertyException("Property key cannot be null");
@@ -166,6 +185,7 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
   }
 
   @Override
+  @PropChange
   public void removeProperty(TEPropertyKey key) throws PropertyException {
     if (key==null)
       throw new PropertyException("Property key cannot be null");
