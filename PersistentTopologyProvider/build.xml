@@ -36,6 +36,10 @@
             <fileset dir="conf/persistence">
             </fileset>
         </copy>
+        <replace file = "bin/META-INF/persistence.xml">
+            <replacefilter token="@POSTGRES_USER@" value="${postgres.user}"/>
+            <replacefilter token="@POSTGRES_PASSWORD@" value="${postgres.password}"/>
+        </replace>
     </target>
     <target name="clean">
         <delete dir="bin"/>
@@ -50,7 +54,7 @@
             <classpath refid="PersistentTopologyProvider.classpath"/>
         </javac>
     </target>
-    <target name="createCleanDB" depends="build">
+    <target name="createCleanDB" depends="init, build">
         <!-- close all connections to DB -->
         <exec executable="${postgres.path}/bin/psql" failonerror="true">
             <arg value="-U"/>
