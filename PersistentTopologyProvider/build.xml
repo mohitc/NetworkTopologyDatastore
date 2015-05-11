@@ -3,6 +3,13 @@
     <property environment="env"/>
     <property name="TopologyElements.location" value="../TopologyElements"/>
     <property name="debuglevel" value="source,lines,vars"/>
+
+    <!-- PostgreSQL Properties -->
+    <property name="postgres.path" value = "c:\fnm\nms\postgres"/>
+    <property name="postgres.user" value = "mohit"/>
+    <property name="postgres.password" value = "necromancer"/>
+    <property name="postgres.db" value = "topology_provider"/>
+
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
     <path id="TopologyElements.classpath">
@@ -42,5 +49,41 @@
             <src path="src"/>
             <classpath refid="PersistentTopologyProvider.classpath"/>
         </javac>
+    </target>
+    <target name="createCleanDB" depends="build">
+        <!-- close all connections to DB -->
+        <exec executable="${postgres.path}/bin/psql" failonerror="true">
+            <arg value="-U"/>
+            <arg value="${postgres.user}"/>
+            <arg value="-c"/>
+            <arg value="select pg_terminate_backend(pid) from pg_stat_activity where datname='${postgres.db}' and query not like '%from pg_stat_activity%';"/>
+            <arg value="--set"/>
+            <arg value="ON_ERROR_STOP=on"/>
+            <arg value="${postgres.db}"/>
+
+            <env key="PGPASSWORD" value="${postgres.password}"/>
+        </exec>
+
+        <!-- droping DB -->
+        <exec executable="${postgres.path}/bin/dropdb">
+            <arg value="-U"/>
+            <arg value="${postgres.user}"/>
+            <arg value="${postgres.db}"/>
+
+            <env key="PGPASSWORD" value="${postgres.password}" />
+        </exec>
+
+        <!-- creating DB -->
+        <exec executable="${postgres.path}/bin/createdb">
+            <arg value="-U"/>
+            <arg value="${postgres.user}"/>
+            <arg value="${postgres.db}"/>
+
+            <env key="PGPASSWORD" value="${postgres.password}" />
+        </exec>
+
+        <java fork="true" classname="com.topology.impl.InitDBSchema">
+            <classpath refid="PersistentTopologyProvider.classpath"/>
+        </java>
     </target>
 </project>
