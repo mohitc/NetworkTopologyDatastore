@@ -17,8 +17,8 @@
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/topology_provider" />
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
-            <property name="javax.persistence.jdbc.user" value="mohit" />
-            <property name="javax.persistence.jdbc.password" value="necromancer" />
+            <property name="javax.persistence.jdbc.user" value="@POSTGRES_USER@" />
+            <property name="javax.persistence.jdbc.password" value="@POSTGRES_PASSWORD@" />
             <property name="eclipselink.target-database" value="POSTGRESQL"/>
 
 
