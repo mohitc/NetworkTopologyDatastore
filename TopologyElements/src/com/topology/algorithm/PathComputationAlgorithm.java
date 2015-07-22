@@ -1,6 +1,9 @@
 package com.topology.algorithm;
 
 import com.topology.algorithm.constraint.PathConstraint;
+import com.topology.algorithm.filters.ConnectionFilter;
+import com.topology.algorithm.filters.impl.ConnectionDirectionalityFilter;
+import com.topology.algorithm.filters.impl.ConnectionLoopFilter;
 import com.topology.dto.PathDTO;
 import com.topology.primitives.*;
 import com.topology.primitives.exception.TopologyException;
@@ -16,6 +19,14 @@ public class PathComputationAlgorithm {
 
   protected static final Logger log = LoggerFactory.getLogger(PathComputationAlgorithm.class);
 
+  protected List<ConnectionFilter> getConnectionFilters(ConnectionPoint cEnd, List<Connection> path, PathConstraint constraint) {
+    List<ConnectionFilter> filterList = new ArrayList<>();
+    filterList.add(new ConnectionLoopFilter(path));
+    filterList.add(new ConnectionDirectionalityFilter(constraint, cEnd));
+
+    return filterList;
+  }
+
   public Set<Connection> getUsableConnections(ConnectionPoint cEnd, List<Connection> path, PathConstraint constraint) {
     Set<Connection> allConnections = cEnd.getConnections();
     Set<Connection> usableConnections = new HashSet<>();
@@ -23,33 +34,20 @@ public class PathComputationAlgorithm {
     if (path == null)
       path = new ArrayList<>();
 
+    List<ConnectionFilter> filterList = getConnectionFilters(cEnd, path, constraint);
+
     //only use connections with aEnd as currentHop
     for (Connection conn: allConnections) {
-      //Ignore trails
-      if (Trail.class.isAssignableFrom(conn.getClass()))
-        continue;
-      //Existing path should not contain connection
-      if (!path.contains(conn)) {
-      //check if path is directed, and if so remove all links getting into the current point
-        if (constraint.isDirected()) {
-          if (conn.getaEnd().equals(cEnd)) {
-            usableConnections.add(conn);
-          }
-        } else {
-          //path is bidirectional
-          if (constraint.isSymmetric()) {
-            if (!conn.isDirected()) {
-              usableConnections.add(conn);
-            }
-          } else {
-            //path can be aSymmetric
-            if (!conn.isDirected()) {
-              usableConnections.add(conn);
-            } else if (conn.getaEnd().equals(cEnd)) {
-                usableConnections.add(conn);
-              }
-          }
+
+      boolean doFilter = false;
+      for (ConnectionFilter filter : filterList) {
+        if (filter.filter(conn)) {
+          doFilter = true;
+          break;
         }
+      }
+      if (!doFilter) {
+        usableConnections.add(conn);
       }
     }
     return usableConnections;
@@ -134,18 +132,10 @@ public class PathComputationAlgorithm {
         Set<Connection> allConnections = getUsableConnections(currentHop, connPath, constraint);
         //get all connections from the current hop, and ignore the last connection in the list connPath (do not reuse connection)
         for (Connection connection: allConnections) {
-          //Check for loops over ordered vertex sequence
-          int count = 0;
-          count = count + ((orderedVertexSequence.contains(connection.getaEnd()))? 1 : 0);
-          count = count + ((orderedVertexSequence.contains(connection.getzEnd()))? 1 : 0);
-
-          if (count==1) {
-            //loop avoidance: only one end is contained in the ordered vertex sequence
-            List<Connection> newPath = new ArrayList<>();
-            newPath.addAll(connPath);
-            newPath.add(connection);
-            insertPathInList(potentialPaths, newPath);
-          }
+          List<Connection> newPath = new ArrayList<>();
+          newPath.addAll(connPath);
+          newPath.add(connection);
+          insertPathInList(potentialPaths, newPath);
         }
       }
     }
@@ -165,7 +155,7 @@ public class PathComputationAlgorithm {
         return;
       }
     }
-    //Path longer than all other paths
+    //Path shorter than all other paths
     potentialPaths.add(0, newPath);
   }
 
