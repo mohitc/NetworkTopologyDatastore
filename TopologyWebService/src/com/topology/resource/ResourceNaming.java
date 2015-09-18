@@ -22,4 +22,12 @@ public interface ResourceNaming {
   public static interface ConnectionPoint {
     public static final String PATH = "connectionpoints";
   }
+
+  public static interface GRAPH {
+    public static interface CS {
+      public static final String PATH = "{" + INSTANCE_REF +"}/graph/cs/";
+
+      public static final String STYLE = "style";
+    }
+  }
 }

@@ -53,46 +53,10 @@
       var graphElements = {};
       graphElements.nodes = getGraphNodes();
       graphElements.edges = getGraphConnections();
+      csStyle = getCsStyle();
       var cy = cytoscape({
         container: document.getElementById('cy'),
-        style: [
-          {
-            selector: 'node',
-            css: {
-              'content': 'data(label)',
-              'text-valign': 'center',
-              'text-halign': 'center',
-              'fontSize': 'xx-small'
-            }
-          },
-          {
-            selector: '$node > node',
-            css: {
-              'padding-top': '5px',
-              'padding-left': '5px',
-              'padding-bottom': '5px',
-              'padding-right': '5px',
-              'text-valign': 'top',
-              'text-halign': 'center',
-              'fontSize': 'xx-small'
-            }
-          },
-          {
-            selector: 'edge',
-            css: {
-              'target-arrow-shape': 'triangle'
-            }
-          },
-          {
-            selector: ':selected',
-            css: {
-              'background-color': 'black',
-              'line-color': 'black',
-              'target-arrow-color': 'black',
-              'source-arrow-color': 'black'
-            }
-          }
-        ],
+        style: csStyle,
 
         elements: graphElements,
 

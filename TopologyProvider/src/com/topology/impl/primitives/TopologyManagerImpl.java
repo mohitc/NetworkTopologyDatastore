@@ -347,7 +347,6 @@ public class TopologyManagerImpl implements TopologyManager {
   }
 
   @Override
-  @EntityDeletion
   public void removeTopologyElement(int id) throws TopologyException {
     TopologyElement te = getElementByID(id);
     if (te != null) {

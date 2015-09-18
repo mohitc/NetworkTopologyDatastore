@@ -4,11 +4,14 @@
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
+    <path id="TopologyElements.jars.classpath">
+        <fileset dir="./jars">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
     <path id="TopologyElements.classpath">
         <pathelement location="bin"/>
-        <pathelement location="jars/logging/slf4j-api-1.7.7.jar"/>
-        <pathelement location="jars/dto/jackson-all-1.9.11.jar"/>
-        <pathelement location="jars/aspectj/aspectjrt.jar"/>
+        <path refid="TopologyElements.jars.classpath"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -34,11 +37,20 @@
             <classpath refid="TopologyElements.classpath"/>
         </javac>
     </target>
+    <pathconvert property="manifest.classpath" pathsep=" ">
+        <path refid="TopologyElements.jars.classpath"/>
+        <mapper>
+            <chainedmapper>
+                <flattenmapper/>
+                <globmapper from="*.jar" to="*.jar"/>
+            </chainedmapper>
+        </mapper>
+    </pathconvert>
     <target depends="build" name="jar">
         <delete file="TopologyElements.jar"/>
         <jar destfile="TopologyElements.jar" basedir="bin/">
             <manifest>
-                <attribute name="Class-Path" value="slf4j-api-1.7.7.jar aspectjrt.jar"/>
+                <attribute name="Class-Path" value="${manifest.classpath}"/>
             </manifest>
         </jar>
     </target>

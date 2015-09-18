@@ -221,7 +221,6 @@ public class TopologyManagerDBImpl implements TopologyManager {
   }
 
   @Override
-  @EntityDeletion
   public void removeTopologyElement(int id) throws TopologyException {
     TopologyElement te = getElementByID(id);
     if (te != null) {
@@ -288,13 +287,11 @@ public class TopologyManagerDBImpl implements TopologyManager {
   }
 
   @Override
-  @EntityDeletion
   public void removePort(int id) throws TopologyException {
     removeConnectionPoint(id);
   }
 
   @Override
-  @EntityDeletion
   public void removeConnection(int id) throws TopologyException {
     Connection te = getElementByID(id, Connection.class);
     if (te != null) {

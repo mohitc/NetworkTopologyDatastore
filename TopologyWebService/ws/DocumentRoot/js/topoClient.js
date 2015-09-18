@@ -149,3 +149,12 @@ function getGraphConnections() {
   }
   return graphConnections;
 }
+
+function getCsStyle(instanceID) {
+  var url = getInstanceID() + "/graph/cs/style";
+  var out = doGet(url);
+  if (out != false) {
+    return JSON.parse(out);
+  }
+  return null;
+}
