@@ -8,6 +8,8 @@ import com.topology.importers.ImportTopology;
 import com.topology.primitives.TopologyManager;
 import com.topology.primitives.exception.FileFormatException;
 import com.topology.primitives.exception.TopologyException;
+import com.topology.primitives.exception.properties.PropertyException;
+import com.topology.primitives.properties.converters.impl.DoubleConverter;
 import com.topology.resource.manager.TopologyManagerFactoryHelper;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -98,6 +100,14 @@ public class WsLauncher {
       TopologyManagerFactoryHelper.getInstance().createTopologyManager("test");
       ImportTopology importer = new SNDLibImportTopology();
       TopologyManager manager = TopologyManagerFactoryHelper.getInstance().getTopologyManager("test");
+      try {
+        if (!manager.containsKey("X"))
+          manager.registerKey("X", "X coordinate", Double.class, DoubleConverter.class);
+        if (!manager.containsKey("Y"))
+          manager.registerKey("Y", "Y coordinate", Double.class, DoubleConverter.class);
+      } catch (PropertyException e) {
+        log.error("Error in registering property", e);
+      }
       try {
         importer.importFromFile(".//resources//import//sndlib//abilene.xml", manager);
       } catch (TopologyException e) {

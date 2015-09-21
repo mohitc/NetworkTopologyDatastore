@@ -1,20 +1,25 @@
 package com.topology.resource.graph;
 
+import com.topology.primitives.*;
+import com.topology.primitives.exception.TopologyException;
+import com.topology.primitives.exception.properties.PropertyException;
+import com.topology.primitives.properties.TEPropertyKey;
 import com.topology.resource.AbstractResource;
 import com.topology.resource.ResourceNaming;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Path(ResourceNaming.GRAPH.CS.PATH)
 public class CsGraphResource extends AbstractResource {
+
+  private static final Logger log = LoggerFactory.getLogger(CsGraphResource.class);
 
   private static Map<String, List<CsStyleElement>> csStyle = new HashMap<>();
 
@@ -26,25 +31,103 @@ public class CsGraphResource extends AbstractResource {
       csStyle.put(instanceID, getDefaultCsStyle());
     }
     return csStyle.get(instanceID);
-
   }
+
+  @GET
+  @Produces({MediaType.APPLICATION_JSON})
+  public List<CsElement> getGraphModel(@PathParam(ResourceNaming.INSTANCE_REF) String instanceID) throws TopologyException {
+    List<CsElement> out = new ArrayList<>();
+
+    List<CsNode> nodes = new ArrayList<>();
+    TopologyManager manager = getTopologyManager(instanceID);
+    Set<NetworkElement> nes = manager.getAllElements(NetworkElement.class);
+    for (NetworkElement ne: nes) {
+      nodes.addAll(populateNode(ne));
+    }
+    out.addAll(nodes);
+    Set<Connection> conns = manager.getAllElements(Connection.class);
+    for (Connection conn: conns) {
+      out.add(populateEdge(conn));
+    }
+    return out;
+  }
+
+  private CsEdge populateEdge(Connection conn) {
+    CsEdge edge = new CsEdge();
+    CsEdgeData data = new CsEdgeData(Integer.toString(conn.getID()), Integer.toString(conn.getaEnd().getID()), Integer.toString(conn.getzEnd().getID()));
+    edge.setData(data);
+    return edge;
+  }
+
+
+  private List<CsNode> populateNode(TopologyElement te) {
+    List<CsNode> out = new ArrayList<>();
+    try {
+      TEPropertyKey XCOORD = te.getTopologyManager().getKey("X");
+      TEPropertyKey YCOORD = te.getTopologyManager().getKey("Y");
+
+      if (te!=null) {
+        if (te instanceof NetworkElement) {
+          NetworkElement ne = (NetworkElement)te;
+          //generate parent node
+          CsNode node = new CsNode();
+          node.setData(new CsNodeData(Integer.toString(te.getID()), null));
+          try {
+            CsNodePosition pos = new CsNodePosition(te.getProperty(XCOORD, Double.class), te.getProperty(YCOORD, Double.class));
+            node.setPosition(pos);
+          } catch (PropertyException e) {
+            //position not available, not initializing;
+          }
+          out.add(node);
+          Set<ConnectionPoint> cps = ne.getConnectionPoints(false);
+          for (ConnectionPoint cp: cps) {
+            out.addAll(populateNode(cp));
+          }
+        } else if (te instanceof ConnectionPoint) {
+          ConnectionPoint cp = (ConnectionPoint)te;
+          //generate parent node
+          CsNode node = new CsNode();
+          TopologyElement parent = cp.getParent();
+          node.setData(new CsNodeData(Integer.toString(te.getID()), (parent!=null)?Integer.toString(parent.getID()): null));
+          try {
+            CsNodePosition pos = new CsNodePosition(te.getProperty(XCOORD, Double.class), te.getProperty(YCOORD, Double.class));
+            node.setPosition(pos);
+          } catch (PropertyException e) {
+            //position not available, not initializing;
+          }
+          out.add(node);
+          if (cp instanceof Port) {
+            Set<ConnectionPoint> cps = ((Port)cp).getContainedConnectionPoints();
+            for (ConnectionPoint points : cps) {
+              out.addAll(populateNode(points));
+            }
+          }
+        }
+      }
+    } catch (PropertyException e) {
+      log.error("Coordinates  not initialized in Topology Manager", e);
+    }
+    return out;
+  }
+
 
   private List<CsStyleElement> getDefaultCsStyle() {
     List<CsStyleElement> defaultStyle = new ArrayList<>();
     CsStyleElement element = new CsStyleElement();
     element.setSelector("node");
-    element.addCssProperty("content", "data(label)");
+    element.addCssProperty("content", "data(id)");
     element.addCssProperty("text-valign", "center");
     element.addCssProperty("text-halign", "center");
     element.addCssProperty("fontSize", "xx-small");
+    element.addCssProperty("background-color", "red");
     defaultStyle.add(element);
 
     element = new CsStyleElement();
     element.setSelector("$node > node");
-    element.addCssProperty("padding-top", "5px");
-    element.addCssProperty("padding-left", "5px");
-    element.addCssProperty("padding-bottom", "5px");
-    element.addCssProperty("padding-right", "5px");
+    element.addCssProperty("padding-top", "1px");
+    element.addCssProperty("padding-left", "1px");
+    element.addCssProperty("padding-bottom", "1px");
+    element.addCssProperty("padding-right", "1px");
     element.addCssProperty("text-valign", "top");
     element.addCssProperty("text-halign", "center");
     element.addCssProperty("fontSize", "xx-small");
