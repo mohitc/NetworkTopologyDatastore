@@ -12,6 +12,7 @@
         <class>com.topology.impl.db.primitives.LinkDBImpl</class>
 <!--        <class>com.topology.impl.db.primitives.TrailDBImpl</class> -->
         <class>com.topology.impl.db.primitives.CrossConnectDBImpl</class>
+        <class>com.topology.impl.db.primitives.properties.TEPropertyKeyDBImpl</class>
 
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <properties>

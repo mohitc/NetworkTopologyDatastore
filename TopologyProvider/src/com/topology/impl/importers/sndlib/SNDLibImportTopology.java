@@ -4,7 +4,7 @@ import com.topology.importers.ImportTopology;
 import com.topology.primitives.*;
 import com.topology.primitives.exception.FileFormatException;
 import com.topology.primitives.exception.TopologyException;
-import com.topology.primitives.properties.keys.TEPropertyKey;
+import com.topology.primitives.properties.TEPropertyKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -29,6 +29,9 @@ public class SNDLibImportTopology implements ImportTopology {
       throw new FileFormatException("The document should only have one tag with the list of all network elements");
     }
 
+    TEPropertyKey XCOORD = manager.getKey("X");
+    TEPropertyKey YCOORD = manager.getKey("Y");
+
     //create nodes
     NodeList nesList = list.item(0).getChildNodes();
     for (int i=0;i<nesList.getLength(); i++) {
@@ -46,9 +49,9 @@ public class SNDLibImportTopology implements ImportTopology {
         if ((coordTagList!=null) && (coordTagList.getLength()>0)) {
           Node coords = coordTagList.item(0);
           if (coords.getNodeType()== Node.ELEMENT_NODE) {
-            node.addProperty(TEPropertyKey.XCOORD, Double.parseDouble(((Element)coords).getElementsByTagName("x").item(0).getTextContent()));
-            node.addProperty(TEPropertyKey.YCOORD, Double.parseDouble(((Element) coords).getElementsByTagName("y").item(0).getTextContent()));
-            log.info("Coordinates for node: " + node.getLabel() + ", (X, Y): (" + node.getProperty(TEPropertyKey.XCOORD) + ", " + node.getProperty(TEPropertyKey.YCOORD) + ")");
+            node.addProperty(XCOORD, Double.parseDouble(((Element)coords).getElementsByTagName("x").item(0).getTextContent()));
+            node.addProperty(YCOORD, Double.parseDouble(((Element) coords).getElementsByTagName("y").item(0).getTextContent()));
+            log.info("Coordinates for node: " + node.getLabel() + ", (X, Y): (" + node.getProperty(XCOORD) + ", " + node.getProperty(YCOORD) + ")");
           }
         }
 

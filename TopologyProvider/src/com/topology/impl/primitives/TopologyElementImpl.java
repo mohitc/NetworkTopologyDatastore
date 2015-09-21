@@ -6,12 +6,12 @@ import java.util.Set;
 
 import com.helpers.notification.annotation.PropChange;
 import com.topology.primitives.TopologyManager;
+import com.topology.primitives.properties.TEPropertyKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.topology.primitives.TopologyElement;
 import com.topology.primitives.exception.properties.PropertyException;
-import com.topology.primitives.properties.keys.TEPropertyKey;
 
 public abstract class TopologyElementImpl implements TopologyElement {
 
@@ -21,7 +21,7 @@ public abstract class TopologyElementImpl implements TopologyElement {
 
 	private String label;
 
-	private Map<TEPropertyKey, Object> properties;
+	private Map<TEPropertyKey, String> properties;
 
 	private static final Logger log = LoggerFactory.getLogger(TopologyElement.class);
 
@@ -61,7 +61,10 @@ public abstract class TopologyElementImpl implements TopologyElement {
 				throw new PropertyException("Key cannot be null");
 		if (!hasProperty(key))
 			throw new PropertyException("Property not found");
-		return properties.get(key);
+    if (!manager.containsKey(key))
+      throw new PropertyException("Key not registered with the TopologyManager");
+		String out = properties.get(key);
+    return key.getConverter().fromString(out);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -78,7 +81,7 @@ public abstract class TopologyElementImpl implements TopologyElement {
 	@Override
 	public boolean hasProperty(TEPropertyKey key) {
 		try {
-			return (key!=null) && properties.containsKey(key);
+			return (key!=null) && properties.containsKey(key) && manager.containsKey(key);
 		} catch (Exception e) {
 			log.error("Unexpected exception when checking for property", e);
 			return false;
@@ -93,9 +96,10 @@ public abstract class TopologyElementImpl implements TopologyElement {
 			throw new PropertyException("Key cannot be null");
 		if (value == null) 
 			throw new PropertyException("Value cannot be null");
-
+    if (!manager.containsKey(key))
+      throw new PropertyException("Key not registered with the TopologyManager");
 		try { 
-			properties.put(key, value);
+			properties.put(key, key.getConverter().toString(value));
 		} catch (Exception e) {
 			log.error("Error when adding property to map", e);
 			throw new PropertyException(e.getMessage());

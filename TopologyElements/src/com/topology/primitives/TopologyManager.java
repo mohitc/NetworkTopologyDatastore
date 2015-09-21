@@ -4,6 +4,9 @@ import java.util.Set;
 
 import com.topology.dto.PathDTO;
 import com.topology.primitives.exception.TopologyException;
+import com.topology.primitives.exception.properties.PropertyException;
+import com.topology.primitives.properties.TEPropertyKey;
+import com.topology.primitives.properties.converters.PropertyConverter;
 import com.topology.primitives.resource.ConnectionResource;
 
 public interface TopologyManager {
@@ -79,6 +82,18 @@ public interface TopologyManager {
 	public Set<Connection> getConnections (int startNeID, int endNeID, boolean isDirected, NetworkLayer layer) throws TopologyException;
 
 	public <T extends Connection> Set<T> getConnections (int startNeID, int endNeID, boolean isDirected, NetworkLayer layer, Class<T> instance) throws TopologyException;
+
+  public TEPropertyKey registerKey(String id, String desc, Class objectClass, Class<? extends PropertyConverter> converterClass) throws PropertyException;
+
+  public boolean containsKey(String id);
+
+  public boolean containsKey(TEPropertyKey key);
+
+  public TEPropertyKey getKey(String id) throws PropertyException;
+
+  public void removeKey(String id) throws PropertyException;
+
+  public void removeKey(TEPropertyKey key) throws PropertyException;
 
 }
 

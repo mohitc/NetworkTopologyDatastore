@@ -4,15 +4,17 @@ import com.helpers.notification.annotation.EntityCreation;
 import com.helpers.notification.annotation.EntityDeletion;
 import com.topology.dto.PathDTO;
 import com.topology.impl.db.persistencehelper.EntityManagerFactoryHelper;
+import com.topology.impl.db.primitives.properties.TEPropertyKeyDBImpl;
 import com.topology.primitives.*;
 import com.topology.primitives.exception.TopologyException;
+import com.topology.primitives.exception.properties.PropertyException;
+import com.topology.primitives.properties.TEPropertyKey;
+import com.topology.primitives.properties.converters.PropertyConverter;
 import com.topology.primitives.resource.ConnectionResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -626,5 +628,124 @@ public class TopologyManagerDBImpl implements TopologyManager {
     resultSet.addAll(query.getResultList());
     return resultSet;
   }
+
+  @Override
+  public TEPropertyKey registerKey(String id, String desc, Class objectClass, Class<? extends PropertyConverter> converterClass) throws PropertyException {
+    if (id==null) {
+      throw new PropertyException("ID cannot be null");
+    }
+    if (objectClass==null) {
+      throw new PropertyException("ObjectClass cannot be null");
+    }
+    if (converterClass==null) {
+      throw new PropertyException("Converter class cannot be null");
+    }
+
+    if (containsKey(id)) {
+      //key already exists
+      log.info("The key with ID " + id + " is already registered in the PropertyFactory");
+      return getKey(id);
+    } else {
+        //check if the converter is available
+      EntityManager em = getEntityManager();
+      em.getTransaction().begin();
+      TEPropertyKeyDBImpl key = new TEPropertyKeyDBImpl(getIdentifier(), id, desc, objectClass, converterClass);
+      em.persist(key);
+      em.getTransaction().commit();
+      log.debug("Key " + key + " registered successfully");
+      return key;
+    }
+  }
+
+  @Override
+  public boolean containsKey(String id) {
+    if (id == null)
+      return false;
+    EntityManager em = getEntityManager();
+    TypedQuery<TEPropertyKeyDBImpl> q = em.createNamedQuery(TEPropertyKeyDBImpl.GET_KEY_BY_MANAGER_AND_ID, TEPropertyKeyDBImpl.class);
+    q.setParameter("manager", this.getIdentifier());
+    q.setParameter("keyID", id);
+    try {
+      TEPropertyKeyDBImpl key = q.getSingleResult();
+      return key != null;
+    } catch (NoResultException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean containsKey(TEPropertyKey key) {
+    if (key==null)
+      return false;
+    EntityManager em = getEntityManager();
+    TypedQuery<TEPropertyKeyDBImpl> q = em.createNamedQuery(TEPropertyKeyDBImpl.GET_KEY_BY_MANAGER_AND_ID, TEPropertyKeyDBImpl.class);
+    q.setParameter("manager", this.getIdentifier());
+    q.setParameter("keyID", key.getId());
+    try {
+      TEPropertyKeyDBImpl key1 = q.getSingleResult();
+      if (key1!=null)
+        return key.equals(key1);
+    } catch (NoResultException e) {
+      return false;
+    }
+    return false;
+  }
+
+  @Override
+  public TEPropertyKey getKey(String id) throws PropertyException {
+    if (id == null)
+      throw new PropertyException("ID cannot be null");
+    try {
+      EntityManager em = getEntityManager();
+      TypedQuery<TEPropertyKeyDBImpl> q = em.createNamedQuery(TEPropertyKeyDBImpl.GET_KEY_BY_MANAGER_AND_ID, TEPropertyKeyDBImpl.class);
+      q.setParameter("manager", this.getIdentifier());
+      q.setParameter("keyID", id);
+      TEPropertyKeyDBImpl key = q.getSingleResult();
+      return key;
+    } catch (Exception e) {
+      log.error("Error while fetching key", e);
+      throw new PropertyException("Error while fetching key" +  e.getMessage());
+    }
+  }
+
+  @Override
+  public void removeKey(String id) throws PropertyException {
+    if (id==null) {
+      throw new PropertyException("ID cannot be null");
+    }
+    if (containsKey(id)) {
+      TEPropertyKey key = getKey(id);
+      Set<TopologyElement> elements = getAllElements(TopologyElement.class);
+      for (TopologyElement te: elements) {
+        if (te.hasProperty(key)) {
+          try {
+            te.removeProperty(key);
+          } catch (PropertyException e) {
+            //unexpected exception
+            log.warn("Unexpected exception while deleting property", e);
+          }
+        }
+      }
+      EntityManager em = getEntityManager();
+      em.getTransaction().begin();
+      TypedQuery<TEPropertyKeyDBImpl> q = em.createNamedQuery(TEPropertyKeyDBImpl.GET_KEY_BY_MANAGER_AND_ID, TEPropertyKeyDBImpl.class);
+      q.setParameter("manager", this.getIdentifier());
+      q.setParameter("keyID", key.getId());
+      TEPropertyKeyDBImpl keyDB = q.getSingleResult();
+      em.remove(keyDB);
+      em.getTransaction().commit();
+    } else {
+      throw new PropertyException("Property key with ID: " + id + " does not exist");
+    }
+  }
+
+  @Override
+  public void removeKey(TEPropertyKey key) throws PropertyException {
+    if (key==null) {
+      throw new PropertyException("Key cannot be null");
+    }
+    removeKey(key.getId());
+  }
+
 
 }

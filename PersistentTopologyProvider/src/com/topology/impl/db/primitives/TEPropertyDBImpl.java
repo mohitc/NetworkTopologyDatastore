@@ -1,7 +1,7 @@
 package com.topology.impl.db.primitives;
 
-import com.topology.impl.db.primitives.converters.TEPropertyConverter;
-import com.topology.primitives.properties.keys.TEPropertyKey;
+import com.topology.impl.db.primitives.properties.TEPropertyKeyDBImpl;
+import com.topology.primitives.properties.TEPropertyKey;
 
 import javax.persistence.*;
 
@@ -14,12 +14,15 @@ public class TEPropertyDBImpl {
   @GeneratedValue(strategy=GenerationType.AUTO)
   private int id;
 
-  @Column(name="key")
-  @Convert(converter= TEPropertyConverter.class)
-  private TEPropertyKey key;
+
+  @OneToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name="key_id", referencedColumnName="id")
+  private TEPropertyKeyDBImpl key;
 
   @Column(name="value")
   private String value;
+
+  public TEPropertyDBImpl(){}
 
   public String getValue() {
     return value;
@@ -34,15 +37,14 @@ public class TEPropertyDBImpl {
   }
 
   public void setKey(TEPropertyKey key) {
-    this.key = key;
+    if (key instanceof TEPropertyKeyDBImpl)
+      this.key = (TEPropertyKeyDBImpl)key;
   }
 
   public boolean equals(Object o) {
     if ((o==null) || (!o.getClass().isAssignableFrom(TEPropertyDBImpl.class)))
       return false;
-    if (((TEPropertyDBImpl)o).id == this.id)
-      return true;
-    return false;
+    return (((TEPropertyDBImpl)o).id == this.id);
   }
 
   public int hashCode() {

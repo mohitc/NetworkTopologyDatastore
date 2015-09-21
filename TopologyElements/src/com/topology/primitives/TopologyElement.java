@@ -1,9 +1,10 @@
 package com.topology.primitives;
 
 import com.topology.primitives.exception.properties.PropertyException;
-import com.topology.primitives.properties.keys.TEPropertyKey;
+import com.topology.primitives.properties.TEPropertyKey;
 
 import java.util.Set;
+
 
 public interface TopologyElement {
 

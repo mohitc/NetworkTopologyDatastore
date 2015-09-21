@@ -2,7 +2,7 @@ package com.topology.dto;
 
 import com.topology.primitives.*;
 import com.topology.primitives.exception.properties.PropertyException;
-import com.topology.primitives.properties.keys.TEPropertyKey;
+import com.topology.primitives.properties.TEPropertyKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

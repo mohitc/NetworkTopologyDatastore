@@ -5,7 +5,8 @@
     <property name="debuglevel" value="source,lines,vars"/>
 
     <!-- PostgreSQL Properties -->
-    <property name="postgres.path" value = "c:\fnm\nms\postgres"/>
+<!--    <property name="postgres.path" value = "c:\fnm\nms\postgres"/> -->
+    <property name="postgres.path" value = "/usr"/>
     <property name="postgres.user" value = "mohit"/>
     <property name="postgres.password" value = "necromancer"/>
     <property name="postgres.db" value = "topology_provider"/>

@@ -6,8 +6,12 @@ import com.helpers.benchmark.annotation.Benchmark;
 import com.helpers.notification.annotation.EntityCreation;
 import com.helpers.notification.annotation.EntityDeletion;
 import com.topology.dto.PathDTO;
+import com.topology.impl.primitives.properties.TEPropertyKeyImpl;
 import com.topology.primitives.*;
+import com.topology.primitives.exception.properties.PropertyException;
 import com.topology.primitives.exception.resource.ResourceException;
+import com.topology.primitives.properties.TEPropertyKey;
+import com.topology.primitives.properties.converters.PropertyConverter;
 import com.topology.primitives.resource.ConnectionResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +39,8 @@ public class TopologyManagerImpl implements TopologyManager {
   private static final Logger log = LoggerFactory.getLogger(TopologyManagerImpl.class);
 
   private Random generator;
+
+  private Map<String, TEPropertyKeyImpl> registeredKeys;
 
   //Class to store key for connections between network elements
   private class NEPair {
@@ -77,6 +83,7 @@ public class TopologyManagerImpl implements TopologyManager {
     neConnections = new HashMap<>();
     generator = new Random();
     this.identifier = identifier;
+    registeredKeys = new HashMap<>();
   }
 
   @Override
@@ -691,6 +698,91 @@ public class TopologyManagerImpl implements TopologyManager {
                                                       Class<T> instance) throws TopologyException {
     return filterConnByInstance(getConnections(startNeID, endNeID, isDirected, layer), instance);
   }
+
+  @Override
+  public TEPropertyKey registerKey(String id, String desc, Class objectClass, Class<? extends PropertyConverter> converterClass) throws PropertyException {
+    if (id==null) {
+      throw new PropertyException("ID cannot be null");
+    }
+    if (objectClass==null) {
+      throw new PropertyException("ObjectClass cannot be null");
+    }
+    if (converterClass==null) {
+      throw new PropertyException("Converter class cannot be null");
+    }
+
+    synchronized (registeredKeys) {
+      if (registeredKeys.containsKey(id)) {
+        //key already exists
+        log.info("The key with ID " + id + " is already registered in the PropertyFactory");
+        return registeredKeys.get(id);
+      } else {
+        //check if the converter is available
+        TEPropertyKeyImpl key = new TEPropertyKeyImpl(id, desc, objectClass, converterClass);
+        registeredKeys.put(id, key);
+        log.debug("Key " + key + " registered successfully");
+        return key;
+      }
+    }
+  }
+
+  @Override
+  public boolean containsKey(String id) {
+    return (id!=null) && registeredKeys.containsKey(id);
+  }
+
+  @Override
+  public boolean containsKey(TEPropertyKey key) {
+    return (key!=null) && (registeredKeys.containsKey(key.getId())) && (registeredKeys.get(key.getId()).equals(key));
+  }
+
+  @Override
+  public TEPropertyKey getKey(String id) throws PropertyException{
+    if (id==null) {
+      throw new PropertyException("ID cannot be null");
+    }
+    if (containsKey(id)) {
+      return registeredKeys.get(id);
+    }
+    throw new PropertyException("Key with ID: " + id  + " does not exist");
+  }
+
+
+  @Override
+  public void removeKey(String id) throws PropertyException {
+    if (id==null) {
+      throw new PropertyException("ID cannot be null");
+    }
+    synchronized (registeredKeys) {
+      if (registeredKeys.containsKey(id)) {
+        //remove property from all topology elements
+        TEPropertyKey key = registeredKeys.get(id);
+        Set<TopologyElement> elements = getAllElements(TopologyElement.class);
+        for (TopologyElement te: elements) {
+          if (te.hasProperty(key)) {
+            try {
+              te.removeProperty(key);
+            } catch (PropertyException e) {
+              //unexpected exception
+              log.warn("Unexpected exception while deleting property", e);
+            }
+          }
+        }
+        registeredKeys.remove(id);
+        log.info("Property with id: " + id + " removed");
+      } else
+        throw new PropertyException("Property key with ID: " + id + " does not exist");
+    }
+  }
+
+  @Override
+  public void removeKey(TEPropertyKey key) throws PropertyException {
+    if (key==null) {
+      throw new PropertyException("Key cannot be null");
+    }
+    removeKey(key.getId());
+  }
+
 
   private PathImpl generatePathDef(PathDTO dto) throws TopologyException {
     PathImpl path = new PathImpl();

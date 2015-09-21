@@ -2,12 +2,12 @@ package com.topology.impl.db.primitives;
 
 import com.helpers.notification.annotation.PropChange;
 import com.topology.impl.db.persistencehelper.EntityManagerFactoryHelper;
+import com.topology.impl.db.primitives.properties.TEPropertyKeyDBImpl;
 import com.topology.primitives.TopologyElement;
 import com.topology.primitives.TopologyManager;
 import com.topology.primitives.exception.properties.PropertyException;
-import com.topology.primitives.properties.keys.TEPropertyKey;
+import com.topology.primitives.properties.TEPropertyKey;
 
-import javax.persistence.Index;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
@@ -121,7 +121,7 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
     if (teProperties!=null)
       for (TEPropertyDBImpl prop: teProperties) {
         if (prop.getKey().equals(key))
-          return prop;
+          return prop.getKey().getConverter().fromString(prop.getValue());
       }
     throw new PropertyException("Key not found in topology element");
   }
@@ -157,6 +157,7 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
     em.getTransaction().begin();
     TopologyElementDBImpl te = em.find(TopologyElementDBImpl.class, this.getID());
 
+    TEPropertyKeyDBImpl keyDB = (TEPropertyKeyDBImpl) getTopologyManager().getKey(key.getId());
     //Query query = em.createQuery(TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY);
     //query.setParameter("id", id);
     //query.setParameter("key", key);
@@ -165,7 +166,7 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
     TEPropertyDBImpl prop = null;
     if (te.teProperties!=null)
       for (TEPropertyDBImpl temp: te.teProperties) {
-        if (temp.getKey().equals(key)) {
+        if (temp.getKey().equals(keyDB)) {
           prop = temp;
           break;
         }
@@ -173,13 +174,13 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
 
     if (prop==null) {
       prop = new TEPropertyDBImpl();
-      prop.setKey(key);
-      prop.setValue(value.toString());
+      prop.setKey(keyDB);
+      prop.setValue(keyDB.getConverter().toString(value));
       te.teProperties.add(prop);
       this.teProperties.add(prop);
       em.persist(prop);
     } else {
-      prop.setValue(value.toString());
+      prop.setValue(keyDB.getConverter().toString(value.toString()));
     }
     em.getTransaction().commit();
   }
