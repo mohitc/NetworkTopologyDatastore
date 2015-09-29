@@ -1,6 +1,7 @@
 package com.topology.primitives.connresource;
 
 import com.topology.primitives.exception.resource.ResourceException;
+import com.topology.primitives.properties.converters.impl.DoubleConverter;
 import com.topology.primitives.resource.ConnectionResource;
 
 import java.util.Set;
@@ -11,6 +12,9 @@ public class BandwidthConnectionResource implements ConnectionResource {
 
   public BandwidthConnectionResource(double bandwidth) {
     this.bandwidth = bandwidth;
+  }
+
+  public BandwidthConnectionResource() {
   }
 
   /**Checks if the resource is not null and is of type bandwidth connection resource
@@ -65,6 +69,23 @@ public class BandwidthConnectionResource implements ConnectionResource {
         availableResource = availableResource.availableResource(resource);
     }
     return availableResource;
+  }
+
+  @Override
+  public String convertToString() {
+    return Double.toString(bandwidth);
+  }
+
+  @Override
+  public ConnectionResource populateFromString(String in) throws ResourceException {
+    if (in==null)
+      throw new ResourceException("Input String cannot be null");
+    try {
+      double bandwidth = Double.parseDouble(in);
+      return new BandwidthConnectionResource(bandwidth);
+    } catch (NumberFormatException e) {
+      throw new ResourceException("Could not convert string {" + in + "} to a Bandwidth connection resource");
+    }
   }
 
   /**Function to get the bandwidth available with the connection resource

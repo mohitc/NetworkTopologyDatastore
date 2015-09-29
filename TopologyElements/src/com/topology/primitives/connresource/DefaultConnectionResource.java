@@ -27,4 +27,14 @@ public class DefaultConnectionResource implements ConnectionResource {
   public ConnectionResource availableResource(Set<ConnectionResource> reservedResources) throws ResourceException {
     return this;
   }
+
+  @Override
+  public String convertToString() {
+    return "";
+  }
+
+  @Override
+  public ConnectionResource populateFromString(String in) throws ResourceException {
+    return new DefaultConnectionResource();
+  }
 }
