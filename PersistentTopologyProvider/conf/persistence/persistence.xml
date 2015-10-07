@@ -13,7 +13,7 @@
 <!--        <class>com.topology.impl.db.primitives.TrailDBImpl</class> -->
         <class>com.topology.impl.db.primitives.CrossConnectDBImpl</class>
         <class>com.topology.impl.db.primitives.properties.TEPropertyKeyDBImpl</class>
-
+        <class>com.topology.impl.db.primitives.TopologyManagerDBImpl</class>
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/topology_provider" />

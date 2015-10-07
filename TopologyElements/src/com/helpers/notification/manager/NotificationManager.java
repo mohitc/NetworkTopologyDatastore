@@ -3,7 +3,6 @@ package com.helpers.notification.manager;
 import com.helpers.notification.filters.NotificationFilter;
 import com.helpers.notification.filters.impl.TypeNotificationFilter;
 import com.helpers.notification.handlers.NotificationHandler;
-import com.helpers.notification.handlers.impl.LogNotificationHandler;
 import com.helpers.notification.messages.NotificationMessage;
 import com.helpers.notification.messages.NotificationType;
 import org.slf4j.Logger;

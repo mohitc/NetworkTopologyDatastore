@@ -23,12 +23,14 @@ public abstract class TopologyElementImpl implements TopologyElement {
 
 	private Map<TEPropertyKey, String> properties;
 
+	private TEPropertyHelper propHelper;
+
 	private static final Logger log = LoggerFactory.getLogger(TopologyElement.class);
 
 	public TopologyElementImpl(TopologyManager manager, int id) {
 		this.manager = manager;
     this.id = id;
-		properties = new HashMap<>();
+    propHelper = new TEPropertyHelper(manager, log);
 	}
 
   @Override
@@ -57,73 +59,37 @@ public abstract class TopologyElementImpl implements TopologyElement {
 	@Override
 	public Object getProperty(TEPropertyKey key)
 			throws PropertyException {
-		if (key==null)
-				throw new PropertyException("Key cannot be null");
-		if (!hasProperty(key))
-			throw new PropertyException("Property not found");
-    if (!manager.containsKey(key))
-      throw new PropertyException("Key not registered with the TopologyManager");
-		String out = properties.get(key);
-    return key.getConverter().fromString(out);
+    return propHelper.getProperty(key);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <K> K getProperty(TEPropertyKey key, Class<K> instance)
 			throws PropertyException {
-		Object out = getProperty(key);
-		if (out==null) throw new PropertyException("Value is null");
-		if (instance.isAssignableFrom(out.getClass())) {
-			return (K)out;
-		} else throw new PropertyException("The value for key " + key + " is of type " + out.getClass() + " which is not assignable from " + instance);
+    return propHelper.getProperty(key, instance);
 	}
 
 	@Override
 	public boolean hasProperty(TEPropertyKey key) {
-		try {
-			return (key!=null) && properties.containsKey(key) && manager.containsKey(key);
-		} catch (Exception e) {
-			log.error("Unexpected exception when checking for property", e);
-			return false;
-		}
+    return propHelper.hasProperty(key);
 	}
 
 	@Override
   @PropChange
   public void addProperty(TEPropertyKey key, Object value)
 			throws PropertyException {
-		if (key == null) 
-			throw new PropertyException("Key cannot be null");
-		if (value == null) 
-			throw new PropertyException("Value cannot be null");
-    if (!manager.containsKey(key))
-      throw new PropertyException("Key not registered with the TopologyManager");
-		try { 
-			properties.put(key, key.getConverter().toString(value));
-		} catch (Exception e) {
-			log.error("Error when adding property to map", e);
-			throw new PropertyException(e.getMessage());
-		}
+    propHelper.addProperty(key, value);
 	}
 
 	@Override
   @PropChange
   public void removeProperty(TEPropertyKey key)
 			throws PropertyException {
-		if (key == null) 
-			throw new PropertyException("Key cannot be null");
-		if (!properties.containsKey(key)) 
-			throw new PropertyException("Property not set for test.topology element");
-		try { 
-			properties.remove(key);
-		} catch (Exception e) {
-			log.error("Error when removing property from map", e);
-			throw new PropertyException(e.getMessage());
-		}
+    propHelper.removeProperty(key);
 	}
 
     public Set<TEPropertyKey> definedPropertyKeys() {
-        return properties.keySet();
+      return propHelper.definedPropertyKeys();
     }
 
     //Check if two instance of test.topology objects are equal

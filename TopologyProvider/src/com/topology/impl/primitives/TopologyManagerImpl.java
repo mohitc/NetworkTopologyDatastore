@@ -5,6 +5,7 @@ import java.util.*;
 import com.helpers.benchmark.annotation.Benchmark;
 import com.helpers.notification.annotation.EntityCreation;
 import com.helpers.notification.annotation.EntityDeletion;
+import com.helpers.notification.annotation.PropChange;
 import com.topology.dto.PathDTO;
 import com.topology.impl.primitives.properties.TEPropertyKeyImpl;
 import com.topology.primitives.*;
@@ -42,6 +43,7 @@ public class TopologyManagerImpl implements TopologyManager {
 
   private Map<String, TEPropertyKeyImpl> registeredKeys;
 
+  private TEPropertyHelper propHelper;
   //Class to store key for connections between network elements
   private class NEPair {
     private int aEndID;
@@ -84,6 +86,7 @@ public class TopologyManagerImpl implements TopologyManager {
     generator = new Random();
     this.identifier = identifier;
     registeredKeys = new HashMap<>();
+    propHelper = new TEPropertyHelper(this, log);
   }
 
   @Override
@@ -783,6 +786,36 @@ public class TopologyManagerImpl implements TopologyManager {
     removeKey(key.getId());
   }
 
+  @Override
+  public Object getProperty(TEPropertyKey key) throws PropertyException {
+    return propHelper.getProperty(key);
+  }
+
+  @Override
+  public <K> K getProperty(TEPropertyKey key, Class<K> instance) throws PropertyException {
+    return propHelper.getProperty(key, instance);
+  }
+
+  @Override
+  public boolean hasProperty(TEPropertyKey key) {
+    return propHelper.hasProperty(key);
+  }
+
+  @Override
+  public void addProperty(TEPropertyKey key, Object value) throws PropertyException {
+    propHelper.addProperty(key, value);
+  }
+
+  @Override
+  public void removeProperty(TEPropertyKey key) throws PropertyException {
+    propHelper.removeProperty(key);
+  }
+
+  @Override
+  public Set<TEPropertyKey> definedPropertyKeys() {
+    return propHelper.definedPropertyKeys();
+  }
+
 
   private PathImpl generatePathDef(PathDTO dto) throws TopologyException {
     PathImpl path = new PathImpl();
@@ -806,6 +839,8 @@ public class TopologyManagerImpl implements TopologyManager {
     }
     return connList;
   }
+
+
 
 
 }

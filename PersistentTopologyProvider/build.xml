@@ -21,7 +21,7 @@
         <path refid="TopologyElements.classpath"/>
         <pathelement location="jars/logging/slf4j-api-1.7.7.jar"/>
         <pathelement location="jars/persistence/eclipselink.jar"/>
-        <pathelement location="jars/persistence/postgresql-9.3-1102.jdbc41.jar"/>
+        <pathelement location="jars/persistence/postgresql-9.4-1203.jdbc4.jar"/>
         <pathelement location="jars/persistence/javax.persistence_2.1.0.v201304241213.jar"/>
     </path>
     <target name="init">

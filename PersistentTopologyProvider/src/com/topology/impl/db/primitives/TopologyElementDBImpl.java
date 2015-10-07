@@ -8,22 +8,7 @@ import com.topology.primitives.TopologyManager;
 import com.topology.primitives.exception.properties.PropertyException;
 import com.topology.primitives.properties.TEPropertyKey;
 
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.Table;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Column;
-import javax.persistence.OneToMany;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.EntityManager;
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
-import javax.persistence.InheritanceType;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -58,7 +43,7 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
   @GeneratedValue(strategy=GenerationType.AUTO)
   private int id;
 
-  @Column(name = "manager", nullable = false)
+  @Column(name="manager_id")
   protected String topoManagerInstance;
 
   @Column(name = "label")
@@ -79,7 +64,9 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
 
   @Override
   public TopologyManager getTopologyManager() {
-    return new TopologyManagerDBImpl(topoManagerInstance);
+    EntityManager em = EntityManagerFactoryHelper.getEntityManager();
+    TopologyManager manager = em.find(TopologyManagerDBImpl.class, topoManagerInstance);
+    return manager;
   }
 
   @Override
@@ -112,7 +99,7 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
   public Object getProperty(TEPropertyKey key) throws PropertyException {
     if (key==null)
       throw new PropertyException("Property key cannot be null");
-    EntityManager em = EntityManagerFactoryHelper.getEntityManager();
+//    EntityManager em = EntityManagerFactoryHelper.getEntityManager();
     //Query query = em.createQuery(TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY);
     //query.setParameter("id", id);
     //query.setParameter("key", key);
@@ -225,7 +212,7 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
 
   @Override
   public Set<TEPropertyKey> definedPropertyKeys() {
-    EntityManager em = EntityManagerFactoryHelper.getEntityManager();
+//    EntityManager em = EntityManagerFactoryHelper.getEntityManager();
     Set<TEPropertyKey> keys = new HashSet<>();
     for (TEPropertyDBImpl propDB: teProperties) {
       keys.add(propDB.getKey());

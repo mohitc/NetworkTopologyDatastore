@@ -6,10 +6,7 @@ import com.topology.primitives.properties.TEPropertyKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class TopologyDTO {
 
@@ -100,6 +97,16 @@ public abstract class TopologyDTO {
   }
 
   public String toString() {
-    return "Topology Element: " + this.getClass().getSimpleName() + ", ID: " + this.getId() + ", label: " + this.getLabel();
+    String out = "Topology Element: " + this.getClass().getSimpleName() + ", ID: " + this.getId() + ", label: " + this.getLabel();
+
+    Set<TEPropertyKey> propertyKeys = (properties!=null) ? properties.keySet(): null;
+    if ((propertyKeys!=null) && (propertyKeys.size()>0)) {
+      out = out + ", Properties: {";
+      for (TEPropertyKey key : propertyKeys) {
+        out = out + key.getId() + ", ";
+      }
+      out = out.substring(0, out.length() - 2) + "}";
+    }
+    return out;
   }
 }

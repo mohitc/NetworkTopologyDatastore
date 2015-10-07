@@ -11,6 +11,7 @@ import com.topology.primitives.exception.properties.PropertyException;
 import com.topology.primitives.properties.TEPropertyKey;
 import com.topology.primitives.properties.converters.PropertyConverter;
 import com.topology.primitives.resource.ConnectionResource;
+import org.eclipse.persistence.annotations.Index;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,10 +19,20 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
+@Table(name="topology_managers")
+@NamedQueries({
+    @NamedQuery(name = TopologyManagerDBImpl.GET_TE_MANAGER_BY_ID, query = "Select t from TopologyManagerDBImpl t WHERE (t.instance = :id)")
+})
 public class TopologyManagerDBImpl implements TopologyManager {
+
+  public static final String GET_TE_MANAGER_BY_ID = "GET_TE_MANAGER_BY_ID";
 
   private static final Logger log = LoggerFactory.getLogger(TopologyManagerDBImpl.class);
 
+  @Id
+  @Column(name="id", unique = true, nullable=false, columnDefinition = "VARCHAR(100)")
+  @Index(name = "topo_manager_instance_index")
   private String instance;
 
   private EntityManager getEntityManager() {
@@ -31,6 +42,8 @@ public class TopologyManagerDBImpl implements TopologyManager {
   public TopologyManagerDBImpl(String instance) {
     this.instance = instance;
   }
+
+  private TopologyManagerDBImpl(){}
 
   @Override
   public String getIdentifier() {
@@ -745,6 +758,36 @@ public class TopologyManagerDBImpl implements TopologyManager {
       throw new PropertyException("Key cannot be null");
     }
     removeKey(key.getId());
+  }
+
+  @Override
+  public Object getProperty(TEPropertyKey key) throws PropertyException {
+    return null;
+  }
+
+  @Override
+  public <K> K getProperty(TEPropertyKey key, Class<K> instance) throws PropertyException {
+    return null;
+  }
+
+  @Override
+  public boolean hasProperty(TEPropertyKey key) {
+    return false;
+  }
+
+  @Override
+  public void addProperty(TEPropertyKey key, Object value) throws PropertyException {
+
+  }
+
+  @Override
+  public void removeProperty(TEPropertyKey key) throws PropertyException {
+
+  }
+
+  @Override
+  public Set<TEPropertyKey> definedPropertyKeys() {
+    return null;
   }
 
 
