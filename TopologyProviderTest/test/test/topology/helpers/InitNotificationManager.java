@@ -14,6 +14,6 @@ public class InitNotificationManager {
   public static void init(){
     List<NotificationFilter> filters = new ArrayList<>();
     filters.add(new TypeNotificationFilter(NotificationType.TENotification));
-    NotificationManager.addNotificationProcessor(filters, new LogNotificationHandler());
+//    NotificationManager.addNotificationProcessor(filters, new LogNotificationHandler());
   }
 }

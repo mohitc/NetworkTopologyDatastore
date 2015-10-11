@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<handler>
+    <class>com.helpers.notification.handlers.log.LogNotificationHandler</class>
+    <filters>
+        <filter class = "com.helpers.notification.filters.impl.TypeNotificationFilter">
+            <param>TENotification</param>
+        </filter>
+    </filters>
+</handler>

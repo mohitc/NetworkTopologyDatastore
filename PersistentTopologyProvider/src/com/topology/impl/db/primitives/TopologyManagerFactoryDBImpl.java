@@ -22,10 +22,8 @@ public class TopologyManagerFactoryDBImpl implements TopologyManagerFactory{
     if (id==null)
       throw new TopologyException("ID cannot be null");
     EntityManager em = EntityManagerFactoryHelper.getEntityManager();
-    Query query = em.createNamedQuery(TopologyManagerDBImpl.GET_TE_MANAGER_BY_ID);
-    query.setParameter("id", id);
     try {
-      TopologyManager manager = (TopologyManagerDBImpl)query.getSingleResult();
+      TopologyManager manager = em.find((TopologyManagerDBImpl.class), id);
       if (manager!=null)
         throw new TopologyException("ID is not unique, a topology manager instance with ID: "+ id + " exists");
     } catch (EntityNotFoundException | NoResultException e) {
@@ -44,10 +42,12 @@ public class TopologyManagerFactoryDBImpl implements TopologyManagerFactory{
     if (id==null)
       throw new TopologyException("ID cannot be null");
     EntityManager em = EntityManagerFactoryHelper.getEntityManager();
-    Query query = em.createNamedQuery(TopologyManagerDBImpl.GET_TE_MANAGER_BY_ID);
-    query.setParameter("id", id);
     try {
-      return (TopologyManagerDBImpl)query.getSingleResult();
+      TopologyManager manager = em.find((TopologyManagerDBImpl.class), id);
+      if (manager!=null)
+        return manager;
+      else
+        throw new TopologyException("Topology manager with ID : " + id + " does not exist");
     } catch (EntityNotFoundException | NoResultException e) {
       throw new TopologyException("Topology manager with ID : " + id + " does not exist");
     }
@@ -60,11 +60,9 @@ public class TopologyManagerFactoryDBImpl implements TopologyManagerFactory{
       return false;
     }
     EntityManager em = EntityManagerFactoryHelper.getEntityManager();
-    Query query = em.createNamedQuery(TopologyManagerDBImpl.GET_TE_MANAGER_BY_ID);
-    query.setParameter("id", id);
     try {
-      query.getSingleResult();
-      return true;
+      TopologyManager manager = em.find((TopologyManagerDBImpl.class), id);
+      return manager!=null;
     } catch (Exception e) {
       return false;
     }

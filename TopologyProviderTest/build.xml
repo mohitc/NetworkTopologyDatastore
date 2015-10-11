@@ -47,6 +47,11 @@
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
+        <mkdir dir="bin/META-INF"/>
+        <copy includeemptydirs="false" todir="bin/META-INF">
+            <fileset dir="conf/notification">
+            </fileset>
+        </copy>
     </target>
     <target name="clean">
         <delete dir="bin"/>

@@ -25,6 +25,8 @@
         <copy includeemptydirs="false" todir="bin/META-INF">
             <fileset dir="conf/aspectj">
             </fileset>
+            <fileset dir="conf/notification">
+            </fileset>
         </copy>
     </target>
     <target name="clean">

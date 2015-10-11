@@ -1,13 +1,14 @@
 package com.helpers.notification.manager;
 
 import com.helpers.notification.filters.NotificationFilter;
-import com.helpers.notification.filters.impl.TypeNotificationFilter;
 import com.helpers.notification.handlers.NotificationHandler;
+import com.helpers.notification.manager.parser.NotificationHandlerParser;
+import com.helpers.notification.manager.parser.NotificationProcessorConf;
 import com.helpers.notification.messages.NotificationMessage;
-import com.helpers.notification.messages.NotificationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -36,32 +37,28 @@ public class NotificationManager {
     executor.submit(processor);
   }
 
-  static {
-    //load notification handlers
-    List<String> classNames = new ArrayList<>();
-    classNames.add("com.helpers.notification.handlers.log.LogNotificationHandler");
-    for (String in: classNames) {
-      Class className = null;
-      try {
-        className = Class.forName(in);
-      } catch (ClassNotFoundException e) {
-        log.error("Could not find instance of Notification Handler class", e);
+  private static void initNotificationHandlerConf() {
+    try {
+      URL filePath = NotificationManager.class.getClassLoader().getResource("META-INF/notfhandlers.xml");
+      if (filePath==null) {
+        log.debug("Could not find or load notfhandlers.xml");
+        return;
       }
-      if (className!=null) {
-        if (!(NotificationHandler.class.isAssignableFrom(className))) {
-          log.error("Class " + className.getSimpleName() + " not an instance of a NotificationHandler");
-        } else {
-          try {
-            NotificationHandler hdlr = (NotificationHandler)className.newInstance();
-            List<NotificationFilter> filters = new ArrayList<>();
-            filters.add(new TypeNotificationFilter(NotificationType.TENotification));
-            NotificationManager.addNotificationProcessor(filters, hdlr);
-          } catch (InstantiationException | IllegalAccessException e) {
-            log.error("Could not instantiate class. Please check if default constructor is implemented", e);
-          }
+      NotificationHandlerParser parser = new NotificationHandlerParser();
+      List<NotificationProcessorConf> confList = parser.parse(filePath.toURI());
+
+      if (confList!=null) {
+        for (NotificationProcessorConf conf: confList) {
+          addNotificationProcessor(conf.getFilters(), conf.getHandler());
         }
       }
+    } catch (Exception e) {
+      log.error("Could not find or load notfhandlers.xml.sample");
     }
+  }
+
+  static {
+    initNotificationHandlerConf();
   }
 
 }

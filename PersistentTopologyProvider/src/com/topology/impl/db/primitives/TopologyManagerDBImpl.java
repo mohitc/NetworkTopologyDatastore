@@ -2,6 +2,7 @@ package com.topology.impl.db.primitives;
 
 import com.helpers.notification.annotation.EntityCreation;
 import com.helpers.notification.annotation.EntityDeletion;
+import com.helpers.notification.annotation.PropChange;
 import com.topology.dto.PathDTO;
 import com.topology.impl.db.persistencehelper.EntityManagerFactoryHelper;
 import com.topology.impl.db.primitives.properties.TEPropertyKeyDBImpl;
@@ -22,11 +23,9 @@ import java.util.Set;
 @Entity
 @Table(name="topology_managers")
 @NamedQueries({
-    @NamedQuery(name = TopologyManagerDBImpl.GET_TE_MANAGER_BY_ID, query = "Select t from TopologyManagerDBImpl t WHERE (t.instance = :id)")
 })
 public class TopologyManagerDBImpl implements TopologyManager {
 
-  public static final String GET_TE_MANAGER_BY_ID = "GET_TE_MANAGER_BY_ID";
 
   private static final Logger log = LoggerFactory.getLogger(TopologyManagerDBImpl.class);
 
@@ -34,6 +33,10 @@ public class TopologyManagerDBImpl implements TopologyManager {
   @Column(name="id", unique = true, nullable=false, columnDefinition = "VARCHAR(100)")
   @Index(name = "topo_manager_instance_index")
   private String instance;
+
+  @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, orphanRemoval = true)
+  @JoinColumn(name="manager_id")
+  private Set<TEPropertyDBImpl> teProperties;
 
   private EntityManager getEntityManager() {
     return EntityManagerFactoryHelper.getEntityManager();
@@ -762,33 +765,102 @@ public class TopologyManagerDBImpl implements TopologyManager {
 
   @Override
   public Object getProperty(TEPropertyKey key) throws PropertyException {
-    return null;
+    if (key==null)
+      throw new PropertyException("Property key cannot be null");
+    if (teProperties!=null)
+      for (TEPropertyDBImpl prop: teProperties) {
+        if (prop.getKey().equals(key))
+          return prop.getKey().getConverter().fromString(prop.getValue());
+      }
+    throw new PropertyException("Key not found in topology manager properties");
   }
 
   @Override
   public <K> K getProperty(TEPropertyKey key, Class<K> instance) throws PropertyException {
-    return null;
+    Object o = getProperty(key);
+    if (o.getClass().isAssignableFrom(instance))
+      return (K)o;
+    else
+      throw new PropertyException("Property value of type :" + o.getClass() + " cannot be cast to type " + instance);
   }
 
   @Override
   public boolean hasProperty(TEPropertyKey key) {
-    return false;
+    try {
+      Object o = getProperty(key);
+      return true;
+    } catch (PropertyException e) {
+      //property not found in the set of properties
+      return false;
+    }
   }
 
   @Override
   public void addProperty(TEPropertyKey key, Object value) throws PropertyException {
+    if (key==null)
+      throw new PropertyException("Property key cannot be null");
+    if (value==null)
+      throw new PropertyException("Value cannot be null");
+    EntityManager em = EntityManagerFactoryHelper.getEntityManager();
+    em.getTransaction().begin();
+    TopologyManagerDBImpl tm = em.find(TopologyManagerDBImpl.class, this.instance);
 
+    TEPropertyKeyDBImpl keyDB = (TEPropertyKeyDBImpl) getKey(key.getId());
+    TEPropertyDBImpl prop = null;
+    if (tm.teProperties!=null)
+      for (TEPropertyDBImpl temp: tm.teProperties) {
+        if (temp.getKey().equals(keyDB)) {
+          prop = temp;
+          break;
+        }
+      }
+
+    if (prop==null) {
+      prop = new TEPropertyDBImpl();
+      prop.setKey(keyDB);
+      prop.setValue(keyDB.getConverter().toString(value));
+      tm.teProperties.add(prop);
+      this.teProperties.add(prop);
+      em.persist(prop);
+    } else {
+      prop.setValue(keyDB.getConverter().toString(value.toString()));
+    }
+    em.getTransaction().commit();
   }
 
   @Override
+  @PropChange
   public void removeProperty(TEPropertyKey key) throws PropertyException {
+    if (key==null)
+      throw new PropertyException("Property key cannot be null");
 
+    EntityManager em = EntityManagerFactoryHelper.getEntityManager();
+    em.getTransaction().begin();
+    TopologyManagerDBImpl tm = em.find(TopologyManagerDBImpl.class, this.instance);
+
+    TEPropertyDBImpl prop = null;
+    if (tm.teProperties!=null)
+      for (TEPropertyDBImpl temp: tm.teProperties) {
+        if (temp.getKey().equals(key)) {
+          prop = temp;
+          break;
+        }
+      }
+
+    if (prop==null) {
+      throw new PropertyException("Cannot remove a property that does not exist");
+    }
+    em.remove(prop);
+    em.getTransaction().commit();
+    em.close();
   }
 
   @Override
   public Set<TEPropertyKey> definedPropertyKeys() {
-    return null;
+    Set<TEPropertyKey> keys = new HashSet<>();
+    for (TEPropertyDBImpl propDB: teProperties) {
+      keys.add(propDB.getKey());
+    }
+    return keys;
   }
-
-
 }
