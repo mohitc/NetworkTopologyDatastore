@@ -13,7 +13,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +22,13 @@ public class NotificationHandlerParser {
 
   private static final Logger log = LoggerFactory.getLogger(NotificationHandlerParser.class);
 
+  private static final String HANDLER_LIST_TAG = "handlers";
+
   private static final String HANDLER_TAG = "handler";
 
   private static final String HANDLER_CLASS_TAG = "class";
+
+  private static final String HANDLER_PARAM_TAG = "hparam";
 
   private static final String FILTER_LIST_TAG = "filters";
 
@@ -33,7 +36,7 @@ public class NotificationHandlerParser {
 
   private static final String FILTER_CLASS_TAG = "class";
 
-  private static final String FILTER_PARAM_TAG = "param";
+  private static final String FILTER_PARAM_TAG = "fparam";
 
 
   public List<NotificationProcessorConf> parse(URI confFile) {
@@ -52,7 +55,14 @@ public class NotificationHandlerParser {
       DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
       Document configDocument = docBuilder.parse(file);
       configDocument.getDocumentElement().normalize();
-      NodeList handlerList = configDocument.getElementsByTagName(HANDLER_TAG);
+
+      NodeList handlers = configDocument.getElementsByTagName(HANDLER_LIST_TAG);
+      if ((handlers == null) || (handlers.getLength()!=1) || (handlers.item(0).getNodeType() != Node.ELEMENT_NODE)) {
+        log.info("Invalid configuration file. Configuration must be specified in <handlers> tag");
+        return confList;
+      }
+
+      NodeList handlerList = ((Element) handlers.item(0)).getElementsByTagName(HANDLER_TAG);
       if ((handlerList == null) || (handlerList.getLength()<=0)) {
         log.info("No handlers found in the configuration file");
         return confList;
@@ -93,12 +103,20 @@ public class NotificationHandlerParser {
       if (handlerInstance==null) {
         return null;
       }
-      // TODO handler class loaded. Parse parameters
-      // For now default to empty constructor
-      String handlerParams = null;
 
 
-      NotificationHandler handlerObject = createObject(handlerInstance, null, NotificationHandler.class);
+      String[] handlerParams = null;
+      //Check if params for the handler are defined
+      NodeList paramList = nodeHandler.getElementsByTagName(HANDLER_PARAM_TAG);
+      if ((paramList!=null) && (paramList.getLength()>0)) {
+        //one or more parameters defined
+        handlerParams = new String[paramList.getLength()];
+        for (int i=0;i<paramList.getLength();i++) {
+          handlerParams[i] = paramList.item(i).getTextContent();
+        }
+      }
+
+      NotificationHandler handlerObject = createObject(handlerInstance, handlerParams, NotificationHandler.class);
       if (handlerObject == null) {
         return null;
       }
@@ -124,25 +142,25 @@ public class NotificationHandlerParser {
   }
 
   private List<NotificationFilter> parseFilterList(Node filters) {
-    List<NotificationFilter> filterlist = new ArrayList<>();
+    List<NotificationFilter> notificationFilters = new ArrayList<>();
     if (filters==null) {
       log.info("No filters defined for Handler");
-      return filterlist;
+      return notificationFilters;
     }
     if (filters.getNodeType() == Node.ELEMENT_NODE) {
       NodeList filterList = ((Element) filters).getElementsByTagName(FILTER_TAG);
-      if (filterlist==null) {
+      if ((filterList==null) || (filterList.getLength()==0)) {
         log.info("No filters defined for Handler");
-        return filterlist;
+        return notificationFilters;
       }
       for (int i=0;i<filterList.getLength(); i++) {
         NotificationFilter filter = parseFilter(filterList.item(i));
         if (filter!=null) {
-          filterlist.add(filter);
+          notificationFilters.add(filter);
         }
       }
     }
-    return filterlist;
+    return notificationFilters;
   }
 
   private NotificationFilter parseFilter(Node filter) {
@@ -182,7 +200,7 @@ public class NotificationHandlerParser {
   private <K> K createObject(Class<? extends K> objectClass, String[] params, Class<K> instance) {
     try {
       if (params==null) {
-        Constructor<? extends K> handlerConstructor = objectClass.getConstructor(null);
+        Constructor<? extends K> handlerConstructor = objectClass.getConstructor();
         return handlerConstructor.newInstance();
       } else {
         Constructor<? extends K> handlerConstructor = objectClass.getConstructor(params.getClass());
@@ -196,12 +214,12 @@ public class NotificationHandlerParser {
     return null;
   }
 
+  @SuppressWarnings("unckecked")
   private <K> Class<? extends K> getValidClass(String className, Class<K> baseType) {
     try {
-      Class <? extends K> handlerInstance = null;
       Class _instance = Class.forName(className);
       if (baseType.isAssignableFrom(_instance)) {
-        return (Class<? extends K>)_instance;
+        return _instance;
       } else {
         log.error("Class " + className + " not a subclass of " + baseType.getSimpleName());
       }

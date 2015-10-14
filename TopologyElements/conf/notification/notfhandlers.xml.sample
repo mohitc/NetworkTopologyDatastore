@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<handler>
+<!-- This is a sample file to indicate how to configure notification handlers via a configuration file
+This file should be present in the application classpath under the META-INF folder with the name notfhandlers.xml
+-->
+<handlers>
+    <!-- On or more handlers can be specified in handler tags -->
+  <handler>
+    <!-- The full path to the handler class should be provided in the class tag.-->
     <class>com.helpers.notification.handlers.log.LogNotificationHandler</class>
+    <!-- In case no hparam tags are defined, the default constructor for the handler is called, otherwise the String[] constructor is called -->
+    <hparam>TENotification</hparam>
+    <!-- A list of filters can be defined to be associated with the handler -->
     <filters>
-        <filter class = "com.helpers.notification.filters.impl.TypeNotificationFilter">
-            <param>TENotification</param>
-        </filter>
+      <!-- The class property of a filter tag should have the complete path to the filter object -->
+      <filter class="com.helpers.notification.filters.impl.TypeNotificationFilter">
+        <!-- If no fparam tags are defiend, the no parameter default constructor for the filter class is called. Otherwise the parameters specified are passed to as a String[] to the corresponding constructor -->
+        <fparam>TENotification</fparam>
+      </filter>
     </filters>
-</handler>
+  </handler>
+</handlers>

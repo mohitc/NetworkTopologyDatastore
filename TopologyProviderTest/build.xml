@@ -5,6 +5,7 @@
     <property name="TopologyElements.location" value="../TopologyElements"/>
     <property name="TopologyProvider.location" value="../TopologyProvider"/>
     <property name="PersistentTopologyProvider.location" value="../PersistentTopologyProvider"/>
+    <property name="TopologyNotificationHandlers.location" value="../TopologyNotificationHandlers"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
@@ -34,6 +35,7 @@
         <path refid="slf4j.libraryclasspath"/>
     </path>
     <target name="init">
+        <delete dir="bin"/>
         <mkdir dir="bin"/>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="src">
@@ -60,6 +62,7 @@
         <ant antfile="build.xml" dir="${TopologyElements.location}" inheritAll="false" target="clean"/>
         <ant antfile="build.xml" dir="${TopologyProvider.location}" inheritAll="false" target="clean"/>
         <ant antfile="build.xml" dir="${PersistentTopologyProvider.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${TopologyNotificationHandlers.location}" inheritAll="false" target="clean"/>
     </target>
     <target depends="build-subprojects,build-project" name="build"/>
     <target name="build-subprojects">
@@ -74,6 +77,11 @@
             </propertyset>
         </ant>
         <ant antfile="build.xml" dir="${PersistentTopologyProvider.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="build.xml" dir="${TopologyNotificationHandlers.location}" inheritAll="false" target="build">
             <propertyset>
                 <propertyref name="build.compiler"/>
             </propertyset>
