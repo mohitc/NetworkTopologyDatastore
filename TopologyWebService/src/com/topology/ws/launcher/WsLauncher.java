@@ -30,7 +30,7 @@ public class WsLauncher {
 
 	private static Server server;
 
-	private static int port=8080;
+	private static int port=8081;
 	
 	private static Logger log = LoggerFactory.getLogger(WsLauncher.class);
 

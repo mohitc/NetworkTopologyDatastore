@@ -2,32 +2,37 @@ package com.topology.resource;
 
 public interface ResourceNaming {
 
-  public static final String INSTANCE_REF = "instance";
+  String INSTANCE_REF = "instance";
 
-  public static interface NetworkElement {
-    public static final String PATH = "{" + INSTANCE_REF +"}/nodes";
-    public static final String CONNECTION_POINTS = "connectionpoints";
-    public static final String CROSS_CONNECTS = "crossconnects";
-    public static final String LINKS = "links";
-    public static final String TRAILS = "trails";
+  interface NetworkElement {
+    String PATH = TE.PATH + "/nodes";
+    String CONNECTION_POINTS = "connectionpoints";
+    String CROSS_CONNECTS = "crossconnects";
+    String LINKS = "links";
+    String TRAILS = "trails";
   }
 
-  public static interface TE {
-    public static final String PATH = "{" + INSTANCE_REF +"}";
+  interface TE {
+    String PATH = "{" + INSTANCE_REF +"}";
   }
 
-  public static interface Connection {
-    public static final String PATH = "{" + INSTANCE_REF +"}/connections";
+  interface Connection {
+    String PATH = TE.PATH + "/connections";
   }
-  public static interface ConnectionPoint {
-    public static final String PATH = "connectionpoints";
+  interface ConnectionPoint {
+    String PATH = "connectionpoints";
   }
 
-  public static interface GRAPH {
-    public static interface CS {
-      public static final String PATH = "{" + INSTANCE_REF +"}/graph/cs/";
+  interface Graph {
+    String PATH = "graph";
+    String D3PATH = TE.PATH + "/graph/d3/";
+  }
 
-      public static final String STYLE = "style";
+  interface GRAPH {
+    interface CS {
+      String PATH = "{" + INSTANCE_REF +"}/graph/cs/";
+
+      String STYLE = "style";
     }
   }
 }

@@ -4,6 +4,7 @@
     <property name="junit.output.dir" value="junit"/>
     <property name="TopologyElements.location" value="../TopologyElements"/>
     <property name="TopologyProvider.location" value="../TopologyProvider"/>
+    <property name="TopologyImporters.location" value="../TopologyImporters"/>
     <property name="PersistentTopologyProvider.location" value="../PersistentTopologyProvider"/>
     <property name="TopologyNotificationHandlers.location" value="../TopologyNotificationHandlers"/>
     <property name="debuglevel" value="source,lines,vars"/>
@@ -14,6 +15,9 @@
     </path>
     <path id="TopologyProvider.classpath">
         <pathelement location="${TopologyProvider.location}/bin"/>
+    </path>
+    <path id="TopologyImporters.classpath">
+        <pathelement location="${TopologyImporters.location}/bin"/>
     </path>
     <path id="PersistentTopologyProvider.classpath">
         <pathelement location="${PersistentTopologyProvider.location}/bin"/>
@@ -30,6 +34,7 @@
         <pathelement location="bin"/>
         <path refid="TopologyElements.classpath"/>
         <path refid="TopologyProvider.classpath"/>
+        <path refid="TopologyImporters.classpath"/>
         <path refid="PersistentTopologyProvider.classpath"/>
         <path refid="JUnit 4.libraryclasspath"/>
         <path refid="slf4j.libraryclasspath"/>
@@ -63,6 +68,7 @@
         <ant antfile="build.xml" dir="${TopologyProvider.location}" inheritAll="false" target="clean"/>
         <ant antfile="build.xml" dir="${PersistentTopologyProvider.location}" inheritAll="false" target="clean"/>
         <ant antfile="build.xml" dir="${TopologyNotificationHandlers.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${TopologyImporters.location}" inheritAll="false" target="clean"/>
     </target>
     <target depends="build-subprojects,build-project" name="build"/>
     <target name="build-subprojects">
@@ -82,6 +88,11 @@
             </propertyset>
         </ant>
         <ant antfile="build.xml" dir="${TopologyNotificationHandlers.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="build.xml" dir="${TopologyImporters.location}" inheritAll="false" target="build">
             <propertyset>
                 <propertyref name="build.compiler"/>
             </propertyset>

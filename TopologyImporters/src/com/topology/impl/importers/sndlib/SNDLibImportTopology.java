@@ -1,3 +1,10 @@
+/*
+ *  Copyright 2013 ADVA Optical Networking SE. All rights reserved.
+ *
+ *  Owner: mchamania
+ *
+ *  $Id: $
+ */
 package com.topology.impl.importers.sndlib;
 
 import com.topology.importers.ImportTopology;
