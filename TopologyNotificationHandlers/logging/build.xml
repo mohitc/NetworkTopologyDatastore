@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project basedir="." default="build" name="LoggingTopologyNotificationHandler">
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.7"/>
+    <property name="source" value="1.7"/>
+
+    <property name="TopologyElements.location" value="../../TopologyElements"/>
+    <path id="TopologyElements.classpath">
+        <pathelement location="${TopologyElements.location}/bin"/>
+    </path>
+    <path id="LoggingTopologyNotificationHandler.jars.classpath">
+        <fileset dir="../lib/">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+    <path id="LoggingTopologyNotificationHandler.classpath">
+        <pathelement location="bin"/>
+        <path refid="TopologyElements.classpath"/>
+        <path refid="LoggingTopologyNotificationHandler.jars.classpath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="init" name="build">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="LoggingTopologyNotificationHandler.classpath"/>
+        </javac>
+    </target>
+</project>
