@@ -11,8 +11,11 @@ import com.topology.importers.ImportTopology;
 import com.topology.primitives.*;
 import com.topology.primitives.exception.FileFormatException;
 import com.topology.primitives.exception.TopologyException;
+import com.topology.primitives.exception.properties.PropertyException;
 import com.topology.primitives.properties.TEPropertyKey;
 
+import com.topology.primitives.properties.converters.impl.DoubleConverter;
+import com.topology.primitives.properties.converters.impl.MapConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -178,6 +181,7 @@ public class SNDLibImportTopology implements ImportTopology {
     if (doc!=null) {
       //Start scan of elements
       doc.getDocumentElement().normalize();
+      createKeys(manager);
       createNodes(doc, manager);
       createLinks(doc, manager);
       createDemands(doc, manager);
@@ -185,4 +189,20 @@ public class SNDLibImportTopology implements ImportTopology {
       log.error("No document found");
     }
   }
+
+    private void createKeys(TopologyManager manager) {
+        if (manager == null){
+            log.error("Createkeys called without valid topology manager");
+        }
+        try{
+            manager.registerKey("X", "X coordinate", Double.class, DoubleConverter.class);
+            manager.registerKey("Y", "Y coordinate", Double.class, DoubleConverter.class);
+            manager.registerKey("Delay", "Delay (ms)", Double.class, DoubleConverter.class);
+            manager.registerKey("Capacity", "Capacity (Gbps)", Double.class, DoubleConverter.class);
+            manager.registerKey("Demands", "Demands for the topology", Map.class, MapConverter.class);
+        } catch (PropertyException e) {
+            log.error("problem registering keys");
+        }
+
+    }
 }
