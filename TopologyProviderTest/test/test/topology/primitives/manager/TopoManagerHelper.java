@@ -20,8 +20,8 @@ public class TopoManagerHelper {
   private static final String defaultTopoManagerId = "123";
 
   public static TopologyManager getInstance() {
-    return getDBInstance();
-    //return getMemInstance();
+    //return getDBInstance();
+    return getMemInstance();
   }
 
   public static TopologyManager getMemInstance() {

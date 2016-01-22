@@ -6,7 +6,7 @@
     <property name="source" value="1.7"/>
     <property name="LoggingTopologyNotificationHandler.location" value="./logging"/>
 
-    <property name="TopologyElements.location" value="../../TopologyElements"/>
+    <property name="TopologyElements.location" value="../TopologyElements"/>
     <path id="TopologyElements.classpath">
         <pathelement location="${TopologyElements.location}/bin"/>
     </path>

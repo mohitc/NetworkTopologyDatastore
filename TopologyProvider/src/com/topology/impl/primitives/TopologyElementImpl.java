@@ -1,6 +1,5 @@
 package com.topology.impl.primitives;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
