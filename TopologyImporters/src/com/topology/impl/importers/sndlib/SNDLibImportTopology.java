@@ -1,10 +1,3 @@
-/*
- *  Copyright 2013 ADVA Optical Networking SE. All rights reserved.
- *
- *  Owner: mchamania
- *
- *  $Id: $
- */
 package com.topology.impl.importers.sndlib;
 
 import com.topology.importers.ImportTopology;
@@ -104,60 +97,60 @@ public class SNDLibImportTopology implements ImportTopology {
         link.setDirected(false);
         log.info("New link created from " + aEnd.getLabel() + " to " + zEnd.getLabel());
 
-		//@Fed3: compute link length and delay
-		TEPropertyKey XCOORD = manager.getKey("X");
-		TEPropertyKey YCOORD = manager.getKey("Y");
-		TEPropertyKey Delay = manager.getKey("Delay"); //TODO: need to register this somewhere
-		TEPropertyKey Capacity = manager.getKey("Capacity");//TODO: need to register this somewhere
-		double x1 = (Double)aEnd.getProperty(XCOORD);
-		double x2 = (Double)zEnd.getProperty(XCOORD);
-		double y1 = (Double)aEnd.getProperty(YCOORD);
-		double y2 = (Double)zEnd.getProperty(YCOORD);
-		double distance = Math.sqrt( Math.pow(x1 - x2, 2.0) + Math.pow(y1 - y2, 2.0) );
-		double CFactor = 1.0; //TODO: set correct value, find more elegant solution
-		double delay = distance * CFactor / 200000;
-		link.addProperty(Delay, delay);
+        //@Fed3: compute link length and delay
+        TEPropertyKey XCOORD = manager.getKey("X");
+        TEPropertyKey YCOORD = manager.getKey("Y");
+        TEPropertyKey Delay = manager.getKey("Delay"); //TODO: need to register this somewhere
+        TEPropertyKey Capacity = manager.getKey("Capacity");//TODO: need to register this somewhere
+        double x1 = (Double)aEnd.getParent().getProperty(XCOORD);
+        double x2 = (Double)zEnd.getParent().getProperty(XCOORD);
+        double y1 = (Double)aEnd.getParent().getProperty(YCOORD);
+        double y2 = (Double)zEnd.getParent().getProperty(YCOORD);
+        double distance = Math.sqrt( Math.pow(x1 - x2, 2.0) + Math.pow(y1 - y2, 2.0) );
+        double CFactor = 1.0; //TODO: set correct value, find more elegant solution
+        double delay = distance * CFactor / 200000;
+        link.addProperty(Delay, delay);
         log.info("Link has delay " + Double.toString(delay));
         double capacity = 0; //TODO: read from file once known
-		link.addProperty(Capacity, capacity);
+        link.addProperty(Capacity, capacity);
         log.info("Link has capacity " + Double.toString(capacity));
 
       }
     }
   }
-  
+
   private void createDemands(Document doc, TopologyManager manager) throws FileFormatException, TopologyException {
-	    NodeList list = doc.getElementsByTagName("demands");
-	    if (list.getLength()!=1) {
-	      throw new FileFormatException("The document should only have one tag with the list of all demands");
-	    }
-	    
-	    //create demands store in the manager
-	    TEPropertyKey demandStoreKey = manager.getKey("Demands");//TODO: need to register this somewhere
-	    Map<String, Map<String, String> > demandStore = new HashMap<>();
-	    
-	    //create nodes
-	    NodeList demandsList = list.item(0).getChildNodes();
-	    for (int i=0;i<demandsList.getLength(); i++) {
-	      Node demandDesc = demandsList.item(i);
-	      if (demandDesc.getNodeType() == Node.ELEMENT_NODE) {
-	    	  Element demandVals = (Element) demandDesc;
-	          String label = demandVals.getAttribute("id");
-	    	  String aEnd = demandVals.getAttribute("source");
-	    	  String zEnd = demandVals.getAttribute("target");
+    NodeList list = doc.getElementsByTagName("demands");
+    if (list.getLength()!=1) {
+      throw new FileFormatException("The document should only have one tag with the list of all demands");
+    }
+
+    //create demands store in the manager
+    TEPropertyKey demandStoreKey = manager.getKey("Demands");//TODO: need to register this somewhere
+    Map<String, Map<String, String> > demandStore = new HashMap<>();
+
+    //create nodes
+    NodeList demandsList = list.item(0).getChildNodes();
+    for (int i=0;i<demandsList.getLength(); i++) {
+      Node demandDesc = demandsList.item(i);
+      if (demandDesc.getNodeType() == Node.ELEMENT_NODE) {
+        Element demandVals = (Element) demandDesc;
+        String label = demandVals.getAttribute("id");
+        String aEnd = demandVals.getAttribute("source");
+        String zEnd = demandVals.getAttribute("target");
 //	    	  Double capacity = Double.valueOf(demandVals.getAttribute("demandValue"));
-	    	  String capacity = demandVals.getAttribute("demandValue");
-	    	  
-	    	  Map<String, String> demand = new HashMap<>();
-	    	  demand.put("id", label);
-	    	  demand.put("aEnd", aEnd);
-	    	  demand.put("zEnd", zEnd);
-	    	  demand.put("capacity", capacity);
-	    	  
-	    	  demandStore.put(label, demand);
-	      }
-	    }
-	    manager.addProperty(demandStoreKey, demandStore);
+        String capacity = demandVals.getAttribute("demandValue");
+
+        Map<String, String> demand = new HashMap<>();
+        demand.put("id", label);
+        demand.put("aEnd", aEnd);
+        demand.put("zEnd", zEnd);
+        demand.put("capacity", capacity);
+
+        demandStore.put(label, demand);
+      }
+    }
+    manager.addProperty(demandStoreKey, demandStore);
   }
 
   @Override
@@ -190,19 +183,19 @@ public class SNDLibImportTopology implements ImportTopology {
     }
   }
 
-    private void createKeys(TopologyManager manager) {
-        if (manager == null){
-            log.error("Createkeys called without valid topology manager");
-        }
-        try{
-            manager.registerKey("X", "X coordinate", Double.class, DoubleConverter.class);
-            manager.registerKey("Y", "Y coordinate", Double.class, DoubleConverter.class);
-            manager.registerKey("Delay", "Delay (ms)", Double.class, DoubleConverter.class);
-            manager.registerKey("Capacity", "Capacity (Gbps)", Double.class, DoubleConverter.class);
-            manager.registerKey("Demands", "Demands for the topology", Map.class, MapConverter.class);
-        } catch (PropertyException e) {
-            log.error("problem registering keys");
-        }
-
+  private void createKeys(TopologyManager manager) {
+    if (manager == null){
+      log.error("Createkeys called without valid topology manager");
     }
+    try{
+      manager.registerKey("X", "X coordinate", Double.class, DoubleConverter.class);
+      manager.registerKey("Y", "Y coordinate", Double.class, DoubleConverter.class);
+      manager.registerKey("Delay", "Delay (ms)", Double.class, DoubleConverter.class);
+      manager.registerKey("Capacity", "Capacity (Gbps)", Double.class, DoubleConverter.class);
+      manager.registerKey("Demands", "Demands for the topology", Map.class, MapConverter.class);
+    } catch (PropertyException e) {
+      log.error("problem registering keys");
+    }
+
+  }
 }
