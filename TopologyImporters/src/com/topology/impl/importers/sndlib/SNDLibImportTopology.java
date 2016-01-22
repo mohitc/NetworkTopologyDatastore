@@ -11,7 +11,11 @@ import com.topology.importers.ImportTopology;
 import com.topology.primitives.*;
 import com.topology.primitives.exception.FileFormatException;
 import com.topology.primitives.exception.TopologyException;
+import com.topology.primitives.exception.properties.PropertyException;
 import com.topology.primitives.properties.TEPropertyKey;
+
+import com.topology.primitives.properties.converters.impl.DoubleConverter;
+import com.topology.primitives.properties.converters.impl.MapConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -23,8 +27,12 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class SNDLibImportTopology implements ImportTopology {
 
@@ -95,8 +103,61 @@ public class SNDLibImportTopology implements ImportTopology {
         link.setLabel(label);
         link.setDirected(false);
         log.info("New link created from " + aEnd.getLabel() + " to " + zEnd.getLabel());
+
+		//@Fed3: compute link length and delay
+		TEPropertyKey XCOORD = manager.getKey("X");
+		TEPropertyKey YCOORD = manager.getKey("Y");
+		TEPropertyKey Delay = manager.getKey("Delay"); //TODO: need to register this somewhere
+		TEPropertyKey Capacity = manager.getKey("Capacity");//TODO: need to register this somewhere
+		double x1 = (Double)aEnd.getProperty(XCOORD);
+		double x2 = (Double)zEnd.getProperty(XCOORD);
+		double y1 = (Double)aEnd.getProperty(YCOORD);
+		double y2 = (Double)zEnd.getProperty(YCOORD);
+		double distance = Math.sqrt( Math.pow(x1 - x2, 2.0) + Math.pow(y1 - y2, 2.0) );
+		double CFactor = 1.0; //TODO: set correct value, find more elegant solution
+		double delay = distance * CFactor / 200000;
+		link.addProperty(Delay, delay);
+        log.info("Link has delay " + Double.toString(delay));
+        double capacity = 0; //TODO: read from file once known
+		link.addProperty(Capacity, capacity);
+        log.info("Link has capacity " + Double.toString(capacity));
+
       }
     }
+  }
+  
+  private void createDemands(Document doc, TopologyManager manager) throws FileFormatException, TopologyException {
+	    NodeList list = doc.getElementsByTagName("demands");
+	    if (list.getLength()!=1) {
+	      throw new FileFormatException("The document should only have one tag with the list of all demands");
+	    }
+	    
+	    //create demands store in the manager
+	    TEPropertyKey demandStoreKey = manager.getKey("Demands");//TODO: need to register this somewhere
+	    Map<String, Map<String, String> > demandStore = new HashMap<>();
+	    
+	    //create nodes
+	    NodeList demandsList = list.item(0).getChildNodes();
+	    for (int i=0;i<demandsList.getLength(); i++) {
+	      Node demandDesc = demandsList.item(i);
+	      if (demandDesc.getNodeType() == Node.ELEMENT_NODE) {
+	    	  Element demandVals = (Element) demandDesc;
+	          String label = demandVals.getAttribute("id");
+	    	  String aEnd = demandVals.getAttribute("source");
+	    	  String zEnd = demandVals.getAttribute("target");
+//	    	  Double capacity = Double.valueOf(demandVals.getAttribute("demandValue"));
+	    	  String capacity = demandVals.getAttribute("demandValue");
+	    	  
+	    	  Map<String, String> demand = new HashMap<>();
+	    	  demand.put("id", label);
+	    	  demand.put("aEnd", aEnd);
+	    	  demand.put("zEnd", zEnd);
+	    	  demand.put("capacity", capacity);
+	    	  
+	    	  demandStore.put(label, demand);
+	      }
+	    }
+	    manager.addProperty(demandStoreKey, demandStore);
   }
 
   @Override
@@ -120,10 +181,28 @@ public class SNDLibImportTopology implements ImportTopology {
     if (doc!=null) {
       //Start scan of elements
       doc.getDocumentElement().normalize();
+      createKeys(manager);
       createNodes(doc, manager);
       createLinks(doc, manager);
+      createDemands(doc, manager);
     } else {
       log.error("No document found");
     }
   }
+
+    private void createKeys(TopologyManager manager) {
+        if (manager == null){
+            log.error("Createkeys called without valid topology manager");
+        }
+        try{
+            manager.registerKey("X", "X coordinate", Double.class, DoubleConverter.class);
+            manager.registerKey("Y", "Y coordinate", Double.class, DoubleConverter.class);
+            manager.registerKey("Delay", "Delay (ms)", Double.class, DoubleConverter.class);
+            manager.registerKey("Capacity", "Capacity (Gbps)", Double.class, DoubleConverter.class);
+            manager.registerKey("Demands", "Demands for the topology", Map.class, MapConverter.class);
+        } catch (PropertyException e) {
+            log.error("problem registering keys");
+        }
+
+    }
 }
