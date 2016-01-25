@@ -100,8 +100,8 @@ public class SNDLibImportTopology implements ImportTopology {
         //@Fed3: compute link length and delay
         TEPropertyKey XCOORD = manager.getKey("X");
         TEPropertyKey YCOORD = manager.getKey("Y");
-        TEPropertyKey Delay = manager.getKey("Delay"); //TODO: need to register this somewhere
-        TEPropertyKey Capacity = manager.getKey("Capacity");//TODO: need to register this somewhere
+        TEPropertyKey Delay = manager.getKey("Delay");
+        TEPropertyKey Capacity = manager.getKey("Capacity");
         double x1 = (Double)aEnd.getParent().getProperty(XCOORD);
         double x2 = (Double)zEnd.getParent().getProperty(XCOORD);
         double y1 = (Double)aEnd.getParent().getProperty(YCOORD);
@@ -124,9 +124,8 @@ public class SNDLibImportTopology implements ImportTopology {
     if (list.getLength()!=1) {
       throw new FileFormatException("The document should only have one tag with the list of all demands");
     }
-
     //create demands store in the manager
-    TEPropertyKey demandStoreKey = manager.getKey("Demands");//TODO: need to register this somewhere
+    TEPropertyKey demandStoreKey = manager.getKey("Demands");
     Map<String, Map<String, String> > demandStore = new HashMap<>();
 
     //create nodes
@@ -136,10 +135,9 @@ public class SNDLibImportTopology implements ImportTopology {
       if (demandDesc.getNodeType() == Node.ELEMENT_NODE) {
         Element demandVals = (Element) demandDesc;
         String label = demandVals.getAttribute("id");
-        String aEnd = demandVals.getAttribute("source");
-        String zEnd = demandVals.getAttribute("target");
-//	    	  Double capacity = Double.valueOf(demandVals.getAttribute("demandValue"));
-        String capacity = demandVals.getAttribute("demandValue");
+        String aEnd = demandVals.getElementsByTagName("source").item(0).getTextContent();
+        String zEnd = demandVals.getElementsByTagName("target").item(0).getTextContent();
+        String capacity = demandVals.getElementsByTagName("demandValue").item(0).getTextContent();
 
         Map<String, String> demand = new HashMap<>();
         demand.put("id", label);
