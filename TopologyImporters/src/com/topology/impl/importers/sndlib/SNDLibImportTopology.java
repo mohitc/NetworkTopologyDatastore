@@ -134,9 +134,10 @@ public class SNDLibImportTopology implements ImportTopology {
       Node demandDesc = demandsList.item(i);
       if (demandDesc.getNodeType() == Node.ELEMENT_NODE) {
         Element demandVals = (Element) demandDesc;
-        String label = demandVals.getAttribute("id");
+//        String label = demandVals.getAttribute("id");
         String aEnd = demandVals.getElementsByTagName("source").item(0).getTextContent();
         String zEnd = demandVals.getElementsByTagName("target").item(0).getTextContent();
+        String label = aEnd.concat(zEnd);
         String capacity = demandVals.getElementsByTagName("demandValue").item(0).getTextContent();
 
         Map<String, String> demand = new HashMap<>();
@@ -144,7 +145,15 @@ public class SNDLibImportTopology implements ImportTopology {
         demand.put("aEnd", aEnd);
         demand.put("zEnd", zEnd);
         demand.put("capacity", capacity);
+        demandStore.put(label, demand);
 
+        //create bidirectional demands
+        demand = new HashMap<>();
+        label = zEnd.concat(aEnd);
+        demand.put("id", label);
+        demand.put("aEnd", zEnd);
+        demand.put("zEnd", aEnd);
+        demand.put("capacity", capacity);
         demandStore.put(label, demand);
       }
     }
