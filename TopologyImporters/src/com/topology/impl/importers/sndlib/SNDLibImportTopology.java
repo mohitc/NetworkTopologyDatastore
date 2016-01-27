@@ -126,7 +126,7 @@ public class SNDLibImportTopology implements ImportTopology {
     }
     //create demands store in the manager
     TEPropertyKey demandStoreKey = manager.getKey("Demands");
-    Map<String, Map<String, String> > demandStore = new HashMap<>();
+    Map<String, Double> demandStore = new HashMap<>();
 
     //create nodes
     NodeList demandsList = list.item(0).getChildNodes();
@@ -137,24 +137,9 @@ public class SNDLibImportTopology implements ImportTopology {
 //        String label = demandVals.getAttribute("id");
         String aEnd = demandVals.getElementsByTagName("source").item(0).getTextContent();
         String zEnd = demandVals.getElementsByTagName("target").item(0).getTextContent();
-        String label = aEnd.concat(zEnd);
+        String label = "{" + aEnd + "}{" + zEnd +"}";
         String capacity = demandVals.getElementsByTagName("demandValue").item(0).getTextContent();
-
-        Map<String, String> demand = new HashMap<>();
-        demand.put("id", label);
-        demand.put("aEnd", aEnd);
-        demand.put("zEnd", zEnd);
-        demand.put("capacity", capacity);
-        demandStore.put(label, demand);
-
-        //create bidirectional demands
-        demand = new HashMap<>();
-        label = zEnd.concat(aEnd);
-        demand.put("id", label);
-        demand.put("aEnd", zEnd);
-        demand.put("zEnd", aEnd);
-        demand.put("capacity", capacity);
-        demandStore.put(label, demand);
+        demandStore.put(label, Double.parseDouble(capacity));
       }
     }
     manager.addProperty(demandStoreKey, demandStore);
