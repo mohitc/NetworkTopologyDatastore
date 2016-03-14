@@ -31,6 +31,8 @@ public class SNDLibImportTopology implements ImportTopology {
 
   private static final Logger log = LoggerFactory.getLogger(SNDLibImportTopology.class);
 
+  private double scalingFactor = 1.0;
+
   private void createNodes(Document doc, TopologyManager manager) throws FileFormatException, TopologyException {
     NodeList list = doc.getElementsByTagName("nodes");
     if (list.getLength()!=1) {
@@ -128,17 +130,38 @@ public class SNDLibImportTopology implements ImportTopology {
     TEPropertyKey demandStoreKey = manager.getKey("Demands");
     Map<String, Double> demandStore = new HashMap<>();
 
-    //create nodes
+    //load scaling factor from file
+    File scaleFile = new File("conf/scaling.xml");
+    DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder docBuilder = null;
+    Document scaleDoc = null;
+    try {
+      docBuilder = docFactory.newDocumentBuilder();
+      doc = docBuilder.parse(scaleFile);
+      if (doc==null) {
+        log.error("No scaling document found. Please check XML file. Defaulting to 1.0");
+      }
+      //Normalize document
+      doc.normalizeDocument();
+      NodeList l = doc.getElementsByTagName("scalefactor");
+      scalingFactor = Double.parseDouble(l.item(0).getTextContent());
+      log.info("Scaling factor set to "+Double.toString(scalingFactor));
+    } catch (Exception e) {
+      log.error("Error while setting up scaling factor, defaulting to 1.0", e);
+      scalingFactor = 1.0;
+    }
+
+    //create demands
     NodeList demandsList = list.item(0).getChildNodes();
     for (int i=0;i<demandsList.getLength(); i++) {
       Node demandDesc = demandsList.item(i);
       if (demandDesc.getNodeType() == Node.ELEMENT_NODE) {
         Element demandVals = (Element) demandDesc;
-//        String label = demandVals.getAttribute("id");
         String aEnd = demandVals.getElementsByTagName("source").item(0).getTextContent();
         String zEnd = demandVals.getElementsByTagName("target").item(0).getTextContent();
         String label = "{" + aEnd + "}{" + zEnd +"}";
-        String capacity = demandVals.getElementsByTagName("demandValue").item(0).getTextContent();
+        double d = Double.parseDouble(demandVals.getElementsByTagName("demandValue").item(0).getTextContent());
+        String capacity = Double.toString(d * scalingFactor);
         demandStore.put(label, Double.parseDouble(capacity));
       }
     }
