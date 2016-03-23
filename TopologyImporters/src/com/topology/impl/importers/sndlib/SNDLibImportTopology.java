@@ -95,6 +95,7 @@ public class SNDLibImportTopology implements ImportTopology {
         Link link = manager.createLink(aEnd.getID(), zEnd.getID());
         link.setLabel(label);
         link.setDirected(false);
+        link.setLayer(NetworkLayer.PHYSICAL);
         log.info("New link created from " + aEnd.getLabel() + " to " + zEnd.getLabel());
 
         //@Fed3: compute link length and delay
