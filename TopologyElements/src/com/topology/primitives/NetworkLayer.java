@@ -3,8 +3,10 @@ package com.topology.primitives;
 import com.topology.primitives.exception.properties.PropertyException;
 
 public enum NetworkLayer {
-	OTS(1, "Optical Transmission Section");
-	
+	PHYSICAL(0, "Physical Connections"),
+	OTS(1, "Optical Transmission Section"),
+	IP(2, "IP Link");
+
 	//Integer value for storing enum in database
 	private int id;
 	
