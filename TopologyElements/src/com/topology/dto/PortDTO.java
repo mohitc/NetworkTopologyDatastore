@@ -1,9 +1,9 @@
 package com.topology.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.topology.primitives.ConnectionPoint;
 import com.topology.primitives.Port;
 import com.topology.primitives.exception.properties.PropertyException;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,7 +26,7 @@ public class PortDTO extends ConnectionPointDTO {
         Set<ConnectionPoint> cps = port.getContainedConnectionPoints();
         this.setContainedCPs(generateSet(cps));
       } else {
-        this.setContainedCPs(new HashSet<Integer>());
+        this.setContainedCPs(new HashSet<>());
       }
       super.populateDTO(port);
     }

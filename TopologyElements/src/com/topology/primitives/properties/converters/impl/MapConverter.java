@@ -1,14 +1,10 @@
 package com.topology.primitives.properties.converters.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.topology.primitives.exception.properties.PropertyException;
 import com.topology.primitives.properties.converters.PropertyConverter;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.Map;
 
 public class MapConverter implements PropertyConverter<Map> {

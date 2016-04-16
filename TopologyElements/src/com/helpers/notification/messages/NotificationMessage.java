@@ -1,8 +1,8 @@
 package com.helpers.notification.messages;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.helpers.notification.exception.NotificationException;
 import com.topology.dto.TopologyDTO;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 //Class to present notification messages to external entities
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)

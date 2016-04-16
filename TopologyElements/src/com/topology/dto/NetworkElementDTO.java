@@ -1,8 +1,8 @@
 package com.topology.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.topology.primitives.NetworkElement;
 import com.topology.primitives.exception.properties.PropertyException;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.Set;
 

@@ -1,14 +1,14 @@
 package com.topology.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.topology.primitives.Connection;
 import com.topology.primitives.Path;
 import com.topology.primitives.exception.TopologyException;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 public class PathDTO {
 
   private boolean strict;
