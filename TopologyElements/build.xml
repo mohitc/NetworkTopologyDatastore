@@ -15,6 +15,7 @@
   </path>
   <target name="init">
     <mkdir dir="bin"/>
+    <mkdir dir="lib"/>
     <copy includeemptydirs="false" todir="bin">
       <fileset dir="src">
         <exclude name="**/*.launch"/>
@@ -24,17 +25,19 @@
     <mkdir dir="bin/META-INF"/>
     <copy includeemptydirs="false" todir="bin/META-INF">
       <fileset dir="lib">
-        <include name="*aspectjweaver*.jar"/>
+        <include name="aspectjweaver.jar"/>
       </fileset>
       <fileset dir="conf/notification">
       </fileset>
     </copy>
   </target>
   <target name="clean">
-    <delete dir="bin"/>
-    <delete dir="lib"/>
+    <delete failonerror="false">
+      <fileset dir = "bin"/>
+      <fileset dir = "lib"/>
+    </delete>
     <echo message="Fetching all dependencies from repository"/>
-    <ivy:retrieve />
+    <ivy:retrieve pattern="lib/[artifact].[ext]" conf="runtime"/>
   </target>
   <target depends="init" name="build">
     <echo message="${ant.project.name}: ${ant.file}"/>
