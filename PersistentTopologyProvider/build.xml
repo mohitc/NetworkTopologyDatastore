@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-    <project basedir="." default="build" name="PersistentTopologyProvider">
+    <project basedir="." default="build" name="PersistentTopologyProvider" xmlns:ivy="antlib:org.apache.ivy.ant">
     <property environment="env"/>
     <property name="TopologyElements.location" value="../TopologyElements"/>
     <property name="debuglevel" value="source,lines,vars"/>
@@ -16,13 +16,15 @@
     <path id="TopologyElements.classpath">
         <pathelement location="${TopologyElements.location}/bin"/>
     </path>
+    <path id="PersistentTopologyProvider.jars.classpath">
+        <fileset dir="./lib">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
     <path id="PersistentTopologyProvider.classpath">
         <pathelement location="bin"/>
         <path refid="TopologyElements.classpath"/>
-        <pathelement location="jars/logging/slf4j-api-1.7.7.jar"/>
-        <pathelement location="jars/persistence/eclipselink.jar"/>
-        <pathelement location="jars/persistence/postgresql-9.4-1203.jdbc4.jar"/>
-        <pathelement location="jars/persistence/javax.persistence_2.1.0.v201304241213.jar"/>
+        <path refid="PersistentTopologyProvider.jars.classpath"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -43,7 +45,12 @@
         </replace>
     </target>
     <target name="clean">
-        <delete dir="bin"/>
+        <delete failonerror="false">
+            <fileset dir = "bin"/>
+            <fileset dir = "lib"/>
+        </delete>
+        <echo message="Fetching all dependencies from repository"/>
+        <ivy:retrieve pattern="lib/[artifact].[ext]" conf="runtime"/>
     </target>
     <target depends="clean" name="cleanall"/>
     <target depends="build-subprojects,build-project" name="build"/>

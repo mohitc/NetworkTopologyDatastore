@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
-<project basedir="." default="build" name="TopologyNotificationHandler">
+<project basedir="." default="build" name="TopologyNotificationHandler" xmlns:ivy="antlib:org.apache.ivy.ant">
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
@@ -14,7 +14,12 @@
         <mkdir dir="bin"/>
     </target>
     <target name="clean">
-        <delete dir="bin"/>
+        <delete failonerror="false">
+            <fileset dir = "bin"/>
+            <fileset dir = "lib"/>
+        </delete>
+        <echo message="Fetching all dependencies from repository"/>
+        <ivy:retrieve pattern="lib/[artifact].[ext]" conf="runtime"/>
     </target>
     <target depends="init, build-logging-component" name="build"/>
     <target name="build-logging-component">
