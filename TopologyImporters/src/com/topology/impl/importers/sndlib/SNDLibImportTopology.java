@@ -74,6 +74,23 @@ public class SNDLibImportTopology implements ImportTopology {
 
   }
 
+  //haversine formula for computing distance from latitude and longitude
+  public final static double AVERAGE_RADIUS_OF_EARTH = 6373; //Km
+  public int sphericalDistanceFromLatLon(double lat1, double lon1,
+                               double lat2, double lon2) {
+
+    double latDistance = Math.toRadians(lat1 - lat2);
+    double lngDistance = Math.toRadians(lon1 - lon2);
+
+    double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+            + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+            * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
+
+    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return (int) (Math.round(AVERAGE_RADIUS_OF_EARTH * c));
+  }
+
   private void createLinks(Document doc, TopologyManager manager) throws FileFormatException, TopologyException {
     NodeList list = doc.getElementsByTagName("links");
     if (list.getLength()!=1) {
@@ -105,13 +122,18 @@ public class SNDLibImportTopology implements ImportTopology {
         TEPropertyKey YCOORD = manager.getKey("Y");
         TEPropertyKey Delay = manager.getKey("Delay");
         TEPropertyKey Capacity = manager.getKey("Capacity");
-        double x1 = (Double)aEnd.getParent().getProperty(XCOORD);
-        double x2 = (Double)zEnd.getParent().getProperty(XCOORD);
-        double y1 = (Double)aEnd.getParent().getProperty(YCOORD);
-        double y2 = (Double)zEnd.getParent().getProperty(YCOORD);
-        double distance = Math.sqrt( Math.pow(x1 - x2, 2.0) + Math.pow(y1 - y2, 2.0) );
-        double CFactor = 1.0; //TODO: set correct value, find more elegant solution
-        double delay = distance * CFactor / 200000;
+//        double x1 = (Double)aEnd.getParent().getProperty(XCOORD);
+//        double x2 = (Double)zEnd.getParent().getProperty(XCOORD);
+//        double y1 = (Double)aEnd.getParent().getProperty(YCOORD);
+//        double y2 = (Double)zEnd.getParent().getProperty(YCOORD);
+//        double distance = Math.sqrt( Math.pow(x1 - x2, 2.0) + Math.pow(y1 - y2, 2.0) );
+        double lat1 = (Double)aEnd.getParent().getProperty(XCOORD);
+        double lat2 = (Double)zEnd.getParent().getProperty(XCOORD);
+        double lon1 = (Double)aEnd.getParent().getProperty(YCOORD);
+        double lon2 = (Double)zEnd.getParent().getProperty(YCOORD);
+        double distance = sphericalDistanceFromLatLon(lat1, lon1, lat2, lon2);
+        log.info("Link is " + Double.toString(distance) + " Km long");
+        double delay = distance / 200000; //T = S/V, V = 2/3 C ~= 200000 Km/s
         link.addProperty(Delay, delay);
         log.info("Link has delay " + Double.toString(delay));
         double capacity = 0; //TODO: read from file once known
