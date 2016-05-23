@@ -30,7 +30,8 @@ public class SNDLibImportTopology implements ImportTopology {
 
   private static final Logger log = LoggerFactory.getLogger(SNDLibImportTopology.class);
 
-  private double scalingFactor = 1.0;
+  private double trafficScalingFactor = 1.0;
+  private double linkScalingFactor = 1.0;
 
   private void createNodes(Document doc, TopologyManager manager) throws FileFormatException, TopologyException {
     NodeList list = doc.getElementsByTagName("nodes");
@@ -40,6 +41,27 @@ public class SNDLibImportTopology implements ImportTopology {
 
     TEPropertyKey XCOORD = manager.getKey("X");
     TEPropertyKey YCOORD = manager.getKey("Y");
+
+    //load scaling factor from file
+    File scaleFile = new File("conf/scaling.xml");
+    DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder docBuilder = null;
+    Document scaleDoc = null;
+    try {
+      docBuilder = docFactory.newDocumentBuilder();
+      doc = docBuilder.parse(scaleFile);
+      if (doc==null) {
+        log.error("No scaling document found. Please check XML file. Defaulting to 1.0");
+      }
+      //Normalize document
+      doc.normalizeDocument();
+      NodeList l = doc.getElementsByTagName("root");
+      linkScalingFactor = Double.parseDouble(l.item(0).getChildNodes().item(1).getTextContent());
+      log.info("Link scaling factor set to "+Double.toString(trafficScalingFactor));
+    } catch (Exception e) {
+      log.error("Error while setting up link scaling factor, defaulting to 1.0", e);
+      linkScalingFactor = 1.0;
+    }
 
     //create nodes
     NodeList nesList = list.item(0).getChildNodes();
@@ -96,6 +118,27 @@ public class SNDLibImportTopology implements ImportTopology {
       throw new FileFormatException("The document should only have one tag with the list of all network elements");
     }
 
+    //load scaling factor from file
+    File scaleFile = new File("conf/scaling.xml");
+    DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder docBuilder = null;
+    Document scaleDoc = null;
+    try {
+      docBuilder = docFactory.newDocumentBuilder();
+      doc = docBuilder.parse(scaleFile);
+      if (doc==null) {
+        log.error("No scaling document found. Please check XML file. Defaulting to 1.0");
+      }
+      //Normalize document
+      doc.normalizeDocument();
+      NodeList l = doc.getElementsByTagName("root");
+      trafficScalingFactor = Double.parseDouble(l.item(0).getChildNodes().item(0).getTextContent());
+      log.info("Traffic scaling factor set to "+Double.toString(trafficScalingFactor));
+    } catch (Exception e) {
+      log.error("Error while setting up traffic scaling factor, defaulting to 1.0", e);
+      trafficScalingFactor = 1.0;
+    }
+
     //create nodes
     NodeList linksList = list.item(0).getChildNodes();
     for (int i=0;i<linksList.getLength(); i++) {
@@ -130,7 +173,7 @@ public class SNDLibImportTopology implements ImportTopology {
         double lat2 = (Double)zEnd.getParent().getProperty(XCOORD);
         double lon1 = (Double)aEnd.getParent().getProperty(YCOORD);
         double lon2 = (Double)zEnd.getParent().getProperty(YCOORD);
-        double distance = sphericalDistanceFromLatLon(lat1, lon1, lat2, lon2);
+        double distance = sphericalDistanceFromLatLon(lat1, lon1, lat2, lon2) * linkScalingFactor;
         log.info("Link is " + Double.toString(distance) + " Km long");
         double delay = distance / 200000; //T = S/V, V = 2/3 C ~= 200000 Km/s
         link.addProperty(Delay, delay);
@@ -165,12 +208,12 @@ public class SNDLibImportTopology implements ImportTopology {
       }
       //Normalize document
       doc.normalizeDocument();
-      NodeList l = doc.getElementsByTagName("scalefactor");
-      scalingFactor = Double.parseDouble(l.item(0).getTextContent());
-      log.info("Scaling factor set to "+Double.toString(scalingFactor));
+      NodeList l = doc.getElementsByTagName("root");
+      trafficScalingFactor = Double.parseDouble(l.item(0).getChildNodes().item(0).getTextContent());
+      log.info("Scaling factor set to "+Double.toString(trafficScalingFactor));
     } catch (Exception e) {
       log.error("Error while setting up scaling factor, defaulting to 1.0", e);
-      scalingFactor = 1.0;
+      trafficScalingFactor = 1.0;
     }
 
     //create demands
@@ -183,7 +226,7 @@ public class SNDLibImportTopology implements ImportTopology {
         String zEnd = demandVals.getElementsByTagName("target").item(0).getTextContent();
         String label = "{" + aEnd + "}{" + zEnd +"}";
         double d = Double.parseDouble(demandVals.getElementsByTagName("demandValue").item(0).getTextContent());
-        String capacity = Double.toString(d * scalingFactor);
+        String capacity = Double.toString(d * trafficScalingFactor);
         demandStore.put(label, Double.parseDouble(capacity));
       }
     }
