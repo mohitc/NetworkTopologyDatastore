@@ -212,7 +212,7 @@ public class SNDLibImportTopology implements ImportTopology {
       trafficScalingFactor = Double.parseDouble(l.item(0).getChildNodes().item(0).getTextContent());
       log.info("Scaling factor set to "+Double.toString(trafficScalingFactor));
     } catch (Exception e) {
-      log.error("Error while setting up scaling factor, defaulting to 1.0", e);
+      log.debug("Error while setting up scaling factor, defaulting to 1.0", e);
       trafficScalingFactor = 1.0;
     }
 
