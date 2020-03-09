@@ -10,3 +10,6 @@
 
 target/
 *.jar
+
+#Flattened POM files
+.flattened-pom.xml

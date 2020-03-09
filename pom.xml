@@ -18,12 +18,6 @@
     <module>topology-provider</module>
     <module>persistent-topology-provider</module>
     <module>topology-web-service</module>
-    <!--    <module>lp-api</module>-->
-    <!--    <module>lp-solver</module>-->
-    <!--    <module>gurobi-solver</module>-->
-    <!--    <module>glpk-solver</module>-->
-    <!--    <module>lp-solver-sample</module>-->
-    <!--    <module>cplex-solver</module>-->
   </modules>
 
   <properties>
@@ -100,6 +94,31 @@
           <source>${java.version}</source>
           <target>${java.version}</target>
         </configuration>
+      </plugin>
+      <!--Maven Flatten plugin to remove ${revision} tags in installed poms -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <configuration>
+          <updatePomFile>true</updatePomFile>
+        </configuration>
+        <executions>
+          <execution>
+            <id>flatten</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>flatten.clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
