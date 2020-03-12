@@ -17,5 +17,11 @@
       <artifactId>topology-elements</artifactId>
       <version>${revision}</version>
     </dependency>
+    <dependency>
+      <groupId>com.topology</groupId>
+      <artifactId>topology-provider</artifactId>
+      <version>${revision}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
