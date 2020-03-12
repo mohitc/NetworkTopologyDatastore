@@ -18,6 +18,7 @@
     <module>topology-provider</module>
     <module>persistent-topology-provider</module>
     <module>topology-web-service</module>
+    <module>topology-provider-tests</module>
   </modules>
 
   <properties>
@@ -32,6 +33,7 @@
     <jackson.version>2.10.1</jackson.version>
     <jetty.version>9.4.27.v20200227</jetty.version>
     <jersey.version>2.30.1</jersey.version>
+    <persistent-provider.skiptests>true</persistent-provider.skiptests>
   </properties>
 
   <dependencies>

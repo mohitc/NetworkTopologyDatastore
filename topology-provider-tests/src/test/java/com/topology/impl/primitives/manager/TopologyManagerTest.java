@@ -1,15 +1,15 @@
-package test.topology.primitives.manager;
+package com.topology.impl.primitives.manager;
 
 import com.topology.primitives.NetworkElement;
 import com.topology.primitives.TopologyElement;
 import com.topology.primitives.TopologyManager;
 import com.topology.primitives.exception.TopologyException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class TopologyManagerTest {
 

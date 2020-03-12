@@ -1,11 +1,11 @@
 package com.topology.impl.primitives;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.helpers.benchmark.annotation.Benchmark;
 import com.helpers.notification.annotation.EntityCreation;
 import com.helpers.notification.annotation.EntityDeletion;
-import com.helpers.notification.annotation.PropChange;
 import com.topology.dto.PathDTO;
 import com.topology.impl.primitives.properties.TEPropertyKeyImpl;
 import com.topology.primitives.*;
@@ -582,12 +582,8 @@ public class TopologyManagerImpl implements TopologyManager {
   public Set<Connection> getAllConnections(NetworkLayer layer) throws TopologyException {
     if (layer == null)
       throw new TopologyException("Layer cannot be null");
-    Set<Connection> out = new HashSet<>();
-    for (Connection conn : connections.values()) {
-      if (conn.getLayer().equals(layer))
-        out.add(conn);
-    }
-    return out;
+    return connections.values().stream().filter(Objects::nonNull)
+        .filter(conn -> Objects.equals(conn.getLayer(), layer)).collect(Collectors.toSet());
   }
 
   @Override

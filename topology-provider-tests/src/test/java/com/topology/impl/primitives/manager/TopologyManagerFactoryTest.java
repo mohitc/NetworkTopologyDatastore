@@ -1,23 +1,21 @@
-package test.topology.primitives.manager;
+package com.topology.impl.primitives.manager;
 
-import com.topology.impl.primitives.TopologyManagerFactoryImpl;
 import com.topology.primitives.TopologyManager;
 import com.topology.primitives.TopologyManagerFactory;
 import com.topology.primitives.exception.TopologyException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TopologyManagerFactoryTest {
 
   public static final Logger log = LoggerFactory.getLogger(TopologyManagerFactoryTest.class);
 
   public TopologyManagerFactory getTopologyManagerFactoryInstance() {
-    return new TopologyManagerFactoryImpl();
+    return TopoManagerHelper.getFactoryInstance();
   }
-
 
   @Test
   public void testTopologyManagerFactory() {
@@ -31,7 +29,7 @@ public class TopologyManagerFactoryTest {
 
     String id = "1234";
 
-    assertFalse("Factory should not have a manager instance before it is created", factory.hasTopologyManager(id));
+    assertFalse(factory.hasTopologyManager(id), "Factory should not have a manager instance before it is created");
 
     try {
       factory.getTopologyManager(id);
@@ -46,7 +44,7 @@ public class TopologyManagerFactoryTest {
       assertNotNull(manager);
       log.info("Manager created successfully");
       //manager is not null
-      assertFalse("hasTopologyManager(id) returns false after creation of manager instance", factory.hasTopologyManager(id));
+      assertTrue(factory.hasTopologyManager(id), "hasTopologyManager(id) returns false after creation of manager instance");
       log.info("Topology manager instance with ID: " + id + " found in Factory");
     } catch (TopologyException e) {
       fail("Topology Manager creation failed: " + e.getMessage());
@@ -54,7 +52,7 @@ public class TopologyManagerFactoryTest {
 
     try {
       TopologyManager manager = factory.getTopologyManager(id);
-      assertNotNull("Manager instance cannot be null", manager);
+      assertNotNull(manager, "Manager instance cannot be null");
       log.info("Correct operation (manager object) when a manager with the specified ID is available");
 
     } catch (TopologyException e) {
@@ -64,12 +62,10 @@ public class TopologyManagerFactoryTest {
     //remove the topology manager
     try {
       factory.removeTopologyManager(id);
-      assertFalse("Factory still contains manager instance after removal", factory.hasTopologyManager(id));
+      assertFalse(factory.hasTopologyManager(id), "Factory still contains manager instance after removal");
     } catch (TopologyException e) {
       fail("Exception when attempting to remove the topology manager: " + e.getMessage());
     }
-
-
   }
 
 }
