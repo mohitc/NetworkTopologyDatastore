@@ -59,7 +59,8 @@ public class SNDLibImportTopology implements ImportTopology {
       linkScalingFactor = Double.parseDouble(l.item(0).getChildNodes().item(1).getTextContent());
       log.info("Link scaling factor set to "+Double.toString(trafficScalingFactor));
     } catch (Exception e) {
-      log.error("Error while setting up link scaling factor, defaulting to 1.0", e);
+      log.error("Error while setting up link scaling factor, defaulting to 1.0");
+      log.debug("Exception caught while setting up link scaling factor", e);
       linkScalingFactor = 1.0;
     }
 
@@ -73,7 +74,7 @@ public class SNDLibImportTopology implements ImportTopology {
         String label = neVals.getAttribute("id");
         NetworkElement node = manager.createNetworkElement();
         node.setLabel(label);
-        log.info("Generating new network element. Label: " + node.getLabel());
+        log.debug("Generating new network element. Label: {}", node.getLabel());
 
         //Populate coordinates
         NodeList coordTagList = neVals.getElementsByTagName("coordinates");
@@ -82,14 +83,14 @@ public class SNDLibImportTopology implements ImportTopology {
           if (coords.getNodeType()== Node.ELEMENT_NODE) {
             node.addProperty(XCOORD, Double.parseDouble(((Element)coords).getElementsByTagName("x").item(0).getTextContent()));
             node.addProperty(YCOORD, Double.parseDouble(((Element) coords).getElementsByTagName("y").item(0).getTextContent()));
-            log.info("Coordinates for node: " + node.getLabel() + ", (X, Y): (" + node.getProperty(XCOORD) + ", " + node.getProperty(YCOORD) + ")");
+            log.debug("Coordinates for node: {}, (X, Y): ({}, {})", node.getLabel(), node.getProperty(XCOORD), node.getProperty(YCOORD));
           }
         }
 
         //generate a single port in the network element
         ConnectionPoint cp = manager.createPort(node);
         cp.setLabel(node.getLabel());
-        log.info("Port Created: " + cp.getLabel());
+        log.debug("Port Created: {}", cp.getLabel());
       }
     }
 
@@ -135,7 +136,8 @@ public class SNDLibImportTopology implements ImportTopology {
       trafficScalingFactor = Double.parseDouble(l.item(0).getChildNodes().item(0).getTextContent());
       log.info("Traffic scaling factor set to "+Double.toString(trafficScalingFactor));
     } catch (Exception e) {
-      log.error("Error while setting up traffic scaling factor, defaulting to 1.0", e);
+      log.error("Error while setting up traffic scaling factor, defaulting to 1.0");
+      log.debug("Exception caught while setting up link scaling factor", e);
       trafficScalingFactor = 1.0;
     }
 
@@ -157,7 +159,7 @@ public class SNDLibImportTopology implements ImportTopology {
         link.setLabel(label);
         link.setDirected(false);
         link.setLayer(NetworkLayer.PHYSICAL);
-        log.info("New link created from " + aEnd.getLabel() + " to " + zEnd.getLabel());
+        log.debug("New link created from {} to {}", aEnd.getLabel(), zEnd.getLabel());
 
         //@Fed3: compute link length and delay
         TEPropertyKey XCOORD = manager.getKey("X");
@@ -174,13 +176,13 @@ public class SNDLibImportTopology implements ImportTopology {
         double lon1 = (Double)aEnd.getParent().getProperty(YCOORD);
         double lon2 = (Double)zEnd.getParent().getProperty(YCOORD);
         double distance = sphericalDistanceFromLatLon(lat1, lon1, lat2, lon2) * linkScalingFactor;
-        log.info("Link is " + Double.toString(distance) + " Km long");
+        log.debug("Link is {} Km long", distance);
         double delay = distance / 200000; //T = S/V, V = 2/3 C ~= 200000 Km/s
         link.addProperty(Delay, delay);
-        log.info("Link has delay " + Double.toString(delay));
+        log.debug("Link has delay {}", delay);
         double capacity = 0; //TODO: read from file once known
         link.addProperty(Capacity, capacity);
-        log.info("Link has capacity " + Double.toString(capacity));
+        log.debug("Link has capacity {}", capacity);
 
       }
     }
