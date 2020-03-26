@@ -33,6 +33,17 @@ public class SNDLibImportTopology implements ImportTopology {
   private double trafficScalingFactor = 1.0;
   private double linkScalingFactor = 1.0;
 
+  //Boolean to indicate if duplicate links between the same node pair should be removed.
+  private final boolean removeDuplicates;
+
+  public SNDLibImportTopology() {
+    removeDuplicates=true;
+  }
+
+  public SNDLibImportTopology(boolean removeDuplicates) {
+    this.removeDuplicates = removeDuplicates;
+  }
+
   private void createNodes(Document doc, TopologyManager manager) throws FileFormatException, TopologyException {
     NodeList list = doc.getElementsByTagName("nodes");
     if (list.getLength()!=1) {
@@ -99,14 +110,14 @@ public class SNDLibImportTopology implements ImportTopology {
   //haversine formula for computing distance from latitude and longitude
   public final static double AVERAGE_RADIUS_OF_EARTH = 6373; //Km
   public int sphericalDistanceFromLatLon(double lat1, double lon1,
-                               double lat2, double lon2) {
+                                         double lat2, double lon2) {
 
     double latDistance = Math.toRadians(lat1 - lat2);
     double lngDistance = Math.toRadians(lon1 - lon2);
 
     double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-            + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-            * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
+        + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+        * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
 
     double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
@@ -154,6 +165,14 @@ public class SNDLibImportTopology implements ImportTopology {
         String zEndLabel = linkVals.getElementsByTagName("target").item(0).getTextContent();
         Port aEnd = manager.getSingleElementByLabel(aEndLabel, Port.class);
         Port zEnd = manager.getSingleElementByLabel(zEndLabel, Port.class);
+
+        if (removeDuplicates) {
+          if (aEnd.getConnections().stream()
+              .anyMatch(v -> v.getaEnd().getID() == zEnd.getID() || v.getzEnd().getID() == zEnd.getID())) {
+            log.info("Ignoring duplicate connection {} between {} and {}", label, aEnd, zEnd);
+            continue;
+          }
+        }
 
         Link link = manager.createLink(aEnd.getID(), zEnd.getID());
         link.setLabel(label);
