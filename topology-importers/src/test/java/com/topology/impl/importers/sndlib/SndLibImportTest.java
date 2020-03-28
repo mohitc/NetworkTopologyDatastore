@@ -24,7 +24,9 @@ public class SndLibImportTest {
     ABILENE ("abilene.xml", 12, 15),
     ATLANTA("atlanta.xml", 15, 22),
     JANOS_US("janos-us.xml", 26, 42),
-    JANOS_US_DUPLICATES("janos-us.xml", 26, 84, false);
+    JANOS_US_DUPLICATES("janos-us.xml", 26, 84, false),
+    ZIB54("zib54.xml", 54, 80),
+    ZIB54_DUPLICATES("zib54.xml", 54, 81, false);
 
     SNDLibSource(String fileName, int nodeNum, int linkNum) {
       this.fileName = fileName;
