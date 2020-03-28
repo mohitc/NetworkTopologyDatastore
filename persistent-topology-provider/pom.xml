@@ -19,6 +19,7 @@
     <postgres.db>topology_provider</postgres.db>
     <postgres.user>test</postgres.user>
     <postgres.password>test</postgres.password>
+    <maven.test.skip>${persistent-provider.skiptests}</maven.test.skip>
   </properties>
 
   <dependencies>

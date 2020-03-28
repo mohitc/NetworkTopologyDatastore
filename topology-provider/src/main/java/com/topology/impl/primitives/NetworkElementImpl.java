@@ -98,7 +98,7 @@ public class NetworkElementImpl extends TopologyElementImpl implements NetworkEl
 		}
 		Set<T> outSet = new HashSet<>();
 		for (Connection conn: connections) {
-			if (instance.isAssignableFrom(conn.getClass())) {
+			if (conn !=null && instance.isAssignableFrom(conn.getClass())) {
 				outSet.add((T)conn);
 			}
 		}

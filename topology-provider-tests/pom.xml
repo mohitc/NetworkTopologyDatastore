@@ -9,19 +9,18 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>topology-importers</artifactId>
+  <artifactId>topology-provider-tests</artifactId>
 
   <dependencies>
     <dependency>
       <groupId>com.topology</groupId>
-      <artifactId>topology-elements</artifactId>
+      <artifactId>topology-provider</artifactId>
       <version>${revision}</version>
     </dependency>
     <dependency>
       <groupId>com.topology</groupId>
-      <artifactId>topology-provider</artifactId>
+      <artifactId>persistent-topology-provider</artifactId>
       <version>${revision}</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

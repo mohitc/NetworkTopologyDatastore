@@ -1,0 +1,58 @@
+package com.topology.impl.primitives.manager;
+
+import com.topology.primitives.NetworkElement;
+import com.topology.primitives.TopologyElement;
+import com.topology.primitives.TopologyManager;
+import com.topology.primitives.exception.TopologyException;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+public class TopologyManagerTest {
+
+  private static final Logger log = LoggerFactory.getLogger(TopologyManagerTest.class);
+
+  protected TopologyManager getTopologyManager() {
+    return TopoManagerHelper.getInstance();
+  }
+
+  @Test
+  public void testGetFunctions() {
+
+    TopologyManager manager = getTopologyManager();
+    log.info("Creating network element");
+
+    NetworkElement element = null;
+    try {
+      element = manager.createNetworkElement();
+    } catch (TopologyException e) {
+      fail("Error while creating network element: " + e.getMessage());
+    }
+
+    //Element was created successfully, test get functions
+    try {
+      log.info("testing getElementByID(id)");
+      assertTrue(element.equals(manager.getElementByID(element.getID())));
+      log.info("testing getElementByID(id, Class<T>)");
+      assertTrue(element.equals(manager.getElementByID(element.getID(), NetworkElement.class)));
+      log.info("testing getAllElementByID(Class<T>)");
+      assert(manager.getAllElements(TopologyElement.class).contains(element));
+      log.info("testing getAllElementByID(Class<T>)");
+      assert(manager.getAllElements(NetworkElement.class).contains(element));
+    } catch (TopologyException e) {
+      fail("Error while fetching test.topology elements from the test.topology manager: " + e.getMessage());
+    }
+
+    //Creating connection point
+    log.info("Creating connection point and port");
+    try {
+      element = manager.createNetworkElement();
+    } catch (TopologyException e) {
+      fail("Error while creating network element: " + e.getMessage());
+    }
+
+  }
+}
