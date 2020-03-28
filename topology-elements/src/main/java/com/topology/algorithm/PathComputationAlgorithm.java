@@ -104,6 +104,9 @@ public class PathComputationAlgorithm {
       throw new TopologyException("aend cannot be null");
     if (zEnd==null)
       throw new TopologyException("zend cannot be null");
+    //Set of vertices that has been visited by paths already. Filter paths that revisit an already visited vertex
+    Set<Integer> visitedVertices = new HashSet<>();
+    visitedVertices.add(aEnd.getID());
     //the first hop connection can only be an outgoing link
     List<List<Connection>> potentialPaths = new ArrayList<>();
     //Populate the sequence of potential paths using an outgoing link from the network ports
@@ -124,6 +127,11 @@ public class PathComputationAlgorithm {
       List<ConnectionPoint> orderedVertexSequence = getOrderedVertexSequence(connPath, aEnd);
       if (orderedVertexSequence!=null) {
         ConnectionPoint currentHop = orderedVertexSequence.get(orderedVertexSequence.size()-1);
+        //if the vertex has been visited already, skip path
+        if (visitedVertices.contains(currentHop.getID()))
+          continue;
+        else
+          visitedVertices.add(currentHop.getID());
         //check if currentHop is zEnd, and if yes then return this connection
         if (zEnd.equals(currentHop)) {
           return connPath;
