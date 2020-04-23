@@ -33,6 +33,7 @@
     <jackson.version>2.10.1</jackson.version>
     <jetty.version>9.4.27.v20200227</jetty.version>
     <jersey.version>2.30.1</jersey.version>
+    <junit.version>5.6.2</junit.version>
     <persistent-provider.skiptests>true</persistent-provider.skiptests>
   </properties>
 
@@ -50,13 +51,13 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>RELEASE</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
-      <version>RELEASE</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -86,7 +87,7 @@
           <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>RELEASE</version>
+            <version>${junit.version}</version>
           </dependency>
         </dependencies>
       </plugin>
