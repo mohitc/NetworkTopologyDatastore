@@ -1,6 +1,8 @@
 package com.topology.algorithm.filters;
 
 
+import com.topology.algorithm.PathSpan;
+import com.topology.algorithm.constraint.PathConstraint;
 import com.topology.primitives.Connection;
 
 
@@ -10,5 +12,5 @@ import com.topology.primitives.Connection;
 
 public interface ConnectionFilter {
 
-  boolean filter(Connection conn);
+  boolean filter(PathSpan pathSpan, Connection conn, PathConstraint constraint);
 }

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class PathAlgorithmTest {
@@ -62,7 +63,7 @@ public class PathAlgorithmTest {
     }
 
     log.info("Computed path: " + path);
-
+    assertEquals(3, path.getForwardConnectionSequence().size(), "Path size should be 2");
 
     log.info("Asymmetric path should also be computed over bidirectional links if" + path);
     try {

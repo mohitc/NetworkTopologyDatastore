@@ -1,41 +1,22 @@
 package com.topology.algorithm.filters.impl;
 
+import com.topology.algorithm.PathSpan;
+import com.topology.algorithm.constraint.PathConstraint;
 import com.topology.algorithm.filters.ConnectionFilter;
 import com.topology.primitives.Connection;
-import com.topology.primitives.ConnectionPoint;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 /** Filter to ensure that the connection does not form a loop
  *
  */
 public class ConnectionLoopFilter implements ConnectionFilter {
 
-  private Set<ConnectionPoint> traversedCPs;
-
-  public ConnectionLoopFilter (Set<ConnectionPoint> traversedCPs) {
-    this.traversedCPs = Objects.requireNonNullElseGet(traversedCPs, HashSet::new);
-  }
-
-  public ConnectionLoopFilter(List<Connection> usedConnections) {
-    traversedCPs = new HashSet<>();
-    if (usedConnections!=null) {
-      for (Connection conn: usedConnections) {
-        traversedCPs.add(conn.getaEnd());
-        traversedCPs.add(conn.getzEnd());
-      }
-    }
-  }
-
   @Override
-  public boolean filter(Connection conn) {
+  public boolean filter(PathSpan pathSpan, Connection conn, PathConstraint constraint) {
     //null connections should be ignored
     if (conn == null)
       return true;
     //If the existing set of traversed connection points have both the endpoints in it, then the connection is forming a loop
-    return (traversedCPs.contains(conn.getaEnd())) && (traversedCPs.contains(conn.getzEnd()));
+    return (pathSpan.getOrderedConnectionPointSequence().contains(conn.getaEnd()))
+        && (pathSpan.getOrderedConnectionPointSequence().contains(conn.getzEnd()));
   }
 }
