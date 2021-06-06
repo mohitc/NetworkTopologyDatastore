@@ -16,6 +16,12 @@ public class PathConstraint {
     this.symmetric = symmetric;
   }
 
+  public PathConstraint(boolean directed, boolean symmetric, int pathCount) {
+    this.directed = directed;
+    this.symmetric = symmetric;
+    this.pathCount = pathCount;
+  }
+
   public boolean isDirected() {
     return directed;
   }

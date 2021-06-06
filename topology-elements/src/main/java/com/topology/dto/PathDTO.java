@@ -6,6 +6,7 @@ import com.topology.primitives.Path;
 import com.topology.primitives.exception.TopologyException;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -18,6 +19,8 @@ public class PathDTO {
   private int aEndId, zEndId;
 
   private List<Integer> forwardConnectionSequence, backwardConnectionSequence;
+
+  private List<Integer> forwardConnectionPointSequence, backwardConnectionPointSequence;
 
   public PathDTO() {
   }
@@ -33,6 +36,29 @@ public class PathDTO {
       this.zEndId = path.getzEnd().getID();
     this.forwardConnectionSequence = generateSequence(path.getForwardConnectionSequence());
     this.backwardConnectionSequence = generateSequence(path.getBackwardConnectionSequence());
+    if (this.strict) {
+      this.forwardConnectionPointSequence = generateConnectionPointSequence(aEndId, path.getForwardConnectionSequence());
+      this.backwardConnectionPointSequence = generateConnectionPointSequence(zEndId, path.getBackwardConnectionSequence());
+    }
+  }
+
+  private List<Integer> generateConnectionPointSequence(int startCpId, List<Connection> sequence) throws TopologyException {
+    List<Integer> idSequence = new ArrayList<>();
+    idSequence.add(startCpId);
+    Iterator<Connection> iter = sequence.iterator();
+    while (iter.hasNext()) {
+      Connection conn = iter.next();
+      int currId = idSequence.get(idSequence.size() - 1);
+      if (conn.getaEnd().getID() == currId) {
+        idSequence.add(conn.getzEnd().getID());
+      } else if (conn.getzEnd().getID() == currId) {
+        idSequence.add(conn.getaEnd().getID());
+      } else {
+        throw new TopologyException("Cannot generate a sequence of connection points with start id " + startCpId +
+            "and path " + sequence);
+      }
+    }
+    return idSequence;
   }
 
   private List<Integer> generateSequence(List<Connection> sequence) {
@@ -93,7 +119,33 @@ public class PathDTO {
     this.backwardConnectionSequence = backwardConnectionSequence;
   }
 
+  public List<Integer> getForwardConnectionPointSequence() {
+    return forwardConnectionPointSequence;
+  }
+
+  public void setForwardConnectionPointSequence(List<Integer> forwardConnectionPointSequence) {
+    this.forwardConnectionPointSequence = forwardConnectionPointSequence;
+  }
+
+  public List<Integer> getBackwardConnectionPointSequence() {
+    return backwardConnectionPointSequence;
+  }
+
+  public void setBackwardConnectionPointSequence(List<Integer> backwardConnectionPointSequence) {
+    this.backwardConnectionPointSequence = backwardConnectionPointSequence;
+  }
+
+  @Override
   public String toString() {
-    return "aEnd: " + aEndId + ", zEnd: " + zEndId + "Strict: " + (strict?"true":"false") + ", Directed: " + directed + ", forwardConn: " + forwardConnectionSequence + ", backwardConn: " + backwardConnectionSequence;
+    return "PathDTO{" +
+        "strict=" + strict +
+        ", directed=" + directed +
+        ", aEndId=" + aEndId +
+        ", zEndId=" + zEndId +
+        ", forwardConnectionSequence=" + forwardConnectionSequence +
+        ", backwardConnectionSequence=" + backwardConnectionSequence +
+        ", forwardConnectionPointSequence=" + forwardConnectionPointSequence +
+        ", backwardConnectionPointSequence=" + backwardConnectionPointSequence +
+        '}';
   }
 }

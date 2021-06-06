@@ -74,6 +74,8 @@ public class PathComputationAlgorithm {
     dto.setzEndId(zEnd.getID());
     Optional.ofNullable(forwardSequence).ifPresent( v -> dto.setForwardConnectionSequence(v.getOrderedConnectionSequence().stream().map(Connection::getID).collect(Collectors.toList())));
     Optional.ofNullable(reverseSequence).ifPresent( v -> dto.setBackwardConnectionSequence(v.getOrderedConnectionSequence().stream().map(Connection::getID).collect(Collectors.toList())));
+    Optional.ofNullable(forwardSequence).ifPresent( v -> dto.setForwardConnectionPointSequence(v.getOrderedConnectionPointSequence().stream().map(ConnectionPoint::getID).collect(Collectors.toList())));
+    Optional.ofNullable(reverseSequence).ifPresent( v -> dto.setBackwardConnectionPointSequence(v.getOrderedConnectionPointSequence().stream().map(ConnectionPoint::getID).collect(Collectors.toList())));
     dto.setDirected(constraint.isDirected());
     dto.setStrict(true);
     return dto;
