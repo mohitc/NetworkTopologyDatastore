@@ -64,7 +64,7 @@ public class LinkTest extends ConnectionTest {
         connections = manager.getConnections(ne2.getID(), ne1.getID(), link.isDirected());
         assertNotNull(connections);
         assertTrue(connections.size()>=0);
-        assertTrue(!connections.contains(link));
+        assertFalse(connections.contains(link));
       } else {
         connections = manager.getConnections(ne2.getID(), ne1.getID(), link.isDirected());
         assertNotNull(connections);
@@ -78,13 +78,13 @@ public class LinkTest extends ConnectionTest {
     try {
       connections = manager.getConnections(ne1.getID(), ne2.getID(), link.isDirected(), link.getLayer());
       assertNotNull(connections);
-      assertTrue(connections.size()>0);
+      assertTrue(!connections.isEmpty());
       assertTrue(connections.contains(link));
       if(link.isDirected()){
         connections = manager.getConnections(ne2.getID(), ne1.getID(), link.isDirected(), link.getLayer());
         assertNotNull(connections);
         assertTrue(connections.size()>=0);
-        assertTrue(!connections.contains(link));
+        assertFalse(connections.contains(link));
       } else {
         connections = manager.getConnections(ne2.getID(), ne1.getID(), link.isDirected(), link.getLayer());
         assertNotNull(connections);
@@ -99,13 +99,13 @@ public class LinkTest extends ConnectionTest {
     try {
       links = manager.getConnections(ne1.getID(), ne2.getID(), link.isDirected(), Link.class);
       assertNotNull(links);
-      assertTrue(links.size()>0);
+      assertTrue(!links.isEmpty());
       assertTrue(links.contains(link));
       if(link.isDirected()){
         links = manager.getConnections(ne2.getID(), ne1.getID(), link.isDirected(), Link.class);
         assertNotNull(links);
         assertTrue(links.size()>=0);
-        assertTrue(!links.contains(link));
+        assertFalse(links.contains(link));
       } else {
         links = manager.getConnections(ne2.getID(), ne1.getID(), link.isDirected(), Link.class);
         assertNotNull(links);
@@ -120,13 +120,13 @@ public class LinkTest extends ConnectionTest {
     try {
       links = manager.getConnections(ne1.getID(), ne2.getID(), link.isDirected(), link.getLayer(), Link.class);
       assertNotNull(links);
-      assertTrue(links.size()>0);
+      assertTrue(!links.isEmpty());
       assertTrue(links.contains(link));
       if(link.isDirected()){
         links = manager.getConnections(ne2.getID(), ne1.getID(), link.isDirected(), link.getLayer(), Link.class);
         assertNotNull(links);
         assertTrue(links.size()>=0);
-        assertTrue(!links.contains(link));
+        assertFalse(links.contains(link));
       } else {
         links = manager.getConnections(ne2.getID(), ne1.getID(), link.isDirected(), link.getLayer(), Link.class);
         assertNotNull(links);

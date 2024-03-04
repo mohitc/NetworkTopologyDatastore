@@ -4,7 +4,7 @@ function getLocalURL() {
   var http = location.protocol;
   var slashes = http.concat("//");
   var host = slashes.concat(window.location.hostname);
-  host = host + ':' + window.location.port + '/rest/';
+  host = host + ':' + window.location.port + '/topology/';
   return host;
 }
 

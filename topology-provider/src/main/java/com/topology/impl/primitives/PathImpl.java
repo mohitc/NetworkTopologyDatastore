@@ -1,10 +1,10 @@
 package com.topology.impl.primitives;
 
-import java.util.List;
-
 import com.topology.primitives.Connection;
 import com.topology.primitives.ConnectionPoint;
 import com.topology.primitives.Path;
+
+import java.util.List;
 
 public class PathImpl implements Path {
 

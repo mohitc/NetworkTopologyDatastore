@@ -15,11 +15,11 @@ public class NotificationProcessor implements Runnable {
 
   private static final Logger log = LoggerFactory.getLogger(NotificationProcessor.class);
 
-  private LinkedBlockingQueue<NotificationMessage> incoming;
+  private final LinkedBlockingQueue<NotificationMessage> incoming;
 
-  private List<NotificationFilter> filters;
+  private final List<NotificationFilter> filters;
 
-  private NotificationHandler handler;
+  private final NotificationHandler handler;
 
   public void addMessage(NotificationMessage message) {
     incoming.add(message);

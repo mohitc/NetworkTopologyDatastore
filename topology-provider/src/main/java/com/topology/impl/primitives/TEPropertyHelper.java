@@ -12,11 +12,11 @@ import java.util.Set;
 
 public class TEPropertyHelper {
 
-  private Logger log;
+  private final Logger log;
 
-  private TopologyManager manager;
+  private final TopologyManager manager;
 
-  private Map<TEPropertyKey, String> properties;
+  private final Map<TEPropertyKey, String> properties;
 
   //should only be instantiated by objects in this package
   protected TEPropertyHelper(TopologyManager instance, Logger log) {

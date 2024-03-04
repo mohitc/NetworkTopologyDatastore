@@ -2,7 +2,6 @@ package com.topology.impl.db.primitives;
 
 import com.topology.impl.db.persistencehelper.EntityManagerFactoryHelper;
 import com.topology.primitives.Path;
-import com.topology.primitives.PtpService;
 import com.topology.primitives.Trail;
 import com.topology.primitives.exception.TopologyException;
 import com.topology.primitives.resource.ConnectionResource;

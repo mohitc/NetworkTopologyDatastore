@@ -2,14 +2,14 @@ package com.topology.impl.primitives;
 
 import com.helpers.notification.annotation.PropChange;
 import com.topology.primitives.*;
-import com.topology.primitives.exception.*;
+import com.topology.primitives.exception.TopologyException;
 import com.topology.primitives.resource.ConnectionResource;
 
 public class TrailImpl extends PtpServiceImpl implements Trail {
 
 	private Path path;
 
-  private ConnectionResource resource;
+  private final ConnectionResource resource;
 
 	public TrailImpl(TopologyManager manager, int id, ConnectionPoint aEnd, ConnectionPoint zEnd, boolean directed, NetworkLayer layer, Path path, ConnectionResource reservedResource) throws TopologyException {
 		super(manager, id, aEnd, zEnd, directed, layer);

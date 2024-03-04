@@ -7,11 +7,12 @@ import com.topology.primitives.TopologyManager;
 
 public abstract class PtpServiceImpl extends ServiceImpl implements PtpService{
 
-  private ConnectionPoint aEnd, zEnd;
+  private final ConnectionPoint aEnd;
+  private final ConnectionPoint zEnd;
 
-  private boolean directed;
+  private final boolean directed;
 
-  private NetworkLayer layer;
+  private final NetworkLayer layer;
 
   public PtpServiceImpl(TopologyManager manager, int id, ConnectionPoint aEnd, ConnectionPoint zEnd, boolean directed, NetworkLayer layer) {
     super(manager, id);

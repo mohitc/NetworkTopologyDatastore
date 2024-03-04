@@ -99,12 +99,7 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
   public Object getProperty(TEPropertyKey key) throws PropertyException {
     if (key==null)
       throw new PropertyException("Property key cannot be null");
-//    EntityManager em = EntityManagerFactoryHelper.getEntityManager();
-    //Query query = em.createQuery(TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY);
-    //query.setParameter("id", id);
-    //query.setParameter("key", key);
 
-    //TEPropertyDBImpl prop = (TEPropertyDBImpl)query.getSingleResult();
     if (teProperties!=null)
       for (TEPropertyDBImpl prop: teProperties) {
         if (prop.getKey().equals(key))
@@ -145,11 +140,6 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
     TopologyElementDBImpl te = em.find(TopologyElementDBImpl.class, this.getID());
 
     TEPropertyKeyDBImpl keyDB = (TEPropertyKeyDBImpl) getTopologyManager().getKey(key.getId());
-    //Query query = em.createQuery(TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY);
-    //query.setParameter("id", id);
-    //query.setParameter("key", key);
-
-//    TEPropertyDBImpl prop = (TEPropertyDBImpl)query.getSingleResult();
     TEPropertyDBImpl prop = null;
     if (te.teProperties!=null)
       for (TEPropertyDBImpl temp: te.teProperties) {
@@ -178,21 +168,10 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
     if (key==null)
       throw new PropertyException("Property key cannot be null");
 
-//    Query query = em.createQuery(TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY);
-//    query.setParameter("id", id);
-//    query.setParameter("key", key);
-
-//    TEPropertyDBImpl prop = (TEPropertyDBImpl)query.getSingleResult();
-
     EntityManager em = EntityManagerFactoryHelper.getEntityManager();
     em.getTransaction().begin();
     TopologyElementDBImpl te = em.find(TopologyElementDBImpl.class, this.getID());
 
-    //Query query = em.createQuery(TopologyElementDBImpl.GET_TE_PROPERTY_BY_KEY);
-    //query.setParameter("id", id);
-    //query.setParameter("key", key);
-
-//    TEPropertyDBImpl prop = (TEPropertyDBImpl)query.getSingleResult();
     TEPropertyDBImpl prop = null;
     if (te.teProperties!=null)
       for (TEPropertyDBImpl temp: te.teProperties) {
@@ -212,7 +191,6 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
 
   @Override
   public Set<TEPropertyKey> definedPropertyKeys() {
-//    EntityManager em = EntityManagerFactoryHelper.getEntityManager();
     Set<TEPropertyKey> keys = new HashSet<>();
     for (TEPropertyDBImpl propDB: teProperties) {
       keys.add(propDB.getKey());
@@ -232,7 +210,7 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
   }
 
   public int hashCode() {
-    return new Integer(this.getID()).hashCode();
+    return Integer.valueOf(this.getID()).hashCode();
   }
 
   public String toString() {

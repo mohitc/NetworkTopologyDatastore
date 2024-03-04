@@ -6,7 +6,6 @@ import com.topology.primitives.exception.FileFormatException;
 import com.topology.primitives.exception.TopologyException;
 import com.topology.primitives.exception.properties.PropertyException;
 import com.topology.primitives.properties.TEPropertyKey;
-
 import com.topology.primitives.properties.converters.impl.DoubleConverter;
 import com.topology.primitives.properties.converters.impl.MapConverter;
 import org.slf4j.Logger;
@@ -20,7 +19,6 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -185,11 +183,6 @@ public class SNDLibImportTopology implements ImportTopology {
         TEPropertyKey YCOORD = manager.getKey("Y");
         TEPropertyKey Delay = manager.getKey("Delay");
         TEPropertyKey Capacity = manager.getKey("Capacity");
-//        double x1 = (Double)aEnd.getParent().getProperty(XCOORD);
-//        double x2 = (Double)zEnd.getParent().getProperty(XCOORD);
-//        double y1 = (Double)aEnd.getParent().getProperty(YCOORD);
-//        double y2 = (Double)zEnd.getParent().getProperty(YCOORD);
-//        double distance = Math.sqrt( Math.pow(x1 - x2, 2.0) + Math.pow(y1 - y2, 2.0) );
         double lat1 = (Double)aEnd.getParent().getProperty(XCOORD);
         double lat2 = (Double)zEnd.getParent().getProperty(XCOORD);
         double lon1 = (Double)aEnd.getParent().getProperty(YCOORD);

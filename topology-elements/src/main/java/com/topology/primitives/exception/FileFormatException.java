@@ -7,7 +7,7 @@ public class FileFormatException extends Exception {
 
   private static final Logger log = LoggerFactory.getLogger(FileFormatException.class);
 
-  private String message;
+  private final String message;
 
   public FileFormatException (String message) {
     log.error("[" + this.getClass() + "]" + message);

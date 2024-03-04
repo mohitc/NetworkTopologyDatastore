@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class TopologyManagerTest {
@@ -35,9 +35,9 @@ public class TopologyManagerTest {
     //Element was created successfully, test get functions
     try {
       log.info("testing getElementByID(id)");
-      assertTrue(element.equals(manager.getElementByID(element.getID())));
+      assertEquals(element, manager.getElementByID(element.getID()));
       log.info("testing getElementByID(id, Class<T>)");
-      assertTrue(element.equals(manager.getElementByID(element.getID(), NetworkElement.class)));
+      assertEquals(element, manager.getElementByID(element.getID(), NetworkElement.class));
       log.info("testing getAllElementByID(Class<T>)");
       assert(manager.getAllElements(TopologyElement.class).contains(element));
       log.info("testing getAllElementByID(Class<T>)");

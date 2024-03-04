@@ -189,7 +189,9 @@ public class TopologyManagerDBImpl implements TopologyManager {
       //Endpoints of a link should have different endpoints
       NetworkElement startNe = getNetworkElementFromCp(startCP);
       NetworkElement endNe = getNetworkElementFromCp(endCP);
-      if ((startNe != null) && (endNe != null) && (startNe == endNe)) {
+      if (startNe == null || endNe == null)
+        throw new TopologyException("Endpoints of link not found (startNe: " + (startNe!=null ? startNe.toString() : "null") + ", endNe:" + ( endNe != null ? endNe.toString() : "null"));
+      if (startNe == endNe) {
         throw new TopologyException("Endpoints of a link must belong to different network elements");
       }
       em.getTransaction().begin();
@@ -297,7 +299,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
         em.getTransaction().commit();
         log.info("Connection Point removed successfully");
       } else {
-        throw new TopologyException("Connection point cannot be removed untill all connections have been removed from them");
+        throw new TopologyException("Connection point cannot be removed until all connections have been removed from them");
       }
     } catch (EntityNotFoundException e) {
       throw new TopologyException("Element with ID: " + id + " does not exist or is not an instance of ConnectionPoint");
@@ -328,7 +330,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
   @Override
   @EntityDeletion
   public void removeLink(int id) throws TopologyException {
-    //TODO include code for reservtions
+    //TODO include code for reservations
     EntityManager em = getEntityManager();
     try {
       LinkDBImpl link = em.find(LinkDBImpl.class, id);
@@ -344,7 +346,7 @@ public class TopologyManagerDBImpl implements TopologyManager {
   @Override
   @EntityDeletion
   public void removeCrossConnect(int id) throws TopologyException {
-    //TODO include code for reservtions
+    //TODO include code for reservations
     EntityManager em = getEntityManager();
     try {
       CrossConnectDBImpl cc = em.find(CrossConnectDBImpl.class, id);

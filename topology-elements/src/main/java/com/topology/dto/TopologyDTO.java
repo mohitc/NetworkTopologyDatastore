@@ -6,7 +6,10 @@ import com.topology.primitives.properties.TEPropertyKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class TopologyDTO {
 
@@ -68,7 +71,7 @@ public abstract class TopologyDTO {
 
   public static TopologyDTO generateDTO (TopologyElement te) throws PropertyException {
     if (te==null) {
-      log.debug("Toology element is null");
+      log.debug("Topology element is null");
       return null;
     }
 

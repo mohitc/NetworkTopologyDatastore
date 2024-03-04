@@ -1,8 +1,8 @@
 package com.topology.primitives.resource;
 
-import java.util.Set;
-
 import com.topology.primitives.exception.resource.ResourceException;
+
+import java.util.Set;
 
 //All implementations of the Connection Resource interface should implement the default constructor
 public interface ConnectionResource {

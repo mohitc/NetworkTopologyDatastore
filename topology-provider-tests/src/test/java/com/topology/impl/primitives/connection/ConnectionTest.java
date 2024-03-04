@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ConnectionTest {
 
-  protected static Logger log = LoggerFactory.getLogger(ConnectionTest.class);
+  protected static final Logger log = LoggerFactory.getLogger(ConnectionTest.class);
 
   protected TopologyManager getTopologyManager() {
     return TopoManagerHelper.getInstance();
@@ -27,7 +27,7 @@ public class ConnectionTest {
         fail("Connection in the test.topology manager is null");
       }
       if (instance.isAssignableFrom(newConn.getClass())) {
-        assertTrue(conn.equals(newConn));
+        assertEquals(conn, newConn);
       } else {
         fail("Invalid class assignment for connection");
       }
@@ -40,7 +40,7 @@ public class ConnectionTest {
       if (newConn==null) {
         fail("Connection in the test.topology manager is null");
       }
-      assertTrue(conn.equals(newConn));
+      assertEquals(conn, newConn);
     } catch (TopologyException e) {
       fail("Problems with connection associations in the test.topology manager");
     }

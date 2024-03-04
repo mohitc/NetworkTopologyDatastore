@@ -11,9 +11,9 @@ import java.util.Map;
 
 public class TopologyManagerFactoryImpl implements TopologyManagerFactory {
 
-  private Map<String, TopologyManager> managerMap = new HashMap<>();
+  private final Map<String, TopologyManager> managerMap = new HashMap<>();
 
-  private static Logger log = LoggerFactory.getLogger(TopologyManagerFactoryImpl.class);
+  private static final Logger log = LoggerFactory.getLogger(TopologyManagerFactoryImpl.class);
 
   @Override
   public TopologyManager createTopologyManager(String id) throws TopologyException {

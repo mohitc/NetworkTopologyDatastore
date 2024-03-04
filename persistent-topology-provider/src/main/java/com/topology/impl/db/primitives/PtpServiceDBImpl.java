@@ -5,7 +5,10 @@ import com.topology.primitives.ConnectionPoint;
 import com.topology.primitives.NetworkLayer;
 import com.topology.primitives.PtpService;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 public class PtpServiceDBImpl extends ServiceDBImpl implements PtpService{
 

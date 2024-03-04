@@ -3,17 +3,16 @@ package com.topology.algorithm.constraint;
 public class PathConstraint {
 
   //Boolean to indicate that path is directed
-  private boolean directed;
+  private final boolean directed;
 
   //Boolean to indicate that path is symmetric
-  private boolean symmetric;
+  private final boolean symmetric;
 
   //integer to indicate number of paths
-  private int pathCount = 1;
+  private final int pathCount;
 
   public PathConstraint(boolean directed, boolean symmetric) {
-    this.directed = directed;
-    this.symmetric = symmetric;
+    this(directed, symmetric, 1);
   }
 
   public PathConstraint(boolean directed, boolean symmetric, int pathCount) {

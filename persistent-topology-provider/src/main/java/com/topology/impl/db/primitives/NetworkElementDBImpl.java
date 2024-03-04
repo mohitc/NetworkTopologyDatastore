@@ -3,9 +3,7 @@ package com.topology.impl.db.primitives;
 import com.topology.impl.db.persistencehelper.EntityManagerFactoryHelper;
 import com.topology.primitives.*;
 
-import javax.management.*;
 import javax.persistence.*;
-import javax.persistence.Query;
 import java.util.HashSet;
 import java.util.Set;
 

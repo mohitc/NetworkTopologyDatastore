@@ -7,7 +7,9 @@ import com.topology.primitives.ConnectionPoint;
 import com.topology.primitives.TopologyManager;
 import com.topology.primitives.exception.TopologyException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class MultipathComputationAlgorithm extends PathComputationAlgorithm {

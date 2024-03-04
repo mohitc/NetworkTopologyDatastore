@@ -1,13 +1,13 @@
 package com.topology.primitives;
 
-import java.util.Set;
-
 import com.topology.dto.PathDTO;
 import com.topology.primitives.exception.TopologyException;
 import com.topology.primitives.exception.properties.PropertyException;
 import com.topology.primitives.properties.TEPropertyKey;
 import com.topology.primitives.properties.converters.PropertyConverter;
 import com.topology.primitives.resource.ConnectionResource;
+
+import java.util.Set;
 
 public interface TopologyManager {
 
