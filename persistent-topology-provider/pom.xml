@@ -13,7 +13,7 @@
 
   <properties>
     <eclipselink.version>2.7.6</eclipselink.version>
-    <postgresql.version>42.2.28</postgresql.version>
+    <postgresql.version>42.4.1</postgresql.version>
     <!--include properties for the database user and password that are included in the persistence.xml -->
     <postgres.url>localhost:5432</postgres.url>
     <postgres.db>topology_provider</postgres.db>
