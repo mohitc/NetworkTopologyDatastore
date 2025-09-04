@@ -5,7 +5,7 @@ import com.topology.primitives.ConnectionPoint;
 import com.topology.primitives.Port;
 import com.topology.primitives.TopologyManager;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 

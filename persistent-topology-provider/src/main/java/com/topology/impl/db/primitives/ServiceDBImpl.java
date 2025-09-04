@@ -2,10 +2,7 @@ package com.topology.impl.db.primitives;
 
 import com.topology.primitives.Service;
 
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "service")

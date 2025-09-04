@@ -3,7 +3,7 @@ package com.topology.impl.db.primitives;
 import com.topology.impl.db.primitives.properties.TEPropertyKeyDBImpl;
 import com.topology.primitives.properties.TEPropertyKey;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name="te_properties")

@@ -5,8 +5,8 @@ import com.topology.primitives.NetworkLayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 @Converter
 public class NetworkLayerConverter implements AttributeConverter<NetworkLayer, String>{

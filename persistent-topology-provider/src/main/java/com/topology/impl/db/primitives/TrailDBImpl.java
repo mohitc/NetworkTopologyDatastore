@@ -6,10 +6,7 @@ import com.topology.primitives.Trail;
 import com.topology.primitives.exception.TopologyException;
 import com.topology.primitives.resource.ConnectionResource;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class TrailDBImpl extends PtpServiceDBImpl implements Trail{

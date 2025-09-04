@@ -8,7 +8,7 @@ import com.topology.primitives.TopologyManager;
 import com.topology.primitives.exception.properties.PropertyException;
 import com.topology.primitives.properties.TEPropertyKey;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 

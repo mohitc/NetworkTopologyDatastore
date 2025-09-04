@@ -1,10 +1,10 @@
 package com.topology.impl.db.primitives.converters;
 
 import com.topology.primitives.properties.converters.PropertyConverter;
+import jakarta.persistence.AttributeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.AttributeConverter;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,9 +1,9 @@
 package com.topology.impl.db.primitives.converters;
 
+import jakarta.persistence.AttributeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.AttributeConverter;
 import java.util.HashMap;
 import java.util.Map;
 

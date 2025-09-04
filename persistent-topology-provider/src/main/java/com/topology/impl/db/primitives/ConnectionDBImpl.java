@@ -8,8 +8,8 @@ import com.topology.primitives.NetworkLayer;
 import com.topology.primitives.TopologyManager;
 import com.topology.primitives.exception.resource.ResourceException;
 import com.topology.primitives.resource.ConnectionResource;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
 import java.util.Map;
 
 @Entity

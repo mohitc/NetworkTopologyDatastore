@@ -8,9 +8,7 @@ import com.topology.primitives.exception.TopologyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.NoResultException;
+import jakarta.persistence.*;
 
 public class TopologyManagerFactoryDBImpl implements TopologyManagerFactory{
 

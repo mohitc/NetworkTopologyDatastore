@@ -3,8 +3,8 @@ package com.topology.impl.db.primitives;
 
 import com.topology.impl.db.persistencehelper.EntityManagerFactoryHelper;
 import com.topology.primitives.*;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
