@@ -9,15 +9,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 //General class to manage how notifications are forwarded
 public class NotificationManager {
 
   private static final Logger log = LoggerFactory.getLogger(NotificationManager.class);
 
-  private static Set<NotificationProcessor> notificationProcessors = new HashSet<>();
+  private static final Set<NotificationProcessor> notificationProcessors = new HashSet<>();
 
   public synchronized static void receiveNotification(NotificationMessage message){
     if (message==null) {

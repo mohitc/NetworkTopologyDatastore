@@ -1,10 +1,10 @@
 package com.topology.primitives;
 
-import java.util.Map;
-
+import com.topology.primitives.exception.UnsupportedOperationException;
 import com.topology.primitives.exception.resource.ResourceException;
 import com.topology.primitives.resource.ConnectionResource;
-import com.topology.primitives.exception.UnsupportedOperationException;
+
+import java.util.Map;
 
 public interface Connection extends TopologyElement {
 

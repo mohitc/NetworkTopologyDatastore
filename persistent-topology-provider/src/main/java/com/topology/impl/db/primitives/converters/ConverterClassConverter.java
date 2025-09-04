@@ -12,7 +12,7 @@ public class ConverterClassConverter implements AttributeConverter<Class<? exten
 
   private static final Logger log = LoggerFactory.getLogger(ConverterClassConverter.class);
 
-  private static Map<String, Class> classMap = new HashMap<>();
+  private static final Map<String, Class> classMap = new HashMap<>();
 
   @Override
   public String convertToDatabaseColumn(Class<? extends PropertyConverter> aClass) {

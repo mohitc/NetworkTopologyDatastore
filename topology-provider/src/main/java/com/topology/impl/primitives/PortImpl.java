@@ -1,18 +1,18 @@
 package com.topology.impl.primitives;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.topology.primitives.ConnectionPoint;
 import com.topology.primitives.Port;
 import com.topology.primitives.TopologyElement;
 import com.topology.primitives.TopologyManager;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class PortImpl extends ConnectionPointImpl implements Port {
 
-	private TopologyElement parent;
+	private final  TopologyElement parent;
 
-	private Set<ConnectionPoint> cpSet;
+	private final Set<ConnectionPoint> cpSet;
 
 	public PortImpl(TopologyManager manager, int id, TopologyElement parent) {
 		super(manager, id);

@@ -1,19 +1,18 @@
 package com.topology.impl.primitives;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.topology.primitives.*;
+import com.topology.primitives.exception.TopologyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.topology.primitives.exception.TopologyException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class NetworkElementImpl extends TopologyElementImpl implements NetworkElement {
 
 	private static final Logger log = LoggerFactory.getLogger(NetworkElementImpl.class);
 	
-	private Set<ConnectionPoint> cpSet;
+	private final Set<ConnectionPoint> cpSet;
 
 	public NetworkElementImpl(TopologyManager manager, int id){
 		super(manager, id);

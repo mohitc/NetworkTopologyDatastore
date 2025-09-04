@@ -1,20 +1,19 @@
 package com.topology.impl.primitives;
 
-import java.util.Map;
-import java.util.Set;
-
 import com.helpers.notification.annotation.PropChange;
+import com.topology.primitives.TopologyElement;
 import com.topology.primitives.TopologyManager;
+import com.topology.primitives.exception.properties.PropertyException;
 import com.topology.primitives.properties.TEPropertyKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.topology.primitives.TopologyElement;
-import com.topology.primitives.exception.properties.PropertyException;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class TopologyElementImpl implements TopologyElement {
 
-  private TopologyManager manager;
+  private final TopologyManager manager;
 
 	private int id;
 
@@ -22,7 +21,7 @@ public abstract class TopologyElementImpl implements TopologyElement {
 
 	private Map<TEPropertyKey, String> properties;
 
-	private TEPropertyHelper propHelper;
+	private final TEPropertyHelper propHelper;
 
 	private static final Logger log = LoggerFactory.getLogger(TopologyElement.class);
 

@@ -11,6 +11,9 @@ public class CsEdgeData {
 
   private String target;
 
+  /**
+   * Default Constructor required for JSON Serialization
+   */
   public CsEdgeData() {}
 
   public CsEdgeData(String id, String source, String target) {

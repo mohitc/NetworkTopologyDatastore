@@ -2,8 +2,6 @@ package com.topology.primitives;
 
 import java.util.Set;
 
-import com.topology.primitives.exception.TopologyException;
-
 public interface NetworkElement extends TopologyElement {
 	
 	/**Function to get all ports / connection points contained in the network element

@@ -6,12 +6,12 @@ import com.topology.primitives.TopologyManager;
 import com.topology.primitives.exception.TopologyException;
 import com.topology.resource.AbstractResource;
 import com.topology.resource.ResourceNaming;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 @Path(ResourceNaming.TE.PATH)
 public class TopologyElementResource extends AbstractResource {

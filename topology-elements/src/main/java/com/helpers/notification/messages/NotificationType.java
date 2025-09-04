@@ -35,7 +35,7 @@ public enum NotificationType {
   CrsCcDeletionNotification(new NotificationType[]{CrsCcNotification, ConnDeletionNotification}),
   CrsCcModificationNotification(new NotificationType[]{CrsCcNotification, ConnModificationNotification});
 
-  private NotificationType[] parents;
+  private final NotificationType[] parents;
 
   private NotificationType(NotificationType[] parent) {
     this.parents = parent;
@@ -51,7 +51,7 @@ public enum NotificationType {
 
 
 
-  private static HashMap<NotificationType, Set<NotificationType>> allParents;
+  private static final HashMap<NotificationType, Set<NotificationType>> allParents;
   static {
     allParents = new HashMap<>();
     for (NotificationType currentChild: NotificationType.values()) {

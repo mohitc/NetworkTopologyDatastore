@@ -8,10 +8,10 @@ public enum NetworkLayer {
 	IP(2, "IP Link");
 
 	//Integer value for storing enum in database
-	private int id;
+	private final int id;
 	
 	//String description for enum
-	private String desc;
+	private final String desc;
 	
 	NetworkLayer(int id, String desc) {
 		this.id = id;

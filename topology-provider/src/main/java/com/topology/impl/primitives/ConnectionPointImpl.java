@@ -1,16 +1,16 @@
 package com.topology.impl.primitives;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.topology.primitives.*;
 import com.topology.primitives.exception.TopologyException;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ConnectionPointImpl extends TopologyElementImpl implements ConnectionPoint {
 
 	private TopologyElement parent;
 	
-	private Set<Connection> connections;
+	private final Set<Connection> connections;
 	
 	public ConnectionPointImpl(TopologyManager manager, int id) {
 		super(manager, id);
@@ -76,7 +76,7 @@ public class ConnectionPointImpl extends TopologyElementImpl implements Connecti
 			throw new TopologyException("Connection cannot be null");
 		//at least one end (aEnd / zEnd should be terminating at the connection
 		if (!(connection.getaEnd().equals(this) || connection.getzEnd().equals(this))) {
-			throw new TopologyException("Connection should have atleast one end point terminating at the specified connection point");
+			throw new TopologyException("Connection should have at least one end point terminating at the specified connection point");
 		}
 		connections.add(connection);
 	}

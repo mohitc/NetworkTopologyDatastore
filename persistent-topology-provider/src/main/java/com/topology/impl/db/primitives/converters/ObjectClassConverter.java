@@ -11,7 +11,7 @@ public class ObjectClassConverter implements AttributeConverter<Class, String> {
 
   private static final Logger log = LoggerFactory.getLogger(ObjectClassConverter.class);
 
-  private static Map<String, Class> classMap = new HashMap<>();
+  private static final Map<String, Class> classMap = new HashMap<>();
 
   @Override
   public String convertToDatabaseColumn(Class aClass) {

@@ -6,8 +6,8 @@ import com.topology.primitives.NetworkLayer;
 import com.topology.primitives.TopologyManager;
 import com.topology.primitives.connresource.DefaultConnectionResource;
 import com.topology.primitives.exception.TopologyException;
-import com.topology.primitives.exception.resource.ResourceException;
 import com.topology.primitives.exception.UnsupportedOperationException;
+import com.topology.primitives.exception.resource.ResourceException;
 import com.topology.primitives.resource.ConnectionResource;
 
 import java.util.Collections;
@@ -23,7 +23,7 @@ public abstract class ConnectionImpl extends TopologyElementImpl implements Conn
 		this.zEnd = zEnd;
 	}
 	
-	private ConnectionPoint aEnd, zEnd;
+	private final ConnectionPoint aEnd, zEnd;
 	
 	private boolean directed;
 	
@@ -82,7 +82,7 @@ public abstract class ConnectionImpl extends TopologyElementImpl implements Conn
     } else{
 			Set<ConnectionResource> reservedResources = new HashSet<>(reservations.values());
       ConnectionResource availableResource = resource.availableResource(reservedResources);
-      //If available rseources were found, the reservation is possible,
+      //If available resources were found, the reservation is possible,
       this.totalResource = resource;
     }
 

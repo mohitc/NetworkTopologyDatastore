@@ -6,14 +6,14 @@ import com.topology.primitives.exception.properties.PropertyException;
 import com.topology.primitives.properties.TEPropertyKey;
 import com.topology.resource.AbstractResource;
 import com.topology.resource.ResourceNaming;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import java.util.*;
 
 @Path(ResourceNaming.GRAPH.CS.PATH)
@@ -21,7 +21,7 @@ public class CsGraphResource extends AbstractResource {
 
   private static final Logger log = LoggerFactory.getLogger(CsGraphResource.class);
 
-  private static Map<String, List<CsStyleElement>> csStyle = new HashMap<>();
+  private static final Map<String, List<CsStyleElement>> csStyle = new HashMap<>();
 
   @GET
   @Path(ResourceNaming.GRAPH.CS.STYLE)

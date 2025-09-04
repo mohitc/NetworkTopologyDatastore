@@ -7,18 +7,16 @@ import org.slf4j.LoggerFactory;
 
 public class SLF4jCustomLog extends AbstractSessionLog {
 
-  private static Logger log = LoggerFactory.getLogger("Persistence");
+  private static final Logger log = LoggerFactory.getLogger("Persistence");
 
   @Override
   public void log(SessionLogEntry sessionLogEntry) {
     if (sessionLogEntry.getException()!=null) {
-      switch (sessionLogEntry.getLevel()) {
-        default: log.info(sessionLogEntry.getMessage(), sessionLogEntry.getException());
-      }
+      sessionLogEntry.getLevel();
+      log.info(sessionLogEntry.getMessage(), sessionLogEntry.getException());
     } else {
-      switch (sessionLogEntry.getLevel()) {
-        default: log.info(sessionLogEntry.getMessage());
-      }
+      sessionLogEntry.getLevel();
+      log.info(sessionLogEntry.getMessage());
     }
   }
 }

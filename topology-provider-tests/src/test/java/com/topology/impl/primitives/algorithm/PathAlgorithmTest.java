@@ -95,7 +95,7 @@ public class PathAlgorithmTest {
       log.info("Bidirectional asymmetric path computation in a network with only unidirectional paths should fail");
     }
 
-    //craete directed links in the reverse direction
+    //create directed links in the reverse direction
     log.info("Creating unidirectional links in the reverse direction");
     Link link21 = null, link32 = null;
     CrossConnect c21 = null;

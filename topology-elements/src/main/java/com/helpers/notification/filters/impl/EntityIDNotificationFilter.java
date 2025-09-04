@@ -12,7 +12,7 @@ public class EntityIDNotificationFilter implements NotificationFilter {
 
   private static final Logger log = LoggerFactory.getLogger(EntityIDNotificationFilter.class);
 
-  private Set<Integer> idSet;
+  private final Set<Integer> idSet;
 
   public EntityIDNotificationFilter(Set<Integer> idSet) {
     this.idSet = new HashSet<>();

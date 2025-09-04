@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class NetworkElementTest {
 
-	private static Logger log = LoggerFactory.getLogger(NetworkElementTest.class);
+	private static final Logger log = LoggerFactory.getLogger(NetworkElementTest.class);
 
 
 	private TopologyManager getTopologyManager() {
@@ -29,7 +29,7 @@ public class NetworkElementTest {
 			ne = manager.createNetworkElement();
 			ne.setLabel("Test NE");
 		} catch (TopologyException e) {
-			log.error("Error in creatng a network element", e);
+			log.error("Error in creating a network element", e);
 		}
 		if(ne==null) {
 			fail("Network element was not created successfully");
@@ -55,7 +55,7 @@ public class NetworkElementTest {
 		}
 
 		//compare the created network element with the generated network element
-		assertTrue(ne.equals(createdNe));
+    assertEquals(ne, createdNe);
 	}
 
 
@@ -77,8 +77,8 @@ public class NetworkElementTest {
 			log.error("Error when removing network element", e);
 		}
 
-		assertTrue(!manager.hasElement(ne.getID()));
-		assertTrue(!manager.hasElement(ne.getID(), NetworkElement.class));
+    assertFalse(manager.hasElement(ne.getID()));
+    assertFalse(manager.hasElement(ne.getID(), NetworkElement.class));
 	}
 
 
@@ -131,7 +131,7 @@ public class NetworkElementTest {
 		}
 
 		//compare the created network element with the generated network element
-		assertTrue(port.equals(createdPort));
+    assertEquals(port, createdPort);
 
 		//if parent is a network element, check if network element contains the port
 		if (NetworkElement.class.isAssignableFrom(parent.getClass())) {
@@ -203,8 +203,8 @@ public class NetworkElementTest {
 		}
 
 		log.info("Checking if port was deleted successfully");
-		assertTrue(!manager.hasElement(port.getID()));
-		assertTrue(!manager.hasElement(port.getID(), instance));
+    assertFalse(manager.hasElement(port.getID()));
+    assertFalse(manager.hasElement(port.getID(), instance));
 		assertFalse(ne.getConnectionPoints(false).contains(port));
 
 
@@ -215,8 +215,8 @@ public class NetworkElementTest {
 			log.error("Error while deleting created network element: ", e);
 		}
 
-		assertTrue(!manager.hasElement(ne.getID()));
-		assertTrue(!manager.hasElement(ne.getID(), NetworkElement.class));
+    assertFalse(manager.hasElement(ne.getID()));
+    assertFalse(manager.hasElement(ne.getID(), NetworkElement.class));
 
 	}
 
@@ -272,8 +272,8 @@ public class NetworkElementTest {
 		} catch (TopologyException e) {
 			log.info("Exception when cleaning up ports");
 		}
-		assertTrue(!manager.hasElement(childPort.getID()));
-		assertTrue(!manager.hasElement(childPort.getID(), instance));
+    assertFalse(manager.hasElement(childPort.getID()));
+    assertFalse(manager.hasElement(childPort.getID(), instance));
 		assertFalse(ne.getConnectionPoints(true).contains(childPort));
 
 		try {
@@ -282,8 +282,8 @@ public class NetworkElementTest {
 			log.info("Exception when cleaning up ports");
 		}
 
-		assertTrue(!manager.hasElement(port.getID()));
-		assertTrue(!manager.hasElement(port.getID(), Port.class));
+    assertFalse(manager.hasElement(port.getID()));
+    assertFalse(manager.hasElement(port.getID(), Port.class));
 		assertFalse(ne.getConnectionPoints(false).contains(port));
 
 		//delete network element
@@ -293,8 +293,8 @@ public class NetworkElementTest {
 			log.error("Error while deleting created network element: ", e);
 		}
 
-		assertTrue(!manager.hasElement(ne.getID()));
-		assertTrue(!manager.hasElement(ne.getID(), NetworkElement.class));
+    assertFalse(manager.hasElement(ne.getID()));
+    assertFalse(manager.hasElement(ne.getID(), NetworkElement.class));
 
 	}
 

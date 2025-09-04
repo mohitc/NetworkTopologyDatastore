@@ -1,18 +1,21 @@
 package com.topology.resource.ne;
 
-import com.topology.dto.*;
+import com.topology.dto.ConnectionPointDTO;
+import com.topology.dto.CrossConnectDTO;
+import com.topology.dto.LinkDTO;
+import com.topology.dto.NetworkElementDTO;
 import com.topology.primitives.*;
 import com.topology.primitives.exception.TopologyException;
 import com.topology.primitives.properties.TEPropertyKey;
 import com.topology.resource.AbstractResource;
 import com.topology.resource.ResourceNaming;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.*;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -107,21 +110,5 @@ public class NetworkElementResource extends AbstractResource {
     }
     return linkDTOs;
   }
-
-/*
-  @GET
-  @Produces({MediaType.APPLICATION_JSON})
-  @Path("{neID}/" + ResourceNaming.NetworkElement.LINKS)
-  public Set<TrailDTO> getTrails(@PathParam(ResourceNaming.INSTANCE_REF) String instanceID, @PathParam("neID") int neID) throws TopologyException {
-    TopologyManager manager = getTopologyManager(instanceID);
-    NetworkElement ne = manager.getElementByID(neID, NetworkElement.class);
-    Set<Trail> trails = ne.getAllConnections(Trail.class);
-    Set<TrailDTO> trailDTOs = new HashSet<>();
-    for (Trail trail: trails) {
-      trailDTOs.add(new TrailDTO(trail));
-    }
-    return trailDTOs;
-  }
-*/
 
 }

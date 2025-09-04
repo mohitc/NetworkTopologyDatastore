@@ -9,7 +9,7 @@ import java.util.List;
 //Layer adaptation is a very generic adaptation representation to support mapping of any type service to any type of topology element resources in the client layer
 public class LayerAdaptationImpl {
 
-  private List<TopologyElement> clientEntities;
+  private final List<TopologyElement> clientEntities;
 
   private List<Service> serverEntities;
 

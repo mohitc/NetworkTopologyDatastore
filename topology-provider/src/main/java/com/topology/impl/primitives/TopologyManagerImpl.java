@@ -1,14 +1,12 @@
 package com.topology.impl.primitives;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.helpers.benchmark.annotation.Benchmark;
 import com.helpers.notification.annotation.EntityCreation;
 import com.helpers.notification.annotation.EntityDeletion;
 import com.topology.dto.PathDTO;
 import com.topology.impl.primitives.properties.TEPropertyKeyImpl;
 import com.topology.primitives.*;
+import com.topology.primitives.exception.TopologyException;
 import com.topology.primitives.exception.properties.PropertyException;
 import com.topology.primitives.exception.resource.ResourceException;
 import com.topology.primitives.properties.TEPropertyKey;
@@ -17,38 +15,39 @@ import com.topology.primitives.resource.ConnectionResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.topology.primitives.exception.TopologyException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class TopologyManagerImpl implements TopologyManager {
 
-  private String identifier;
+  private final String identifier;
 
-  private Set<Integer> idSet;
+  private final Set<Integer> idSet;
 
-  private Map<Integer, TopologyElement> topoElements;
+  private final Map<Integer, TopologyElement> topoElements;
 
-  private Map<Integer, NetworkElement> networkElements;
+  private final Map<Integer, NetworkElement> networkElements;
 
-  private Map<Integer, ConnectionPoint> connectionPoints;
+  private final Map<Integer, ConnectionPoint> connectionPoints;
 
-  private Map<Integer, Connection> connections;
+  private final Map<Integer, Connection> connections;
 
-  private Map<Integer, Service> services;
+  private final Map<Integer, Service> services;
 
-  private Map<NEPair, Set<Connection>> neConnections;
+  private final Map<NEPair, Set<Connection>> neConnections;
 
   private static final Logger log = LoggerFactory.getLogger(TopologyManagerImpl.class);
 
-  private Random generator;
+  private final Random generator;
 
-  private Map<String, TEPropertyKeyImpl> registeredKeys;
+  private final Map<String, TEPropertyKeyImpl> registeredKeys;
 
-  private TEPropertyHelper propHelper;
+  private final TEPropertyHelper propHelper;
   //Class to store key for connections between network elements
-  private class NEPair {
-    private int aEndID;
+  private static class NEPair {
+    private final int aEndID;
 
-    private int zEndID;
+    private final int zEndID;
 
     NEPair(int aEnd, int zEnd) {
       this.aEndID = aEnd;
@@ -110,7 +109,7 @@ public class TopologyManagerImpl implements TopologyManager {
           return true;
         }
       } catch (TopologyException e) {
-        //should not happer
+        //should not happen
         log.error("Unexpected exception thrown en extracting network element: ", e);
       }
     }
@@ -422,7 +421,7 @@ public class TopologyManagerImpl implements TopologyManager {
         log.info("Connection Point removed successfully");
       }
     } else {
-      throw new TopologyException("Connection point cannot be removed untill all connections have been removed from them");
+      throw new TopologyException("Connection point cannot be removed until all connections have been removed from them");
     }
 
 

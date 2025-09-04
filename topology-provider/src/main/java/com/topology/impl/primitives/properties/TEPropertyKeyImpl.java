@@ -6,17 +6,19 @@ import com.topology.primitives.properties.converters.PropertyConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class TEPropertyKeyImpl implements TEPropertyKey {
 
   private static final Logger log = LoggerFactory.getLogger(TEPropertyKeyImpl.class);
 
-  private String id;
+  private final String id;
 
-  private String description;
+  private final String description;
 
-  private Class objClass;
+  private final Class objClass;
 
-  private Class<? extends PropertyConverter> converterClass;
+  private final Class<? extends PropertyConverter> converterClass;
 
   public TEPropertyKeyImpl(String id, String description, Class objClass, Class<? extends PropertyConverter> converterClass) {
     this.id = id;
@@ -45,8 +47,8 @@ public class TEPropertyKeyImpl implements TEPropertyKey {
   @Override
   public PropertyConverter getConverter() throws PropertyException {
     try {
-      return converterClass.newInstance();
-    } catch (InstantiationException | IllegalAccessException e) {
+      return converterClass.getDeclaredConstructor().newInstance();
+    } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
       log.error("Error while creating property converter instance", e);
       throw new PropertyException("Error while creating property converter instance: " + e.getMessage());
     }
