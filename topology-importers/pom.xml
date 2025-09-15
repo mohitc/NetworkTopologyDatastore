@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>network-topology-datastore</artifactId>
-    <groupId>com.topology</groupId>
+    <groupId>io.github.mohitc</groupId>
     <version>${revision}</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -13,12 +13,12 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.topology</groupId>
+      <groupId>io.github.mohitc</groupId>
       <artifactId>topology-elements</artifactId>
       <version>${revision}</version>
     </dependency>
     <dependency>
-      <groupId>com.topology</groupId>
+      <groupId>io.github.mohitc</groupId>
       <artifactId>topology-provider</artifactId>
       <version>${revision}</version>
       <scope>test</scope>

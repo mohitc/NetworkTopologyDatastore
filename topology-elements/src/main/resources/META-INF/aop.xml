@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <aspectj>
     <aspects>
-        <aspect name="com.helpers.benchmark.aspect.BenchmarkAspect" />
-        <aspect name="com.helpers.notification.aspect.PropChangeAspect"/>
-        <aspect name="com.helpers.notification.aspect.EntityCreationAspect"/>
-        <aspect name="com.helpers.notification.aspect.EntityDeletionAspect"/>
+        <aspect name="io.github.mohitc.helpers.benchmark.aspect.BenchmarkAspect" />
+        <aspect name="io.github.mohitc.helpers.notification.aspect.PropChangeAspect"/>
+        <aspect name="io.github.mohitc.helpers.notification.aspect.EntityCreationAspect"/>
+        <aspect name="io.github.mohitc.helpers.notification.aspect.EntityDeletionAspect"/>
     </aspects>
 </aspectj>

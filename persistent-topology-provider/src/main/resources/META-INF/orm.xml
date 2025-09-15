@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.eclipse.org/eclipselink/xsds/persistence/orm http://www.eclipse.org/eclipselink/xsds/eclipselink_orm_2_3.xsd"
         version="2.3">
 
-    <converter class="com.topology.impl.db.primitives.converters.NetworkLayerConverter"/>
-    <converter class="com.topology.impl.db.primitives.converters.ObjectClassConverter"/>
-    <converter class="com.topology.impl.db.primitives.converters.ConverterClassConverter"/>
+    <converter class="io.github.mohitc.topology.impl.db.primitives.converters.NetworkLayerConverter"/>
+    <converter class="io.github.mohitc.topology.impl.db.primitives.converters.ObjectClassConverter"/>
+    <converter class="io.github.mohitc.topology.impl.db.primitives.converters.ConverterClassConverter"/>
 </entity-mappings>

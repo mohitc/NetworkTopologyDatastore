@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <handlers>
   <handler>
-    <class>com.helpers.notification.handlers.log.LogNotificationHandler</class>
+    <class>io.github.mohitc.topology.helpers.notification.handlers.log.LogNotificationHandler</class>
     <hparam>TENotification</hparam>
     <filters>
-      <filter class="com.helpers.notification.filters.impl.TypeNotificationFilter">
+      <filter class="io.github.mohitc.helpers.notification.filters.impl.TypeNotificationFilter">
         <fparam>TENotification</fparam>
       </filter>
     </filters>
   </handler>
   <handler>
-    <class>com.helpers.notification.handlers.log.LogNotificationHandler</class>
+    <class>io.github.mohitc.topology.helpers.notification.handlers.log.LogNotificationHandler</class>
     <filters>
-      <filter class="com.helpers.notification.filters.impl.TypeNotificationFilter">
+      <filter class="io.github.mohitc.helpers.notification.filters.impl.TypeNotificationFilter">
         <fparam>TENotification</fparam>
       </filter>
     </filters>

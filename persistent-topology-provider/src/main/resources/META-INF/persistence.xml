@@ -3,17 +3,17 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
     <persistence-unit name="TopologyProvider" transaction-type="RESOURCE_LOCAL">
-        <class>com.topology.impl.db.primitives.TEPropertyDBImpl</class>
-        <class>com.topology.impl.db.primitives.TopologyElementDBImpl</class>
-        <class>com.topology.impl.db.primitives.NetworkElementDBImpl</class>
-        <class>com.topology.impl.db.primitives.ConnectionPointDBImpl</class>
-        <class>com.topology.impl.db.primitives.PortDBImpl</class>
-        <class>com.topology.impl.db.primitives.ConnectionDBImpl</class>
-        <class>com.topology.impl.db.primitives.LinkDBImpl</class>
-<!--        <class>com.topology.impl.db.primitives.TrailDBImpl</class> -->
-        <class>com.topology.impl.db.primitives.CrossConnectDBImpl</class>
-        <class>com.topology.impl.db.primitives.properties.TEPropertyKeyDBImpl</class>
-        <class>com.topology.impl.db.primitives.TopologyManagerDBImpl</class>
+        <class>io.github.mohitc.topology.impl.db.primitives.TEPropertyDBImpl</class>
+        <class>io.github.mohitc.topology.impl.db.primitives.TopologyElementDBImpl</class>
+        <class>io.github.mohitc.topology.impl.db.primitives.NetworkElementDBImpl</class>
+        <class>io.github.mohitc.topology.impl.db.primitives.ConnectionPointDBImpl</class>
+        <class>io.github.mohitc.topology.impl.db.primitives.PortDBImpl</class>
+        <class>io.github.mohitc.topology.impl.db.primitives.ConnectionDBImpl</class>
+        <class>io.github.mohitc.topology.impl.db.primitives.LinkDBImpl</class>
+<!--        <class>io.github.mohitc.topology.primitives.db.impl.topology.TrailDBImpl</class> -->
+        <class>io.github.mohitc.topology.impl.db.primitives.CrossConnectDBImpl</class>
+        <class>io.github.mohitc.topology.impl.db.primitives.properties.TEPropertyKeyDBImpl</class>
+        <class>io.github.mohitc.topology.impl.db.primitives.TopologyManagerDBImpl</class>
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://${postgres.url}/${postgres.db}" />
@@ -30,7 +30,7 @@
             <property name="eclipselink.drop-ddl-jdbc-file-name" value="dropDDL_ddlGeneration.jdbc" />
             <property name="eclipselink.ddl-generation.index-foreign-keys" value="true"/>;
             -->
-            <property name="eclipselink.logging.logger" value="com.topology.db.utils.logging.SLF4jCustomLog"/>
+            <property name="eclipselink.logging.logger" value="io.github.mohitc.topology.db.utils.logging.SLF4jCustomLog"/>
             <property name="eclipselink.logging.level" value="INFO" />
         </properties>
     </persistence-unit>
