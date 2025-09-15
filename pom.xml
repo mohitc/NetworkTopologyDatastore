@@ -36,7 +36,7 @@
     <junit.version>5.13.4</junit.version>
     <flatten-maven-plugin.version>1.7.2</flatten-maven-plugin.version>
     <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
-    <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
     <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
     <maven-core.version>3.9.11</maven-core.version>
     <persistent-provider.skiptests>true</persistent-provider.skiptests>
