@@ -11,7 +11,7 @@
         <!--Use Jersey Resource config to initialize the web application -->
         <init-param>
             <param-name>jakarta.ws.rs.Application</param-name>
-            <param-value>com.topology.resource.JettyResourceConfig</param-value>
+            <param-value>io.github.mohitc.topology.resource.JettyResourceConfig</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

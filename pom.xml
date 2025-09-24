@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.topology</groupId>
+  <groupId>io.github.mohitc</groupId>
   <artifactId>network-topology-datastore</artifactId>
   <version>${revision}</version>
   <packaging>pom</packaging>
@@ -35,11 +35,14 @@
     <jersey.version>3.1.11</jersey.version>
     <junit.version>5.13.4</junit.version>
     <flatten-maven-plugin.version>1.7.3</flatten-maven-plugin.version>
+    <maven-pmd-plugin.version>3.27.0</maven-pmd-plugin.version>
     <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
     <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
     <maven-core.version>3.9.11</maven-core.version>
     <persistent-provider.skiptests>true</persistent-provider.skiptests>
+    <eclipselink.version>4.0.7</eclipselink.version>
+    <postgresql.version>42.7.7</postgresql.version>
   </properties>
 
   <dependencies>
@@ -136,6 +139,33 @@
             <phase>clean</phase>
             <goals>
               <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- PMD for Java static analysis -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>${maven-pmd-plugin.version}</version>
+        <configuration>
+          <rulesets>
+            <!-- A good starting point is the quickstart ruleset -->
+            <ruleset>/rulesets/java/quickstart.xml</ruleset>
+          </rulesets>
+          <targetJdk>${java.version}</targetJdk>
+          <analysisCache>true</analysisCache>
+          <!-- Fail the build on violation -->
+          <failOnViolation>true</failOnViolation>
+          <printFailingErrors>true</printFailingErrors>
+          <failurePriority>3</failurePriority>
+        </configuration>
+        <executions>
+          <execution>
+            <id>pmd-check</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
             </goals>
           </execution>
         </executions>
