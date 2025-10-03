@@ -12,7 +12,7 @@
   <artifactId>persistent-topology-provider</artifactId>
 
   <properties>
-    <eclipselink.version>4.0.7</eclipselink.version>
+    <eclipselink.version>4.0.8</eclipselink.version>
     <postgresql.version>42.7.8</postgresql.version>
     <!--include properties for the database user and password that are included in the persistence.xml -->
     <postgres.url>localhost:5432</postgres.url>
