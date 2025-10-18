@@ -12,6 +12,9 @@
   <artifactId>persistent-topology-provider</artifactId>
 
   <properties>
+    <eclipselink.version>4.0.8</eclipselink.version>
+    <postgresql.version>42.7.8</postgresql.version>
+    <postgresql-testcontainer.version>1.19.7</postgresql-testcontainer.version>
     <maven.test.skip>${persistent-provider.skiptests}</maven.test.skip>
   </properties>
 
@@ -34,7 +37,7 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
-      <version>1.19.7</version>
+      <version>${postgresql-testcontainer.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -44,6 +47,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <resources>
       <resource>
