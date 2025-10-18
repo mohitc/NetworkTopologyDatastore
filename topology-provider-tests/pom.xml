@@ -11,16 +11,20 @@
 
   <artifactId>topology-provider-tests</artifactId>
 
+  <properties>
+    <maven.test.skip>true</maven.test.skip>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.github.mohitc</groupId>
-      <artifactId>topology-provider</artifactId>
+      <artifactId>topology-elements</artifactId>
       <version>${revision}</version>
     </dependency>
     <dependency>
-      <groupId>io.github.mohitc</groupId>
-      <artifactId>persistent-topology-provider</artifactId>
-      <version>${revision}</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
     </dependency>
   </dependencies>
 </project>

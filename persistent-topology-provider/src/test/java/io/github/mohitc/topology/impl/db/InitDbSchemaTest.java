@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
+
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class InitDbSchemaTest {
@@ -15,7 +17,7 @@ public class InitDbSchemaTest {
   public void initDbSchemaTest() {
     InitDBSchema initDBSchema = new InitDBSchema();
     try {
-      initDBSchema.initDbSchema();
+      initDBSchema.initDbSchema(false, Collections.emptyMap());
     } catch (Exception e) {
       log.error("Error while initializing DB schema", e);
       fail("Database schema could not be initialized");

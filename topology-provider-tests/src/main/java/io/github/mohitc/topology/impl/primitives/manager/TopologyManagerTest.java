@@ -4,25 +4,30 @@ import io.github.mohitc.topology.primitives.NetworkElement;
 import io.github.mohitc.topology.primitives.TopologyElement;
 import io.github.mohitc.topology.primitives.TopologyManager;
 import io.github.mohitc.topology.primitives.exception.TopologyException;
-import org.junit.jupiter.api.Test;
+import io.github.mohitc.topology.test.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class TopologyManagerTest {
+public class TopologyManagerTest implements TestCase {
 
   private static final Logger log = LoggerFactory.getLogger(TopologyManagerTest.class);
 
-  protected TopologyManager getTopologyManager() {
-    return TopoManagerHelper.getInstance();
+  private final TopologyManager manager;
+
+  public TopologyManagerTest(TopologyManager instance) {
+    this.manager = instance;
   }
 
-  @Test
-  public void testGetFunctions() {
+  @Override
+  public String getName() {
+    return "Test Topology Manager behaviour";
+  }
 
-    TopologyManager manager = getTopologyManager();
+  @Override
+  public void executeTestCase() {
     log.info("Creating network element");
 
     NetworkElement element = null;
@@ -39,9 +44,9 @@ public class TopologyManagerTest {
       log.info("testing getElementByID(id, Class<T>)");
       assertEquals(element, manager.getElementByID(element.getID(), NetworkElement.class));
       log.info("testing getAllElementByID(Class<T>)");
-      assert(manager.getAllElements(TopologyElement.class).contains(element));
+      assert manager.getAllElements(TopologyElement.class).contains(element);
       log.info("testing getAllElementByID(Class<T>)");
-      assert(manager.getAllElements(NetworkElement.class).contains(element));
+      assert manager.getAllElements(NetworkElement.class).contains(element);
     } catch (TopologyException e) {
       fail("Error while fetching test.topology elements from the test.topology manager: " + e.getMessage());
     }

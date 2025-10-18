@@ -1,27 +1,33 @@
 package io.github.mohitc.topology.impl.primitives.networkelement;
 
-import io.github.mohitc.topology.impl.primitives.manager.TopoManagerHelper;
 import io.github.mohitc.topology.primitives.*;
 import io.github.mohitc.topology.primitives.exception.TopologyException;
-import org.junit.jupiter.api.Test;
+import io.github.mohitc.topology.test.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class NetworkElementTest {
+public class NetworkElementTest implements TestCase {
 
 	private static final Logger log = LoggerFactory.getLogger(NetworkElementTest.class);
 
+  private final TopologyManager manager;
 
-	private TopologyManager getTopologyManager() {
-		return TopoManagerHelper.getInstance();
-	}
+  public NetworkElementTest(TopologyManager instance) {
+    this.manager = instance;
+
+  }
+
+  @Override
+  public String getName() {
+    return "Test Network Element Functions";
+  }
 
 	//----------------------------------------------------------------------------------------------------------------------------
 	//Test and related functions for the lifecycle of network elements
 	//----------------------------------------------------------------------------------------------------------------------------
-	public NetworkElement createNetworkElement(TopologyManager manager){
+	private NetworkElement createNetworkElement(TopologyManager manager){
 		log.info("Creating a new Network element from the test.topology manager");
 
 		NetworkElement ne=null;
@@ -59,10 +65,8 @@ public class NetworkElementTest {
 	}
 
 
-	@Test
-	public void testEmptyNetworkElementLifeCycle(){
+	private void testEmptyNetworkElementLifeCycle(){
 		log.info("Initializing Network Manager");
-		TopologyManager manager = getTopologyManager();
 		//generating a new network element
 		NetworkElement ne = createNetworkElement(manager);
 
@@ -145,8 +149,10 @@ public class NetworkElementTest {
 			if (ne==null){
 				fail("Could not fetch network element from test.topology manager");
 			}
-      log.info("Set of connection points in network element{}", ne.getConnectionPoints(false));
-			assertTrue(ne.getConnectionPoints(false).contains(port));
+      if (log.isInfoEnabled()) {
+        log.info("Set of connection points in network element{}", ne.getConnectionPoints(false));
+      }
+      assertTrue(ne.getConnectionPoints(false).contains(port));
 		} else if (Port.class.isAssignableFrom(parent.getClass())) {
 			//get the parent network element from the test.topology manager
 			Port parentPort = null;
@@ -165,9 +171,8 @@ public class NetworkElementTest {
 
 
 
-	public <T extends ConnectionPoint> void testPopulatedNetworkElementLifeCycle(Class<T> instance){
+	private <T extends ConnectionPoint> void testPopulatedNetworkElementLifeCycle(Class<T> instance){
 		log.info("Initializing Network Manager");
-		TopologyManager manager = getTopologyManager();
 		//generating a new network element
 		NetworkElement ne = createNetworkElement(manager);
 
@@ -177,10 +182,11 @@ public class NetworkElementTest {
 		log.info("Create a port in the network element");
 
 		ConnectionPoint port;
-		if (Port.class.isAssignableFrom(instance))
-			port = createPort(ne, manager);
-		else
-			port = createConnectionPoint(ne, manager);
+		if (Port.class.isAssignableFrom(instance)) {
+      port = createPort(ne, manager);
+    } else {
+      port = createConnectionPoint(ne, manager);
+    }
 
 		checkConnectionPoint(port, ne, manager, instance);
 
@@ -220,15 +226,13 @@ public class NetworkElementTest {
 
 	}
 
-	@Test
-	public void testPopulatedNe(){
+	private void testPopulatedNe(){
 		testPopulatedNetworkElementLifeCycle(Port.class);
 		testPopulatedNetworkElementLifeCycle(ConnectionPoint.class);
 	}
 
-	public <T extends ConnectionPoint> void testHierarchicalPortStructure(Class<T> instance){
+	private <T extends ConnectionPoint> void testHierarchicalPortStructure(Class<T> instance){
 		log.info("Initializing Network Manager");
-		TopologyManager manager = getTopologyManager();
 		//generating a new network element
 		NetworkElement ne = createNetworkElement(manager);
 
@@ -237,10 +241,11 @@ public class NetworkElementTest {
 
 		log.info("Create a connection point in the port");
 		ConnectionPoint childPort;
-		if (Port.class.isAssignableFrom(instance))
-			childPort = createPort(port, manager);
-		else
-			childPort = createConnectionPoint(port, manager);
+		if (Port.class.isAssignableFrom(instance)) {
+      childPort = createPort(port, manager);
+    } else {
+      childPort = createConnectionPoint(port, manager);
+    }
 
 		checkConnectionPoint(childPort, port, manager, instance);
 
@@ -298,12 +303,20 @@ public class NetworkElementTest {
 
 	}
 
-	@Test
 	public void testHierarchicalPort(){
 //      InitNotificationManager.init();
 		testHierarchicalPortStructure(Port.class);
 		testHierarchicalPortStructure(ConnectionPoint.class);
 	}
 
+  @Override
+  public void executeTestCase() {
+    manager.removeAllElements();
+    testEmptyNetworkElementLifeCycle();
+    manager.removeAllElements();
+    testPopulatedNe();
+    manager.removeAllElements();
+    testHierarchicalPort();
+  }
 
 }

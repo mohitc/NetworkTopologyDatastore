@@ -89,7 +89,6 @@ abstract public class TopologyElementDBImpl implements TopologyElement {
       te.setLabelString(label);
       this.label = label;
       em.getTransaction().commit();
-      em.close();
     }
   }
 

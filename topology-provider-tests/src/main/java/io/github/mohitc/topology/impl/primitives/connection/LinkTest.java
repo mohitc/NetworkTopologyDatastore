@@ -2,13 +2,16 @@ package io.github.mohitc.topology.impl.primitives.connection;
 
 import io.github.mohitc.topology.primitives.*;
 import io.github.mohitc.topology.primitives.exception.TopologyException;
-import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LinkTest extends ConnectionTest {
+
+  public LinkTest(TopologyManager instance) {
+    super(instance);
+  }
 
   private void checkTopoManagerConnAssociation(TopologyManager manager, Link link, NetworkElement ne1, NetworkElement ne2) {
     Set<Connection> connections;
@@ -135,12 +138,11 @@ public class LinkTest extends ConnectionTest {
   }
 
 
-  @Test
-  public void testLinkCycle() {
-
-    TopologyManager manager = getTopologyManager();
-    NetworkElement ne1 = null, ne2 = null;
-    ConnectionPoint cp1 =null, cp2=null;
+  private void testLinkCycle() {
+    NetworkElement ne1 = null;
+    NetworkElement ne2 = null;
+    ConnectionPoint cp1 =null;
+    ConnectionPoint cp2=null;
     try {
       ne1 = manager.createNetworkElement();
       ne2 = manager.createNetworkElement();
@@ -185,12 +187,12 @@ public class LinkTest extends ConnectionTest {
     checkTopoManagerDirectedConnectionAssociation(manager, link, ne1, ne2);
   }
 
-  @Test
   public void testInvalidLink() {
-    TopologyManager manager = getTopologyManager();
     NetworkElement ne1 = null;
-    ConnectionPoint cp1 =null, cp2=null;
-    Port cp3 =null, cp4=null;
+    ConnectionPoint cp1 =null;
+    ConnectionPoint cp2=null;
+    Port cp3 =null;
+    Port cp4=null;
     try {
       ne1 = manager.createNetworkElement();
       cp1 = manager.createConnectionPoint(ne1);
@@ -229,5 +231,18 @@ public class LinkTest extends ConnectionTest {
     } catch (TopologyException e) {
       log.debug("link creation failed between connection points {} and {} with different parents in the same network element", cp1, cp2);
     }
+  }
+
+  @Override
+  public String getName() {
+    return "Link Behaviour Tests";
+  }
+
+  @Override
+  public void executeTestCase() {
+    manager.removeAllElements();
+    testLinkCycle();
+    manager.removeAllElements();
+    testInvalidLink();
   }
 }

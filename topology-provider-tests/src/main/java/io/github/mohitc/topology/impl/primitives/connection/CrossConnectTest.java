@@ -2,19 +2,20 @@ package io.github.mohitc.topology.impl.primitives.connection;
 
 import io.github.mohitc.topology.primitives.*;
 import io.github.mohitc.topology.primitives.exception.TopologyException;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class CrossConnectTest extends ConnectionTest {
 
-  @Test
-  public void testCrossConnectCycle() {
+  public CrossConnectTest(TopologyManager instance) {
+    super(instance);
+  }
 
-    TopologyManager manager = getTopologyManager();
+  private void testCrossConnectCycle() {
     NetworkElement ne1 = null;
-    ConnectionPoint cp1 =null, cp2=null;
+    ConnectionPoint cp1 =null;
+    ConnectionPoint cp2=null;
     try {
       ne1 = manager.createNetworkElement();
       cp1 = manager.createConnectionPoint(ne1);
@@ -52,11 +53,11 @@ public class CrossConnectTest extends ConnectionTest {
 
   }
 
-  @Test
-  public void testInvalidCrossConnect() {
-    TopologyManager manager = getTopologyManager();
-    NetworkElement ne1 = null, ne2 = null;
-    ConnectionPoint cp1 =null, cp2=null;
+  private void testInvalidCrossConnect() {
+    NetworkElement ne1 = null;
+    NetworkElement ne2 = null;
+    ConnectionPoint cp1 =null;
+    ConnectionPoint cp2=null;
     try {
       ne1 = manager.createNetworkElement();
       ne2 = manager.createNetworkElement();
@@ -81,4 +82,16 @@ public class CrossConnectTest extends ConnectionTest {
 
   }
 
+  @Override
+  public String getName() {
+    return "Cross Connect Behaviour tests";
+  }
+
+  @Override
+  public void executeTestCase() {
+    manager.removeAllElements();
+    testCrossConnectCycle();
+    manager.removeAllElements();
+    testInvalidCrossConnect();
+  }
 }

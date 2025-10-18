@@ -210,7 +210,6 @@ public class TopologyManagerDBImpl implements TopologyManager {
       Link link = new LinkDBImpl(this, startCP, endCP);
       em.persist(link);
       em.getTransaction().commit();
-      em.close();
       return link;
     } catch (EntityNotFoundException e) {
       throw new TopologyException("Start or End connection point not found", e);
@@ -239,7 +238,6 @@ public class TopologyManagerDBImpl implements TopologyManager {
       CrossConnect cc = new CrossConnectDBImpl(this, startCP, endCP);
       em.persist(cc);
       em.getTransaction().commit();
-      em.close();
       return cc;
     } catch (EntityNotFoundException e) {
       throw new TopologyException("Start or End connection point not found", e);

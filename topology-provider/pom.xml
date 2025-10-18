@@ -17,6 +17,11 @@
       <artifactId>topology-elements</artifactId>
       <version>${revision}</version>
     </dependency>
+    <dependency>
+      <groupId>io.github.mohitc</groupId>
+      <artifactId>topology-provider-tests</artifactId>
+      <version>${revision}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
 </project>

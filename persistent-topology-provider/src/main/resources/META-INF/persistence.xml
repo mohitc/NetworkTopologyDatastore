@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
-             version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence">
     <persistence-unit name="TopologyProvider" transaction-type="RESOURCE_LOCAL">
+        <!-- The provider must be declared before the list of classes. -->
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+
         <class>io.github.mohitc.topology.impl.db.primitives.TEPropertyDBImpl</class>
         <class>io.github.mohitc.topology.impl.db.primitives.TopologyElementDBImpl</class>
         <class>io.github.mohitc.topology.impl.db.primitives.NetworkElementDBImpl</class>
@@ -10,26 +13,17 @@
         <class>io.github.mohitc.topology.impl.db.primitives.PortDBImpl</class>
         <class>io.github.mohitc.topology.impl.db.primitives.ConnectionDBImpl</class>
         <class>io.github.mohitc.topology.impl.db.primitives.LinkDBImpl</class>
-<!--        <class>io.github.mohitc.topology.primitives.db.impl.topology.TrailDBImpl</class> -->
+<!--        <class>io.github.mohitc.topology.impl.db.primitives.TrailDBImpl</class>-->
         <class>io.github.mohitc.topology.impl.db.primitives.CrossConnectDBImpl</class>
         <class>io.github.mohitc.topology.impl.db.primitives.properties.TEPropertyKeyDBImpl</class>
         <class>io.github.mohitc.topology.impl.db.primitives.TopologyManagerDBImpl</class>
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+      <class>io.github.mohitc.topology.impl.db.primitives.TopologyManagerFactoryDBImpl</class>
         <properties>
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://${postgres.url}/${postgres.db}" />
-            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
-            <property name="javax.persistence.jdbc.user" value="${postgres.user}" />
-            <property name="javax.persistence.jdbc.password" value="${postgres.password}" />
+            <property name="jakarta.persistence.jdbc.url" value="${postgres.url}" />
+            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver" />
+            <property name="jakarta.persistence.jdbc.user" value="${postgres.user}" />
+            <property name="jakarta.persistence.jdbc.password" value="${postgres.password}" />
             <property name="eclipselink.target-database" value="POSTGRESQL"/>
-
-
-            <!-- EclipseLink should create the database schema automatically -->
-<!--            <property name="eclipselink.ddl-generation" value="create-or-extend-tables" />
-            <property name="eclipselink.ddl-generation.output-mode" value="database" />;
-            <property name="eclipselink.create-ddl-jdbc-file-name" value="createDDL_ddlGeneration.jdbc" />
-            <property name="eclipselink.drop-ddl-jdbc-file-name" value="dropDDL_ddlGeneration.jdbc" />
-            <property name="eclipselink.ddl-generation.index-foreign-keys" value="true"/>;
-            -->
             <property name="eclipselink.logging.logger" value="io.github.mohitc.topology.db.utils.logging.SLF4jCustomLog"/>
             <property name="eclipselink.logging.level" value="INFO" />
         </properties>

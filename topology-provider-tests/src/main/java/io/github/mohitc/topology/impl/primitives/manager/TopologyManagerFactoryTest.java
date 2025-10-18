@@ -3,29 +3,35 @@ package io.github.mohitc.topology.impl.primitives.manager;
 import io.github.mohitc.topology.primitives.TopologyManager;
 import io.github.mohitc.topology.primitives.TopologyManagerFactory;
 import io.github.mohitc.topology.primitives.exception.TopologyException;
-import org.junit.jupiter.api.Test;
+import io.github.mohitc.topology.test.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TopologyManagerFactoryTest {
+public class TopologyManagerFactoryTest implements TestCase {
 
   public static final Logger log = LoggerFactory.getLogger(TopologyManagerFactoryTest.class);
 
-  public TopologyManagerFactory getTopologyManagerFactoryInstance() {
-    return TopoManagerHelper.getFactoryInstance();
+  private final TopologyManagerFactory factory;
+
+  public TopologyManagerFactoryTest(TopologyManagerFactory factory) {
+    this.factory = factory;
   }
 
-  @Test
-  public void testTopologyManagerFactory() {
+  @Override
+  public String getName() {
+    return "Test Factory Behaviour";
+  }
+
+  @Override
+  public void executeTestCase() {
     log.info("Starting test for Topology Manager factory");
     log.debug("Initially there should be no topology manager instance available");
 
-    TopologyManagerFactory factory = getTopologyManagerFactoryInstance();
-
-    if (factory==null)
+    if (factory==null) {
       fail("The method to generate a factory instance returns a null object");
+    }
 
     String id = "1234";
 
@@ -50,7 +56,8 @@ public class TopologyManagerFactoryTest {
       fail("Topology Manager creation failed: " + e.getMessage());
     }
 
-    try {
+    try {      factory.getTopologyManager(id);
+
       TopologyManager manager = factory.getTopologyManager(id);
       assertNotNull(manager, "Manager instance cannot be null");
       log.info("Correct operation (manager object) when a manager with the specified ID is available");

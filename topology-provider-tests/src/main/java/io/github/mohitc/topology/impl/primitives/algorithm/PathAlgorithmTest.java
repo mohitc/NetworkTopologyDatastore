@@ -3,31 +3,42 @@ package io.github.mohitc.topology.impl.primitives.algorithm;
 import io.github.mohitc.topology.algorithm.PathComputationAlgorithm;
 import io.github.mohitc.topology.algorithm.constraint.PathConstraint;
 import io.github.mohitc.topology.dto.PathDTO;
-import io.github.mohitc.topology.impl.primitives.manager.TopoManagerHelper;
 import io.github.mohitc.topology.primitives.*;
 import io.github.mohitc.topology.primitives.exception.TopologyException;
-import org.junit.jupiter.api.Test;
+import io.github.mohitc.topology.test.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class PathAlgorithmTest {
+public class PathAlgorithmTest implements TestCase {
 
   private static final Logger log = LoggerFactory.getLogger(PathAlgorithmTest.class);
 
-  private static TopologyManager getTopologyManager() {
-    return TopoManagerHelper.getInstance();
+  private final TopologyManager manager;
+
+  public PathAlgorithmTest(TopologyManager instance) {
+    this.manager = instance;
   }
 
-  @Test
-  public void testSinglePathComputation() {
+  @Override
+  public String getName() {
+    return "Testing Path computation algorithms";
+  }
+
+  @Override
+  public void executeTestCase() {
     log.info("Generating network elements");
-    TopologyManager manager = getTopologyManager();
-    NetworkElement ne1, ne2, ne3;
-    ConnectionPoint aEnd = null, in1 = null, in2 = null, zEnd = null;
-    Link link12=null, link23=null;
+    NetworkElement ne1;
+    NetworkElement ne2;
+    NetworkElement ne3;
+    ConnectionPoint aEnd = null;
+    ConnectionPoint in1 = null;
+    ConnectionPoint in2 = null;
+    ConnectionPoint zEnd = null;
+    Link link12=null;
+    Link link23=null;
     CrossConnect c12=null;
     try {
       ne1 = manager.createNetworkElement();
@@ -81,23 +92,26 @@ public class PathAlgorithmTest {
 
     try {
       path = algorithm.computePath(manager, aEnd, zEnd, new PathConstraint(false, true));
-      if (path!=null)
+      if (path!=null) {
         fail("No Paths should be found");
+      }
     } catch (TopologyException e) {
       log.info("Bidirectional path computation in a network with only unidirectional paths should fail");
     }
 
     try {
       path = algorithm.computePath(manager, aEnd, zEnd, new PathConstraint(false, false));
-      if (path!=null)
+      if (path!=null) {
         fail("No Paths should be found");
+      }
     } catch (TopologyException e) {
       log.info("Bidirectional asymmetric path computation in a network with only unidirectional paths should fail");
     }
 
     //create directed links in the reverse direction
     log.info("Creating unidirectional links in the reverse direction");
-    Link link21, link32;
+    Link link21;
+    Link link32;
     CrossConnect c21;
     try {
       link21 = manager.createLink(in1.getID(), aEnd.getID());

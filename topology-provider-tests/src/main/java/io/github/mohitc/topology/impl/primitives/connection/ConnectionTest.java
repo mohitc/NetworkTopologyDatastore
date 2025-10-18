@@ -1,8 +1,8 @@
 package io.github.mohitc.topology.impl.primitives.connection;
 
-import io.github.mohitc.topology.impl.primitives.manager.TopoManagerHelper;
 import io.github.mohitc.topology.primitives.*;
 import io.github.mohitc.topology.primitives.exception.TopologyException;
+import io.github.mohitc.topology.test.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,12 +10,14 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ConnectionTest {
+public abstract class ConnectionTest implements TestCase {
 
   protected static final Logger log = LoggerFactory.getLogger(ConnectionTest.class);
 
-  protected TopologyManager getTopologyManager() {
-    return TopoManagerHelper.getInstance();
+  protected final TopologyManager manager;
+
+  public ConnectionTest(TopologyManager instance) {
+    this.manager = instance;
   }
 
   protected <T extends Connection> void checkConnectionFunctions(TopologyManager manager, T conn, Class<T> instance) {
