@@ -14,7 +14,7 @@
   <properties>
     <eclipselink.version>4.0.8</eclipselink.version>
     <postgresql.version>42.7.8</postgresql.version>
-    <postgresql-testcontainer.version>1.19.7</postgresql-testcontainer.version>
+    <postgresql-testcontainer.version>1.21.3</postgresql-testcontainer.version>
     <maven.test.skip>${persistent-provider.skiptests}</maven.test.skip>
   </properties>
 
