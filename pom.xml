@@ -37,7 +37,7 @@
     <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
     <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
-    <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
+    <maven-war-plugin.version>3.5.0</maven-war-plugin.version>
     <maven-core.version>3.9.11</maven-core.version>
     <persistent-provider.skiptests>false</persistent-provider.skiptests>
     <eclipselink.version>4.0.7</eclipselink.version>
