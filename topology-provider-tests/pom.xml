@@ -11,6 +11,15 @@
 
   <artifactId>topology-provider-tests</artifactId>
 
+  <!-- Module Metadata -->
+  <name>${project.groupId}.${project.artifactId}</name>
+  <description>
+    Module with a test-suite for any topology provider. Instead of
+    implementing common tests separately for all topology providers,
+    tests can be added to this module and are automatically available
+    to the other topology providers.
+  </description>
+
   <properties>
     <maven.test.skip>true</maven.test.skip>
   </properties>

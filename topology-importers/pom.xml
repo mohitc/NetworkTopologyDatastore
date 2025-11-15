@@ -11,6 +11,13 @@
 
   <artifactId>topology-importers</artifactId>
 
+  <!-- Module Metadata -->
+  <name>${project.groupId}.${project.artifactId}</name>
+  <description>
+    Implementation to import topologies as specified in various external
+    formats. Currently, supports importing from SNDLib (https://sndlib.zib.de).
+  </description>
+
   <dependencies>
     <dependency>
       <groupId>io.github.mohitc</groupId>

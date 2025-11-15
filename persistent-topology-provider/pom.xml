@@ -11,11 +11,19 @@
 
   <artifactId>persistent-topology-provider</artifactId>
 
+  <!-- Module Metadata -->
+  <name>${project.groupId}.${project.artifactId}</name>
+  <description>
+    Implementation of a Topology Provider that stores the necessary
+    topology entities in a PostgreSQL database. Implementation based on
+    Eclipselink JDO ORM and can be adapted to multiple backend databases.
+  </description>
+
   <properties>
     <eclipselink.version>4.0.8</eclipselink.version>
     <postgresql.version>42.7.8</postgresql.version>
     <postgresql-testcontainer.version>1.21.3</postgresql-testcontainer.version>
-    <maven.test.skip>${persistent-provider.skiptests}</maven.test.skip>
+    <skipTests>true</skipTests>
   </properties>
 
   <dependencies>
@@ -55,19 +63,5 @@
         <filtering>true</filtering>
       </resource>
     </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
   </build>
 </project>

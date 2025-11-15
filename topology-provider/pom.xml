@@ -11,6 +11,14 @@
 
   <artifactId>topology-provider</artifactId>
 
+  <!-- Module Metadata -->
+  <name>${project.groupId}.${project.artifactId}</name>
+  <description>
+    An in-memory implementation of the topology elements providing
+    a mechanism to import and operate on network topologies in small-scale
+    applications.
+  </description>
+
   <dependencies>
     <dependency>
       <groupId>io.github.mohitc</groupId>

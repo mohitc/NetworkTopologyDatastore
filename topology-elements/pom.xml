@@ -12,6 +12,14 @@
   <artifactId>topology-elements</artifactId>
   <packaging>jar</packaging>
 
+  <!-- Module Metadata -->
+  <name>${project.groupId}.${project.artifactId}</name>
+  <description>
+    Interface definitions of topology elements and AspectJ aspect
+    definitions for helper methods around performing common operations
+    while working with topology entities.
+  </description>
+
   <dependencies>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -24,8 +32,4 @@
       <version>${jackson.version}</version>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-    </plugins>
-  </build>
 </project>

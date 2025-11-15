@@ -11,6 +11,15 @@
 
   <artifactId>topology-notification-handlers</artifactId>
 
+  <!-- Module Metadata -->
+  <name>${project.groupId}.${project.artifactId}</name>
+  <description>
+    Notifications are generated via aspects on various topology
+    operations, and handlers can be attached to process these
+    notifications in an asynchronous fashion. This module includes
+    implementations of these notifications handlers.
+  </description>
+
   <dependencies>
     <dependency>
       <groupId>io.github.mohitc</groupId>

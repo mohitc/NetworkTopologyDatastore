@@ -8,7 +8,40 @@
   <artifactId>network-topology-datastore</artifactId>
   <version>${revision}</version>
   <packaging>pom</packaging>
-  <name>Network Topology Datastore</name>
+
+  <!-- Project Metadata -->
+  <name>${project.groupId}.${project.artifactId}</name>
+  <description>
+    A Java project to import and operate on network topologies,
+    with some implementations to have the topologies available
+    as an in-memory representation or as a persistent representation
+    in a database.
+  </description>
+  <url>https://github.com/mohitc/NetworkTopologyDatastore</url>
+
+  <!-- License Information -->
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+    </license>
+  </licenses>
+
+  <!-- Developers -->
+  <developers>
+    <developer>
+      <name>Mohit Chamania</name>
+      <email>mohitc@live.de</email>
+      <organizationUrl>https://github.com/mohitc</organizationUrl>
+    </developer>
+  </developers>
+
+  <!-- SCM -->
+  <scm>
+    <connection>scm:git:git://github.com/mohitc/NetworkTopologyDatastore.git</connection>
+    <developerConnection>scm:git:https://github.com:mohitc/NetworkTopologyDatastore.git</developerConnection>
+    <url>https://github.com/mohitc/NetworkTopologyDatastore/tree/main</url>
+  </scm>
 
 
   <modules>
@@ -39,9 +72,13 @@
     <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
     <maven-war-plugin.version>3.5.0</maven-war-plugin.version>
     <maven-core.version>3.9.11</maven-core.version>
-    <persistent-provider.skiptests>false</persistent-provider.skiptests>
     <eclipselink.version>4.0.7</eclipselink.version>
     <postgresql.version>42.7.7</postgresql.version>
+    <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+    <maven-central-publishing-plugin.version>0.9.0</maven-central-publishing-plugin.version>
+    <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+    <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+    <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
   </properties>
 
   <dependencies>
@@ -169,6 +206,120 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${maven-failsafe-plugin.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+    </profile>
+    <profile>
+      <id>publish-github</id>
+      <distributionManagement>
+        <!-- Githib Repositories for snapshot and releases -->
+        <repository>
+          <id>github</id>
+          <name>GitHub Packages</name>
+          <url>https://maven.pkg.github.com/mohitc/NetworkTopologyDatastore</url>
+        </repository>
+      </distributionManagement>
+    </profile>
+    <profile>
+      <id>publish-central</id>
+      <build>
+        <plugins>
+          <!-- GPG Plugin to sign artifacts -->
+          <plugin>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven-gpg-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <gpgArguments>
+                <argument>--pinentry-mode</argument>
+                <argument>loopback</argument>
+              </gpgArguments>
+            </configuration>
+          </plugin>
+          <!-- Generate Java Sources Jar -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven-source-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Generate JavaDoc for release -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven-javadoc-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Plugin to publish packages to maven central -->
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>${maven-central-publishing-plugin.version}</version>
+            <extensions>true</extensions>
+            <configuration>
+              <publishingServerId>central</publishingServerId>
+              <excludeArtifacts>topology-web-service,topology-provider-tests</excludeArtifacts>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <distributionManagement>
+        <!-- central repos for snapshots and releases -->
+        <snapshotRepository>
+          <id>central</id>
+          <name>Maven Central - Snapshots</name>
+          <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+        <repository>
+          <id>central</id>
+          <name>Maven Central - Releases</name>
+          <url>https://central.sonatype.com/repository/maven-releases/</url>
+        </repository>
+      </distributionManagement>
+    </profile>
+  </profiles>
+
 </project>
