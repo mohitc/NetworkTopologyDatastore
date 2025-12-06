@@ -300,6 +300,7 @@
             <version>${maven-central-publishing-plugin.version}</version>
             <extensions>true</extensions>
             <configuration>
+              <skipPublishing>true</skipPublishing>
               <publishingServerId>central</publishingServerId>
               <excludeArtifacts>topology-web-service,topology-provider-tests</excludeArtifacts>
             </configuration>
