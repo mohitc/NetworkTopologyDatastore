@@ -314,11 +314,6 @@
           <name>Maven Central - Snapshots</name>
           <url>https://central.sonatype.com/repository/maven-snapshots/</url>
         </snapshotRepository>
-        <repository>
-          <id>central</id>
-          <name>Maven Central - Releases</name>
-          <url>https://central.sonatype.com/repository/maven-releases/</url>
-        </repository>
       </distributionManagement>
     </profile>
   </profiles>
