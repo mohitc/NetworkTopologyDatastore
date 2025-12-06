@@ -2,12 +2,13 @@ name: Publish Java Packages to Maven Central
 
 on:
   release:
-    types: [created]
+    types: [published]
   workflow_dispatch:
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'  # only runs if on the 'main' branch
     permissions:
       contents: read
       packages: write
