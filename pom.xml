@@ -58,7 +58,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>21</java.version>
     <slf4j.version>2.0.17</slf4j.version>
-    <revision>0.0.1-SNAPSHOT</revision>
+    <revision>0.0.1</revision>
     <aspectj.version>1.9.25</aspectj.version>
     <aspectj-mavem-plugin.version>1.15.0</aspectj-mavem-plugin.version>
     <jackson.version>2.20.1</jackson.version>
@@ -300,7 +300,6 @@
             <version>${maven-central-publishing-plugin.version}</version>
             <extensions>true</extensions>
             <configuration>
-              <skipPublishing>true</skipPublishing>
               <publishingServerId>central</publishingServerId>
               <excludeArtifacts>topology-web-service,topology-provider-tests</excludeArtifacts>
             </configuration>
