@@ -65,7 +65,7 @@
     <jackson-annotations.version>2.20</jackson-annotations.version>
     <jetty.version>11.0.25</jetty.version>
     <jersey.version>3.1.11</jersey.version>
-    <junit.version>6.0.1</junit.version>
+    <junit.version>6.0.2</junit.version>
     <flatten-maven-plugin.version>1.7.3</flatten-maven-plugin.version>
     <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
     <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
@@ -75,7 +75,7 @@
     <eclipselink.version>4.0.7</eclipselink.version>
     <postgresql.version>42.7.7</postgresql.version>
     <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
-    <maven-central-publishing-plugin.version>0.9.0</maven-central-publishing-plugin.version>
+    <maven-central-publishing-plugin.version>0.10.0</maven-central-publishing-plugin.version>
     <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
     <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
     <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
