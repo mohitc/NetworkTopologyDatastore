@@ -60,9 +60,9 @@
     <slf4j.version>2.0.17</slf4j.version>
     <revision>0.0.2-SNAPSHOT</revision>
     <aspectj.version>1.9.25.1</aspectj.version>
-    <aspectj-mavem-plugin.version>1.15.0</aspectj-mavem-plugin.version>
-    <jackson.version>2.20.1</jackson.version>
-    <jackson-annotations.version>2.20</jackson-annotations.version>
+    <aspectj-mavem-plugin.version>1.16.0</aspectj-mavem-plugin.version>
+    <jackson.version>2.21.0</jackson.version>
+    <jackson-annotations.version>2.21</jackson-annotations.version>
     <jetty.version>11.0.25</jetty.version>
     <jersey.version>3.1.11</jersey.version>
     <junit.version>6.0.2</junit.version>
