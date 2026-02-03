@@ -68,7 +68,7 @@
     <junit.version>6.0.2</junit.version>
     <flatten-maven-plugin.version>1.7.3</flatten-maven-plugin.version>
     <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
-    <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
     <maven-war-plugin.version>3.5.1</maven-war-plugin.version>
     <maven-core.version>3.9.11</maven-core.version>
