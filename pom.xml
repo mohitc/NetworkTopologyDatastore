@@ -61,15 +61,15 @@
     <revision>0.0.2-SNAPSHOT</revision>
     <aspectj.version>1.9.25.1</aspectj.version>
     <aspectj-mavem-plugin.version>1.16.0</aspectj-mavem-plugin.version>
-    <jackson.version>2.21.0</jackson.version>
+    <jackson.version>2.21.1</jackson.version>
     <jackson-annotations.version>2.21</jackson-annotations.version>
     <jetty.version>11.0.25</jetty.version>
     <jersey.version>3.1.11</jersey.version>
-    <junit.version>6.0.2</junit.version>
+    <junit.version>6.0.3</junit.version>
     <flatten-maven-plugin.version>1.7.3</flatten-maven-plugin.version>
     <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
     <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
-    <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
     <maven-war-plugin.version>3.5.1</maven-war-plugin.version>
     <maven-core.version>3.9.11</maven-core.version>
     <eclipselink.version>4.0.7</eclipselink.version>
@@ -78,7 +78,7 @@
     <maven-central-publishing-plugin.version>0.10.0</maven-central-publishing-plugin.version>
     <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
     <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
-    <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
+    <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
   </properties>
 
   <dependencies>
