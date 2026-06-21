@@ -64,7 +64,7 @@
     <jackson.version>2.22.0</jackson.version>
     <jackson-annotations.version>2.22</jackson-annotations.version>
     <jetty.version>11.0.25</jetty.version>
-    <jersey.version>3.1.11</jersey.version>
+    <jersey.version>3.1.12</jersey.version>
     <junit.version>6.1.0</junit.version>
     <flatten-maven-plugin.version>1.7.3</flatten-maven-plugin.version>
     <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
