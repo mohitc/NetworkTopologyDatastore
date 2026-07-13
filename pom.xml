@@ -61,11 +61,11 @@
     <revision>0.0.2-SNAPSHOT</revision>
     <aspectj.version>1.9.25.1</aspectj.version>
     <aspectj-mavem-plugin.version>1.16.0</aspectj-mavem-plugin.version>
-    <jackson.version>2.22.0</jackson.version>
+    <jackson.version>2.22.1</jackson.version>
     <jackson-annotations.version>2.22</jackson-annotations.version>
     <jetty.version>11.0.25</jetty.version>
     <jersey.version>3.1.12</jersey.version>
-    <junit.version>6.1.1</junit.version>
+    <junit.version>6.1.2</junit.version>
     <flatten-maven-plugin.version>1.7.3</flatten-maven-plugin.version>
     <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
     <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
