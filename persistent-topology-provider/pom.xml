@@ -20,7 +20,7 @@
   </description>
 
   <properties>
-    <eclipselink.version>5.0.1</eclipselink.version>
+    <eclipselink.version>5.0.2</eclipselink.version>
     <postgresql.version>42.7.13</postgresql.version>
     <postgresql-testcontainer.version>2.0.5</postgresql-testcontainer.version>
     <skipTests>true</skipTests>
